@@ -109,14 +109,14 @@ var Ed3d = {
         $.getScript("js/components/route.class.js"),
         $.getScript("js/components/system.class.js"),
 
-      /*  $.getScript("js/shaders/CopyShader.js"),
-        $.getScript("js/shaders/BokehShader.js"),
-        $.getScript("js/postprocessing/EffectComposer.js"),
-        $.getScript("js/postprocessing/RenderPass.js"),
-        $.getScript("js/postprocessing/MaskPass.js"),
-        $.getScript("js/postprocessing/ShaderPass.js"),
-        $.getScript("js/postprocessing/BokehPass.js"),
-        $.getScript("js/postprocessing/BloomPass.js"),*/
+      /*  $.getScript("three-js/shaders/CopyShader.js"),
+        $.getScript("three-js/shaders/BokehShader.js"),
+        $.getScript("three-js/postprocessing/EffectComposer.js"),
+        $.getScript("three-js/postprocessing/RenderPass.js"),
+        $.getScript("three-js/postprocessing/MaskPass.js"),
+        $.getScript("three-js/postprocessing/ShaderPass.js"),
+        $.getScript("three-js/postprocessing/BokehPass.js"),
+        $.getScript("three-js/postprocessing/BloomPass.js"),*/
 
         $.Deferred(function( deferred ){
             $( deferred.resolve );
