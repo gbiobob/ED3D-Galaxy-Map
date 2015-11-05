@@ -75,8 +75,11 @@ var HUD = {
       var active = $(this).data('active');
       active = (Math.abs(active-1));
       $(Ed3d.catObjs[idCat]).each(function(key, idObj) {
-        scene.getObjectById( idObj, true ).visible = (active==1);
-        scene.getObjectById( idObj, true ).filtered = (active==1);
+        obj = scene.getObjectById( idObj, true );
+        obj.visible = (active==1);
+        obj.filtered = (active==1);
+
+        scene.getObjectById( obj.idsprite, true ).visible = (active==1);
       });
       $(this).data('active',active);
       $(this).toggleClass('disabled');

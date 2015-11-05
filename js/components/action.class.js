@@ -35,12 +35,16 @@ var Action = {
     // create an array containing all objects in the scene with which the ray intersects
     var intersects = raycaster.intersectObjects(scene.children);
     if (intersects.length > 0) {
+      for( var i = 0; i < intersects.length; i++ ) {
+        var intersection = intersects[ i ];
+        if(intersection.object.geometry.type != 'SphereGeometry') {
 
-      if(intersects[0].object.geometry.type != 'SphereGeometry') return;
+          $('#hud #infos').html("Intersected object: " + intersection.object.name);
+          Action.hoverOnObj(intersection.object);
+        }
+      }
 
 
-      $('#hud #infos').html("Intersected object: " + intersects.length + " - " + intersects[0].object.name);
-      Action.hoverOnObj(intersects[0].object);
     }
 
   },
@@ -75,13 +79,18 @@ var Action = {
     var intersects = raycaster.intersectObjects(scene.children);
     if (intersects.length > 0) {
 
-      if(!intersects[0].object.clickable) return;
+      for( var i = 0; i < intersects.length; i++ ) {
+        var intersection = intersects[ i ];
+        if(intersection.object.clickable) {
+          $('#hud #infos').html(
+            "<h2>"+intersection.object.name+"</h2>"
+          );
+          Action.moveToObj(intersection.object);
+        }
+      }
 
-      $('#hud #infos').html(
-        "<h2>"+intersects[0].object.name+"</h2>"+
-        "Intersected object: " + intersects.length
-      );
-      Action.moveToObj(intersects[0].object);
+
+
     }
 
   },
