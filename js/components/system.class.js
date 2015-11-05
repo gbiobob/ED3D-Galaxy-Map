@@ -35,6 +35,8 @@ var System = {
     sprite.scale.set(50, 50, 1.0);
     sphere.add(sprite); // this centers the glow at the mesh
 
+    sphere.clickable = true;
+
     return sphere;
  },
 

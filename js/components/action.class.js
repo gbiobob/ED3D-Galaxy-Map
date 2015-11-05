@@ -75,7 +75,7 @@ var Action = {
     var intersects = raycaster.intersectObjects(scene.children);
     if (intersects.length > 0) {
 
-      if(intersects[0].object.geometry.type != 'SphereGeometry') return;
+      if(!intersects[0].object.clickable) return;
 
       $('#hud #infos').html(
         "<h2>"+intersects[0].object.name+"</h2>"+
@@ -91,19 +91,43 @@ var Action = {
 
   'moveToObj' : function (obj) {
 
-    obj.material = Ed3d.material.selected;
-    this.addCusorOnSelect(obj.position.x, obj.position.y, obj.position.z);
 
     //-- Move camera to target
+    //-- Smooth move
 
-    camera.position.set(obj.position.x, obj.position.y + 100, obj.position.z - 100);
-    camera.rotation.set(0, 0, 0);
+    var moveFrom = {
+      x: camera.position.x, y: camera.position.y , z: camera.position.z,
+      mx: controls.center.x, my: controls.center.y , mz: controls.center.z
+    };
+    var moveCoords = {
+      x: obj.position.x, y: obj.position.y + 100, z: obj.position.z - 100,
+      mx: obj.position.x, my: obj.position.y , mz: obj.position.z
+    };
+
+    controls.enabled = false;
+    Ed3d.tween = new TWEEN.Tween(moveFrom).to(moveCoords, 800)
+      .start()
+      .onUpdate(function () {
+        camera.position.set(moveFrom.x, moveFrom.y, moveFrom.z);
+        controls.center.set(moveFrom.mx, moveFrom.my, moveFrom.mz);
+      })
+      .onComplete(function () {
+        controls.enabled = true;
+        controls.update();
+      });
 
 
-    //  controls.zoom.set(0);
-    controls.center.set(obj.position.x, obj.position.y, obj.position.z);
-    controls.update();
-    render();
+    //-- 3D Cursor on selected object
+
+    if (this.oldSel !== null) this.oldSel.material = Ed3d.material.white;
+
+    obj.material = Ed3d.material.selected;
+    this.oldSel = obj;
+
+
+    this.addCusorOnSelect(obj.position.x, obj.position.y, obj.position.z);
+
+
 
 
     //-- Add text

@@ -1,5 +1,3 @@
-
-
 //--
 var camera;
 var controls;
@@ -16,8 +14,6 @@ var container;
 var routes = [];
 var lensFlareSel;
 
-
-
 var Ed3d = {
 
   'container' : null,
@@ -26,6 +22,12 @@ var Ed3d = {
 
   'grid1H' : null,
   'grid1K' : null,
+
+  'tween' : null,
+
+  'galCenter' : null,
+
+  'globalView' : false,
 
   //-- Object list by categories
   'catObjs' : [],
@@ -97,11 +99,11 @@ var Ed3d = {
     //-- Load dependencies
     $.when(
 
-        $.getScript("three-js/OrbitControls.js"),
-        $.getScript("three-js/CSS3DRenderer.js"),
-        $.getScript("three-js/Projector.js"),
-        $.getScript("three-js/FontUtils.js"),
-        $.getScript("three-js/helvetiker_regular.typeface.js"),
+        $.getScript("vendor/three-js/OrbitControls.js"),
+        $.getScript("vendor/three-js/CSS3DRenderer.js"),
+        $.getScript("vendor/three-js/Projector.js"),
+        $.getScript("vendor/three-js/FontUtils.js"),
+        $.getScript("vendor/three-js/helvetiker_regular.typeface.js"),
 
         $.getScript("js/components/grid.class.js"),
         $.getScript("js/components/hud.class.js"),
@@ -109,14 +111,19 @@ var Ed3d = {
         $.getScript("js/components/route.class.js"),
         $.getScript("js/components/system.class.js"),
 
-      /*  $.getScript("three-js/shaders/CopyShader.js"),
-        $.getScript("three-js/shaders/BokehShader.js"),
-        $.getScript("three-js/postprocessing/EffectComposer.js"),
-        $.getScript("three-js/postprocessing/RenderPass.js"),
-        $.getScript("three-js/postprocessing/MaskPass.js"),
-        $.getScript("three-js/postprocessing/ShaderPass.js"),
-        $.getScript("three-js/postprocessing/BokehPass.js"),
-        $.getScript("three-js/postprocessing/BloomPass.js"),*/
+        $.getScript("vendor/tween-js/Tween.js"),
+
+
+      /*  $.getScript("vendor/three-js/shaders/CopyShader.js"),
+        $.getScript("vendor/three-js/shaders/BokehShader.js"),
+        $.getScript("vendor/three-js/postprocessing/EffectComposer.js"),
+        $.getScript("vendor/three-js/postprocessing/RenderPass.js"),
+        $.getScript("vendor/three-js/postprocessing/MaskPass.js"),
+        $.getScript("vendor/three-js/postprocessing/ShaderPass.js"),
+        $.getScript("vendor/three-js/postprocessing/BokehPass.js"),
+        $.getScript("vendor/three-js/postprocessing/BloomPass.js"),*/
+
+
 
         $.Deferred(function( deferred ){
             $( deferred.resolve );
@@ -162,10 +169,15 @@ var Ed3d = {
     //-- Load textures
     this.textures.flare_white = texloader.load("textures/lensflare/flare2.png");
     this.textures.flare_yellow = texloader.load("textures/lensflare/star_grey.png");
+    this.textures.flare_center = texloader.load("textures/lensflare/flare3.png");
 
     //-- Load sprites
     Ed3d.material.glow_1 = new THREE.SpriteMaterial({
       map: this.textures.flare_yellow,
+      color: 0xffffff, transparent: false
+    });
+    Ed3d.material.glow_2 = new THREE.SpriteMaterial({
+      map: this.textures.flare_center,
       color: 0xffffff, transparent: false
     });
 
@@ -191,7 +203,7 @@ var Ed3d = {
     container = document.getElementById("ed3dmap");
 
     //camera
-    camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 1, 10000);
+    camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 1, 100000);
     camera.position.set(0, 500, -500);
 
     //Scene
@@ -297,13 +309,63 @@ var Ed3d = {
 
     }).done(function() {
 
-
+      Ed3d.addGalaxyCenter();
       HUD.init();
       Action.init();
 
       //-- Init Events
       $('#loader').hide();
     });;
+  },
+
+
+  'addGalaxyCenter' : function () {
+
+    if(!this.globalView) return;
+
+    //25 : -21 : 25,900 = Sagittarius A*
+
+    var objVal = new Object;
+    objVal.name = 'Sagittarius A*';
+    objVal.x = 25;
+    objVal.y = -21;
+    objVal.z = 25900;
+    objVal.cat = [];
+
+    this.galCenter = System.create(objVal);
+    scene.add(this.galCenter);
+
+
+
+    //-- Load textures
+  var texloader = new THREE.TextureLoader();
+    var galImg = texloader.load("textures/galaxy.png");
+
+    //-- Load sprites
+    var galMat = new THREE.MeshPhongMaterial({
+      map: galImg,
+      transparent: true,
+      shininess: 50
+    });
+
+    var plane = new THREE.Mesh(new THREE.PlaneGeometry(100, 100),galMat);
+    plane.rotation.x = -Math.PI / 2;
+    plane.rotation.z = -Math.PI;
+    this.galCenter.add(plane);
+
+    var plane = new THREE.Mesh(new THREE.PlaneGeometry(100, 100),galMat);
+    plane.rotation.x = -Math.PI / 2;
+    plane.rotation.z = -Math.PI;
+    this.galCenter.add(plane);
+
+    /*var plane2 = new THREE.Mesh(new THREE.PlaneGeometry(100, 100),galMat);
+    plane2.position.y = -1;
+    this.galCenter.add(plane2); // this centers the glow at the mesh*/
+
+
+    var sprite = new THREE.Sprite( this.material.glow_2 );
+    sprite.scale.set(50, 50, 1.0);
+    this.galCenter.add(sprite); // this centers the glow at the mesh
   },
 
 
@@ -394,11 +456,26 @@ var Ed3d = {
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
+function animate(time) {
 
 
-function animate() {
 
-  requestAnimationFrame(animate);
+  refreshWithCamPos();
+
+  controls.update();
+
+  TWEEN.update(time);
+
+
+
+  requestAnimationFrame( animate );
+    /*setTimeout( function() {
+
+        requestAnimationFrame( animate );
+
+    }, 1000 / 60 );*/
+
+
   renderer.render(scene, camera);
 
   if(Ed3d.effects) composer.render();
@@ -418,8 +495,8 @@ function animate() {
 
   //-- Change selection cursor size depending on camera distance
 
+  var scale = distanceFromTarget(camera)/200;
   if(Action.cursorSel != null) {
-    var scale = distanceFromTarget(camera)/200;
     if(scale>=1 && scale<10) {
       Action.cursorSel.scale.x = scale;
       Action.cursorSel.scale.y = scale;
@@ -428,18 +505,23 @@ function animate() {
   }
 
 
-/*
-  if(Action.cursorSel != null) Action.cursorSel.scale.x =
-    1+Math.ceil(Math.abs(controls.target.x - camera.position.x)*10);
-  if(Action.cursorSel != null) Action.cursorSel.scale.y =
-    1+Math.ceil(Math.abs(controls.target.x - camera.position.x)*10);
-  if(Action.cursorSel != null) Action.cursorSel.scale.z =
-    1+Math.ceil(Math.abs(controls.target.x - camera.position.x)*10);*/
-
-
-  refreshWithCamPos();
-
-  controls.update();
+  //-- Zoom on on galaxy effect
+  if(Ed3d.galCenter != null)
+  if(scale>25) {
+    Ed3d.galCenter.visible = true;
+    Ed3d.galCenter.scale.set(1000,1000,1000);
+    if(Action.cursorSel != null)  Action.cursorSel.scale.set(100,100,100);
+    Ed3d.grid1H.obj.visible = false;
+    Ed3d.grid1K.obj.visible = false;
+    Ed3d.starfield.visible = false;
+    scene.scale.set(1/(scale/3),1/(scale/3),1/(scale/3));
+  } else {
+    Ed3d.galCenter.scale.set(1,1,1);
+    scene.scale.set(1,1,1);
+    Ed3d.grid1H.obj.visible = true;
+    Ed3d.grid1K.obj.visible = true;
+    Ed3d.starfield.visible = true;
+  }
 
 
 }
@@ -449,7 +531,6 @@ function animate() {
 
 function render() {
   renderer.render(scene, camera);
-
 }
 
 
@@ -522,6 +603,7 @@ function refreshWithCamPos() {
   camSave.x = Math.round(camera.position.x/p)*p;
   camSave.y = Math.round(camera.position.y/p)*p;
   camSave.z = Math.round(camera.position.z/p)*p;
+
 }
 
 function refreshShowSystems() {
@@ -571,19 +653,9 @@ function testPerfomances() {
 
     scene.add(Ed3d.systems[p]);
 
-
-
-
-
-
-
-
     particle_system_geometry.vertices.push(new THREE.Vector3(x, y, z));
 
   }
-
-
-
 
   var particle_system_material = new THREE.PointsMaterial({
     map: Ed3d.textures.flare_white, transparent: true, size: 40
@@ -594,8 +666,5 @@ function testPerfomances() {
       particle_system_material
   );
   scene.add(particleSystem);
-
-
-
 
 }

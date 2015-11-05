@@ -129,6 +129,7 @@
 .map_link {
   display: block;
   margin: 0 0 3px;
+  cursor: pointer;
 }
 .map_filter:hover,
 .map_link:hover {
