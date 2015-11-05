@@ -1,0 +1,601 @@
+
+
+//--
+var camera;
+var controls;
+var scene;
+var light;
+var renderer;
+
+var raycaster;
+
+var composer;
+
+//-- Map Vars
+var container;
+var routes = [];
+var lensFlareSel;
+
+
+
+var Ed3d = {
+
+  'container' : null,
+  'jsonPath' : null,
+  'effects' : false,
+
+  'grid1H' : null,
+  'grid1K' : null,
+
+  //-- Object list by categories
+  'catObjs' : [],
+
+  //-- Materials
+  'material' : {
+    'Trd' : new THREE.MeshBasicMaterial({
+      color: 0xffffff
+    }),
+    'line' : new THREE.LineBasicMaterial({
+      color: 0x0E7F88
+    }),
+    'white' : new THREE.MeshBasicMaterial({
+      color: 0xffffff
+    }),
+    'orange' : new THREE.MeshBasicMaterial({
+      color: 0xFF9D00
+    }),
+    'black' : new THREE.MeshBasicMaterial({
+      color: 0x010101
+    }),
+    'lightblue' : new THREE.MeshBasicMaterial({
+      color: 0x0E7F88
+    }),
+    'darkblue' : new THREE.MeshBasicMaterial({
+      color: 0x16292B
+    }),
+    'selected' : new THREE.MeshPhongMaterial({
+      color: 0x0DFFFF
+    }),
+    'transparent' : new THREE.MeshBasicMaterial({
+      color: 0x000000,
+      transparent: true,
+      opacity: 0
+    }),
+    'glow_1' : null,
+    'custom' : []
+
+
+
+  },
+  'textures' : {
+
+  },
+
+
+  'systems' : [],
+
+  //-- Starfield
+  'starfield' : null,
+
+  //-- Graphical Options
+  'optDistObj' : 1500,
+
+
+  /**
+   * Init Ed3d map
+   *
+   * @param {String} ID of the container for Ed3d map
+   * @param {String} Json path to load for systems data
+   */
+
+  'init' : function(container, jsonPath, withEffects) {
+
+    $('#loader').show();
+
+    this.effects = withEffects;
+
+    //-- Load dependencies
+    $.when(
+
+        $.getScript("three-js/OrbitControls.js"),
+        $.getScript("three-js/CSS3DRenderer.js"),
+        $.getScript("three-js/Projector.js"),
+        $.getScript("three-js/FontUtils.js"),
+        $.getScript("three-js/helvetiker_regular.typeface.js"),
+
+        $.getScript("js/components/grid.class.js"),
+        $.getScript("js/components/hud.class.js"),
+        $.getScript("js/components/action.class.js"),
+        $.getScript("js/components/route.class.js"),
+        $.getScript("js/components/system.class.js"),
+
+      /*  $.getScript("js/shaders/CopyShader.js"),
+        $.getScript("js/shaders/BokehShader.js"),
+        $.getScript("js/postprocessing/EffectComposer.js"),
+        $.getScript("js/postprocessing/RenderPass.js"),
+        $.getScript("js/postprocessing/MaskPass.js"),
+        $.getScript("js/postprocessing/ShaderPass.js"),
+        $.getScript("js/postprocessing/BokehPass.js"),
+        $.getScript("js/postprocessing/BloomPass.js"),*/
+
+        $.Deferred(function( deferred ){
+            $( deferred.resolve );
+        })
+
+    ).done(function() {
+
+      Ed3d.container = container;
+      Ed3d.jsonPath  = jsonPath;
+
+      Ed3d.loadTextures();
+
+      Ed3d.initScene();
+
+      // Create grid
+
+      Ed3d.grid1H = $.extend({}, Grid.init(100, 0x111E23), {});
+      Ed3d.grid1K = $.extend({}, Grid.init(1000, 0x22323A), {});
+
+      // Add some scene enhancement
+      Ed3d.skyboxStars();
+
+      // Load systems
+      Ed3d.loadDatas();
+
+      // Animate
+      animate();
+
+    });
+
+  },
+
+
+  /**
+   * Init Three.js scene
+   */
+
+  'loadTextures' : function() {
+
+    //-- Load textures for lensflare
+    var texloader = new THREE.TextureLoader();
+
+    //-- Load textures
+    this.textures.flare_white = texloader.load("textures/lensflare/flare2.png");
+    this.textures.flare_yellow = texloader.load("textures/lensflare/star_grey.png");
+
+    //-- Load sprites
+    Ed3d.material.glow_1 = new THREE.SpriteMaterial({
+      map: this.textures.flare_yellow,
+      color: 0xffffff, transparent: false
+    });
+
+  },
+
+  'addCustomMaterial' : function (id, color) {
+
+    var color = new THREE.Color('#'+color);
+    Ed3d.material.custom[id] = new THREE.SpriteMaterial({
+      map: this.textures.flare_yellow,
+      color: color, transparent: false
+    });
+
+  },
+
+
+  /**
+   * Init Three.js scene
+   */
+
+  'initScene' : function() {
+
+    container = document.getElementById("ed3dmap");
+
+    //camera
+    camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 1, 10000);
+    camera.position.set(0, 500, -500);
+
+    //Scene
+    scene = new THREE.Scene();
+
+
+    //HemisphereLight
+    light = new THREE.HemisphereLight(0xffffff, 0xcccccc);
+    scene.add(light);
+
+    //WebGL Renderer
+    renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true
+    });
+    renderer.setClearColor(0x000000, 1);
+    renderer.setSize(container.offsetWidth, container.offsetHeight);
+    renderer.domElement.style.zIndex = 5;
+    container.appendChild(renderer.domElement);
+
+
+    //controls
+    controls = new THREE.OrbitControls(camera, container);
+    controls.rotateSpeed = 1.0;
+    controls.zoomSpeed = 3.0;
+    controls.panSpeed = 0.8;
+
+    //Add Fog
+
+    scene.fog = new THREE.FogExp2(0x0D0D10, 0.000128);
+    renderer.setClearColor(scene.fog.color, 1);
+
+    //testPerfomances();
+
+
+    // postprocessing
+    if(Ed3d.effects) {
+      composer = new THREE.EffectComposer( renderer );
+      composer.addPass( new THREE.RenderPass( scene, camera ) );
+
+      var bokehPass = new THREE.BokehPass( scene, camera, {
+        focus:    0.5,
+        aperture: 0.0025,
+        maxblur:  10.0,
+
+        width:  container.offsetWidth,
+        height: container.offsetHeight
+      } );
+      bokehPass.renderToScreen = true;
+      composer.addPass( bokehPass );
+    }
+
+
+
+  },
+
+  /**
+   * Load Json file to fill map
+   */
+
+  'loadDatas' : function() {
+
+    $.getJSON(this.jsonPath, function(data) {
+
+      HUD.create("ed3dmap");
+
+      //-- Load cat filters
+      HUD.initFilters(data.categories);
+
+      //-- Loop into systems
+
+      $.each(data.notes, function(key, val) {
+
+        system = System.create(val);
+        Ed3d.addObjToCategories(system,val.cat);
+        Ed3d.systems.push(system);
+
+        scene.add(system);
+
+      });
+
+      //-- Routes
+
+      $.each(data.routes, function(key1, route) {
+        Route.createRoute(key1, route.list, route.cat);
+      });
+
+      //-- Permit
+
+      $.each(data.permits, function(key, val) {
+
+        system = System.create(val);
+        Ed3d.addObjToCategories(system,val.cat);
+        Ed3d.systems.push(system);
+
+        scene.add(system);
+
+
+      });
+
+
+
+
+    }).done(function() {
+
+
+      HUD.init();
+      Action.init();
+
+      //-- Init Events
+      $('#loader').hide();
+    });;
+  },
+
+
+  /**
+   * Add an object to a category
+   */
+
+  'addObjToCategories' : function(obj, catList) {
+
+    $.each(catList, function(keyArr, idCat) {
+      Ed3d.catObjs[idCat].push(obj.id);
+    });
+
+  },
+
+
+  /**
+   * Create a skybox of particle stars
+   */
+
+  'skyboxStars' : function() {
+
+    var sizeStars = 10000;
+
+    var particles = new THREE.Geometry;
+    for (var p = 0; p < 5000; p++) {
+      var particle = new THREE.Vector3(
+        Math.random() * sizeStars - (sizeStars / 2),
+        Math.random() * sizeStars - (sizeStars / 2),
+        Math.random() * sizeStars - (sizeStars / 2)
+      );
+      particles.vertices.push(particle);
+    }
+
+    var particleMaterial = new THREE.PointsMaterial({
+      color: 0xeeeeee,
+      size: 2
+    });
+    this.starfield = new THREE.Points(particles, particleMaterial);
+
+
+    scene.add(this.starfield);
+  },
+
+  /**
+   * Add a text
+   */
+
+  'addText' : function(textShow, x, y, z, size) {
+    var textShapes = THREE.FontUtils.generateShapes(textShow, {
+      'font': 'helvetiker',
+      'weight': 'normal',
+      'style': 'normal',
+      'size': size,
+      'curveSegments': 100
+    });
+    var text = new THREE.ShapeGeometry(textShapes);
+    var textMesh = new THREE.Mesh(text, new THREE.MeshBasicMaterial({
+      color: 0xffffff
+    }));
+    textMesh.position.set(x, y, z);
+    textMesh.rotation.x = -Math.PI / 2;
+    textMesh.rotation.z = -Math.PI;
+    scene.add(textMesh);
+  },
+
+
+  /**
+   * Add a text
+   */
+
+  'calcDistSol' : function(target) {
+
+    var dx = target.x;
+    var dy = target.y;
+    var dz = target.z;
+
+    return Math.round(Math.sqrt(dx*dx+dy*dy+dz*dz));
+  }
+
+
+}
+
+
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+
+
+function animate() {
+
+  requestAnimationFrame(animate);
+  renderer.render(scene, camera);
+
+  if(Ed3d.effects) composer.render();
+
+  $('#cx').html(Math.round(controls.target.x));
+  $('#cy').html(Math.round(controls.target.y));
+  $('#cz').html(Math.round(controls.target.z));
+
+  $('#distsol').html(Ed3d.calcDistSol(controls.target));
+
+  //-- Move starfield with cam
+  Ed3d.starfield.position.set(
+    controls.target.x-(controls.target.x/10)%4000,
+    controls.target.y-(controls.target.y/10)%4000,
+    controls.target.z-(controls.target.z/10)%4000
+  );
+
+  //-- Change selection cursor size depending on camera distance
+
+  if(Action.cursorSel != null) {
+    var scale = distanceFromTarget(camera)/200;
+    if(scale>=1 && scale<10) {
+      Action.cursorSel.scale.x = scale;
+      Action.cursorSel.scale.y = scale;
+      Action.cursorSel.scale.z = scale;
+    }
+  }
+
+
+/*
+  if(Action.cursorSel != null) Action.cursorSel.scale.x =
+    1+Math.ceil(Math.abs(controls.target.x - camera.position.x)*10);
+  if(Action.cursorSel != null) Action.cursorSel.scale.y =
+    1+Math.ceil(Math.abs(controls.target.x - camera.position.x)*10);
+  if(Action.cursorSel != null) Action.cursorSel.scale.z =
+    1+Math.ceil(Math.abs(controls.target.x - camera.position.x)*10);*/
+
+
+  refreshWithCamPos();
+
+  controls.update();
+
+
+}
+
+
+
+
+function render() {
+  renderer.render(scene, camera);
+
+}
+
+
+window.addEventListener('resize', function () {
+  if(renderer != undefined) {
+    renderer.setSize(container.offsetWidth, container.offsetHeight);
+    camera.aspect = container.offsetWidth / container.offsetHeight;
+    camera.updateProjectionMatrix();
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+//--------------------------------------------------------------------------
+// Test perf
+
+
+function distance (v1, v2) {
+    var dx = v1.position.x - v2.position.x;
+    var dy = v1.position.y - v2.position.y;
+    var dz = v1.position.z - v2.position.z;
+
+    return Math.round(Math.sqrt(dx*dx+dy*dy+dz*dz));
+}
+
+function distanceFromTarget (v1) {
+    var dx = v1.position.x - controls.target.x;
+    var dy = v1.position.y - controls.target.y;
+    var dz = v1.position.z - controls.target.z;
+
+    return Math.round(Math.sqrt(dx*dx+dy*dy+dz*dz));
+}
+
+var camSave = {'x':0,'y':0,'z':0};
+
+
+function refreshWithCamPos() {
+
+  var d = new Date();
+  var n = d.getTime();
+
+  //-- Refresh only every 5 sec
+  if(n % 1 != 0) return;
+
+  //-- Refresh only if the camera moved
+  var p = Ed3d.optDistObj/2;
+  if(
+    camSave.x == Math.round(camera.position.x/p)*p &&
+    camSave.y == Math.round(camera.position.y/p)*p &&
+    camSave.z == Math.round(camera.position.z/p)*p
+  ) return;
+
+  //-- Execute sdome refresh
+  refreshShowSystems();
+
+  Ed3d.grid1H.addCoords();
+  Ed3d.grid1K.addCoords();
+
+  //-- Save new pos
+
+  camSave.x = Math.round(camera.position.x/p)*p;
+  camSave.y = Math.round(camera.position.y/p)*p;
+  camSave.z = Math.round(camera.position.z/p)*p;
+}
+
+function refreshShowSystems() {
+
+  Ed3d.systems.forEach(setVisibilitySystem);
+
+}
+
+
+function setVisibilitySystem(obj) {
+
+  if(obj.filtered != undefined && obj.filtered == 0) return;
+
+  if(distance(obj,camera)<Ed3d.optDistObj) {
+    if(!obj.visible) obj.visible = true;
+  } else {
+    if(obj.visible) obj.visible = false;
+  }
+
+}
+
+function testPerfomances() {
+
+
+  //-- Particle
+  var texloader = new THREE.TextureLoader();
+  var particle_system_geometry = new THREE.Geometry();
+
+
+
+  //-- Object
+  var geometry = new THREE.SphereGeometry(6, 10, 10);
+  geometry.computeVertexNormals();
+  for (var p = 0; p < 20000; p++) {
+
+    var x = (Math.random() * 10000)-5000;
+    var y = (Math.random() * 10000)-5000;
+    var z = (Math.random() * 10000)-5000;
+
+    Ed3d.systems[p] = new THREE.Mesh(geometry, Ed3d.material.white);
+    Ed3d.systems[p].position.set(x, y, z);
+    Ed3d.systems[p].visible = false;
+
+    var sprite = new THREE.Sprite( Ed3d.material.glow_1 );
+    sprite.scale.set(120, 120, 1.0);
+    Ed3d.systems[p].add(sprite); // this centers the glow at the mesh
+
+    scene.add(Ed3d.systems[p]);
+
+
+
+
+
+
+
+
+    particle_system_geometry.vertices.push(new THREE.Vector3(x, y, z));
+
+  }
+
+
+
+
+  var particle_system_material = new THREE.PointsMaterial({
+    map: Ed3d.textures.flare_white, transparent: true, size: 40
+  });
+  particle_system_material.alphaTest = 0.5
+  var particleSystem = new THREE.Points(
+    particle_system_geometry,
+      particle_system_material
+  );
+  scene.add(particleSystem);
+
+
+
+
+}
