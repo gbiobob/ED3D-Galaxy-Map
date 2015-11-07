@@ -22,12 +22,16 @@ var Ed3d = {
 
   'grid1H' : null,
   'grid1K' : null,
+  'grid1XL' : null,
 
   'tween' : null,
 
   'galCenter' : null,
 
-  'globalView' : false,
+  'globalView' : true,
+
+  //-- Fog density save
+  'fogDensity' : null,
 
   //-- Object list by categories
   'catObjs' : [],
@@ -140,8 +144,10 @@ var Ed3d = {
 
       // Create grid
 
-      Ed3d.grid1H = $.extend({}, Grid.init(100, 0x111E23), {});
-      Ed3d.grid1K = $.extend({}, Grid.init(1000, 0x22323A), {});
+      Ed3d.grid1H  = $.extend({}, Grid.init(100, 0x111E23), {});
+      Ed3d.grid1K  = $.extend({}, Grid.init(1000, 0x22323A), {});
+      Ed3d.grid1XL = $.extend({}, Grid.init(10000, 0x22323A), {});
+
 
       // Add some scene enhancement
       Ed3d.skyboxStars();
@@ -174,11 +180,13 @@ var Ed3d = {
     //-- Load sprites
     Ed3d.material.glow_1 = new THREE.SpriteMaterial({
       map: this.textures.flare_yellow,
-      color: 0xffffff, transparent: false
+      color: 0xffffff, transparent: false,
+       fog: true
     });
     Ed3d.material.glow_2 = new THREE.SpriteMaterial({
       map: this.textures.flare_center,
-      color: 0xffffff, transparent: false
+      color: 0xffffff, transparent: false,
+       fog: true
     });
 
   },
@@ -231,12 +239,14 @@ var Ed3d = {
     controls.zoomSpeed = 3.0;
     controls.panSpeed = 0.8;
 
-    //Add Fog
+    // Add Fog
 
     scene.fog = new THREE.FogExp2(0x0D0D10, 0.000128);
     renderer.setClearColor(scene.fog.color, 1);
+    Ed3d.fogDensity = scene.fog.density;
 
-    //testPerfomances();
+    // Add galaxy center
+    Ed3d.addGalaxyCenter();
 
 
     // postprocessing
@@ -309,7 +319,6 @@ var Ed3d = {
 
     }).done(function() {
 
-      Ed3d.addGalaxyCenter();
       HUD.init();
       Action.init();
 
@@ -323,8 +332,6 @@ var Ed3d = {
 
     if(!this.globalView) return;
 
-    //25 : -21 : 25,900 = Sagittarius A*
-
     var objVal = new Object;
     objVal.name = 'Sagittarius A*';
     objVal.x = 25;
@@ -332,35 +339,9 @@ var Ed3d = {
     objVal.z = 25900;
     objVal.cat = [];
 
+
     this.galCenter = System.create(objVal);
     scene.add(this.galCenter);
-
-
-
-    //-- Load textures
-  var texloader = new THREE.TextureLoader();
-    var galImg = texloader.load("textures/galaxy.png");
-
-    //-- Load sprites
-    var galMat = new THREE.MeshPhongMaterial({
-      map: galImg,
-      transparent: true,
-      shininess: 50
-    });
-
-    var plane = new THREE.Mesh(new THREE.PlaneGeometry(100, 100),galMat);
-    plane.rotation.x = -Math.PI / 2;
-    plane.rotation.z = -Math.PI;
-    this.galCenter.add(plane);
-
-    var plane = new THREE.Mesh(new THREE.PlaneGeometry(100, 100),galMat);
-    plane.rotation.x = -Math.PI / 2;
-    plane.rotation.z = -Math.PI;
-    this.galCenter.add(plane);
-
-    /*var plane2 = new THREE.Mesh(new THREE.PlaneGeometry(100, 100),galMat);
-    plane2.position.y = -1;
-    this.galCenter.add(plane2); // this centers the glow at the mesh*/
 
 
     var sprite = new THREE.Sprite( this.material.glow_2 );
@@ -506,25 +487,121 @@ function animate(time) {
 
 
   //-- Zoom on on galaxy effect
-  if(Ed3d.galCenter != null)
+  //if(Ed3d.galCenter != null)
   if(scale>25) {
-    Ed3d.galCenter.visible = true;
-    Ed3d.galCenter.scale.set(1000,1000,1000);
-    if(Action.cursorSel != null)  Action.cursorSel.scale.set(100,100,100);
-    Ed3d.grid1H.obj.visible = false;
-    Ed3d.grid1K.obj.visible = false;
-    Ed3d.starfield.visible = false;
-    scene.scale.set(1/(scale/3),1/(scale/3),1/(scale/3));
+
+    enableFarView(scale);
+
   } else {
-    Ed3d.galCenter.scale.set(1,1,1);
-    scene.scale.set(1,1,1);
-    Ed3d.grid1H.obj.visible = true;
-    Ed3d.grid1K.obj.visible = true;
-    Ed3d.starfield.visible = true;
+
+    disableFarView(scale);
+
   }
 
 
 }
+
+var isFarView = false;
+
+function enableFarView (scale, withAnim) {
+
+  if(isFarView) return;
+  if(withAnim == undefined) withAnim = true;
+
+  isFarView = true;
+
+
+  //Ed3d.systems.forEach(function(el) {scene.getObjectById( el.idsprite, true ).scale.set(1000, 1000, 1.0)});
+
+
+  //-- Scale change animation
+  var newScale = parseFloat(1/(25/3));
+  if(withAnim) {
+
+    var scaleFrom = {
+      x: 1, y: 1 , z: 1
+    };
+    var scaleTo = {
+      x: newScale, y: newScale, z: newScale
+    };
+
+    controls.enabled = false;
+    Ed3d.tween = new TWEEN.Tween(scaleFrom).to(scaleTo, 1000)
+      .start()
+      .onUpdate(function () {
+        scene.scale.set(scaleFrom.x,scaleFrom.y,scaleFrom.z);
+      })
+      .onComplete(function () {
+        controls.enabled = true;
+        controls.update();
+
+
+    });
+  } else {
+    scene.scale.set(newScale,newScale,newScale);
+    controls.update();
+  }
+
+  //-- Show element
+
+  Ed3d.galCenter.scale.set(1000,1000,1000);
+  if(Action.cursorSel != null)  Action.cursorSel.scale.set(100,100,100);
+  Ed3d.grid1H.obj.visible = false;
+  Ed3d.grid1K.obj.visible = false;
+  Ed3d.starfield.visible = false;
+  scene.fog.density = 0.00005;
+
+
+
+}
+
+function disableFarView(scale, withAnim) {
+
+  if(!isFarView) return;
+  if(withAnim == undefined) withAnim = false;
+
+  isFarView = false;
+  var oldScale = parseFloat(1/(25/3));
+
+  //Ed3d.systems.forEach(function(el) {scene.getObjectById( el.idsprite, true ).scale.set(1, 1, 1.0)});
+
+  //-- Scale change animation
+  if(withAnim) {
+    var scaleFrom = {
+      x: oldScale, y: oldScale, z: oldScale
+    };
+    var scaleTo = {
+      x: 1, y: 1 , z: 1
+    };
+    controls.enabled = false;
+    Ed3d.tween = new TWEEN.Tween(scaleFrom).to(scaleTo, 1000)
+      .start()
+      .onUpdate(function () {
+        scene.scale.set(scaleFrom.x,scaleFrom.y,scaleFrom.z);
+        controls.update();
+      })
+      .onComplete(function () {
+        controls.enabled = true;
+        controls.update();
+
+    controls = new THREE.OrbitControls(camera, container);
+    });
+  } else {
+    scene.scale.set(1,1,1);
+  }
+
+
+
+  //-- Show element
+  Ed3d.galCenter.scale.set(1,1,1);
+  scene.scale.set(1,1,1);
+  if(Action.cursorSel != null)  Action.cursorSel.scale.set(1,1,1);
+  Ed3d.grid1H.obj.visible = true;
+  Ed3d.grid1K.obj.visible = true;
+  Ed3d.starfield.visible = true;
+  scene.fog.density = Ed3d.fogDensity;
+}
+
 
 
 

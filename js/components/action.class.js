@@ -101,6 +101,11 @@ var Action = {
   'moveToObj' : function (obj) {
 
 
+    //-- If in far view reset to classic view
+    disableFarView(25, false);
+    //controls.update();
+    //render();
+
     //-- Move camera to target
     //-- Smooth move
 
@@ -147,7 +152,6 @@ var Action = {
 
     //-- Move grid to object
     this.moveGridTo(obj);
-
   },
 
   'addCusorOnSelect' : function (x, y, z) {
@@ -192,8 +196,10 @@ var Action = {
     var posX = Math.floor(obj.position.x/1000)*1000;
     var posY = Math.floor(obj.position.y);
     var posZ = Math.floor(obj.position.z/1000)*1000;
+
     Ed3d.grid1H.obj.position.set(posX, posY, posZ);
     Ed3d.grid1K.obj.position.set(posX, posY, posZ);
+    Ed3d.grid1XL.obj.position.set(posX, posY, posZ);
 
   }
 

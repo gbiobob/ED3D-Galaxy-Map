@@ -11,10 +11,6 @@ var Grid = {
 
   'init' : function(size, color) {
 
-    /*grid2 = new THREE.GridHelper(1000000, 100);
-    grid2.setColors(0x111111, 0x111111);
-    scene.add(grid2);*/
-
     this.size = size;
 
     this.obj = new THREE.GridHelper(1000000, size);

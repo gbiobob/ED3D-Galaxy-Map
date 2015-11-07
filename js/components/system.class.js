@@ -28,6 +28,13 @@ var System = {
     sprite.scale.set(50, 50, 1.0);
     scene.add(sprite); // this centers the glow at the mesh
 
+    //-- Sprite far
+/*
+    var spriteFar = new THREE.Sprite( Ed3d.material.glow_2 );
+    spriteFar.position.set(parseInt(val.x), parseInt(val.y), parseInt(val.z));
+    spriteFar.scale.set(450, 450, 1.0);
+    scene.add(spriteFar); // this centers the glow at the mesh*/
+
     //-- Sphere
     var geometry = new THREE.SphereGeometry(2, 10, 10);
 

@@ -110,6 +110,7 @@ var HUD = {
 
     $('#opt_fog').change(function(e) {
       scene.fog.density = $(this).val();
+      Ed3d.fogDensity = scene.fog.density;
     });
 
   },
