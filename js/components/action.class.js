@@ -148,7 +148,7 @@ var Action = {
     var textAdd = obj.name;
     textAdd += ' - ' + Math.round(obj.position.x) + ', ' + Math.round(obj.position.y) + ', ' + Math.round(obj.position.z);
 
-    Ed3d.addText(textAdd, obj.position.x, obj.position.y, obj.position.z, 5);
+    Ed3d.addText('system', textAdd, obj.position.x, obj.position.y, obj.position.z, 5);
 
     //-- Move grid to object
     this.moveGridTo(obj);

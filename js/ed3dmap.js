@@ -14,6 +14,7 @@ var container;
 var routes = [];
 var lensFlareSel;
 
+
 var Ed3d = {
 
   'container' : null,
@@ -26,12 +27,13 @@ var Ed3d = {
 
   'tween' : null,
 
-  'galCenter' : null,
-
   'globalView' : true,
 
   //-- Fog density save
   'fogDensity' : null,
+
+  //-- Defined texts
+  'text' : [],
 
   //-- Object list by categories
   'catObjs' : [],
@@ -114,6 +116,7 @@ var Ed3d = {
         $.getScript("js/components/action.class.js"),
         $.getScript("js/components/route.class.js"),
         $.getScript("js/components/system.class.js"),
+        $.getScript("js/components/galaxy.class.js"),
 
         $.getScript("vendor/tween-js/Tween.js"),
 
@@ -217,7 +220,6 @@ var Ed3d = {
     //Scene
     scene = new THREE.Scene();
 
-
     //HemisphereLight
     light = new THREE.HemisphereLight(0xffffff, 0xcccccc);
     scene.add(light);
@@ -232,7 +234,6 @@ var Ed3d = {
     renderer.domElement.style.zIndex = 5;
     container.appendChild(renderer.domElement);
 
-
     //controls
     controls = new THREE.OrbitControls(camera, container);
     controls.rotateSpeed = 1.0;
@@ -246,7 +247,7 @@ var Ed3d = {
     Ed3d.fogDensity = scene.fog.density;
 
     // Add galaxy center
-    Ed3d.addGalaxyCenter();
+    Galaxy.addGalaxyCenter();
 
 
     // postprocessing
@@ -285,7 +286,7 @@ var Ed3d = {
 
       //-- Loop into systems
 
-      $.each(data.notes, function(key, val) {
+      $.each(data.systems, function(key, val) {
 
         system = System.create(val);
         Ed3d.addObjToCategories(system,val.cat);
@@ -296,13 +297,14 @@ var Ed3d = {
       });
 
       //-- Routes
-
+      if(data.routes != undefined)
       $.each(data.routes, function(key1, route) {
         Route.createRoute(key1, route.list, route.cat);
       });
 
       //-- Permit
 
+      if(data.permits != undefined)
       $.each(data.permits, function(key, val) {
 
         system = System.create(val);
@@ -328,26 +330,6 @@ var Ed3d = {
   },
 
 
-  'addGalaxyCenter' : function () {
-
-    if(!this.globalView) return;
-
-    var objVal = new Object;
-    objVal.name = 'Sagittarius A*';
-    objVal.x = 25;
-    objVal.y = -21;
-    objVal.z = 25900;
-    objVal.cat = [];
-
-
-    this.galCenter = System.create(objVal);
-    scene.add(this.galCenter);
-
-
-    var sprite = new THREE.Sprite( this.material.glow_2 );
-    sprite.scale.set(50, 50, 1.0);
-    this.galCenter.add(sprite); // this centers the glow at the mesh
-  },
 
 
   /**
@@ -395,7 +377,9 @@ var Ed3d = {
    * Add a text
    */
 
-  'addText' : function(textShow, x, y, z, size) {
+  'addText' : function(id, textShow, x, y, z, size) {
+
+
     var textShapes = THREE.FontUtils.generateShapes(textShow, {
       'font': 'helvetiker',
       'weight': 'normal',
@@ -410,7 +394,14 @@ var Ed3d = {
     textMesh.position.set(x, y, z);
     textMesh.rotation.x = -Math.PI / 2;
     textMesh.rotation.z = -Math.PI;
+
+    if(Ed3d.text[id] != undefined) {
+      scene.remove(scene.getObjectById( Ed3d.text[id], true ));
+    }
+
+    Ed3d.text[id] = textMesh.id;
     scene.add(textMesh);
+
   },
 
 
@@ -487,7 +478,7 @@ function animate(time) {
 
 
   //-- Zoom on on galaxy effect
-  //if(Ed3d.galCenter != null)
+  //if(Galaxy.obj != null)
   if(scale>25) {
 
     enableFarView(scale);
@@ -544,7 +535,7 @@ function enableFarView (scale, withAnim) {
 
   //-- Show element
 
-  Ed3d.galCenter.scale.set(1000,1000,1000);
+  Galaxy.obj.scale.set(1000,1000,1000);
   if(Action.cursorSel != null)  Action.cursorSel.scale.set(100,100,100);
   Ed3d.grid1H.obj.visible = false;
   Ed3d.grid1K.obj.visible = false;
@@ -593,7 +584,7 @@ function disableFarView(scale, withAnim) {
 
 
   //-- Show element
-  Ed3d.galCenter.scale.set(1,1,1);
+  Galaxy.obj.scale.set(1,1,1);
   scene.scale.set(1,1,1);
   if(Action.cursorSel != null)  Action.cursorSel.scale.set(1,1,1);
   Ed3d.grid1H.obj.visible = true;

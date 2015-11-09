@@ -143,7 +143,7 @@ var HUD = {
   'addFilter' : function(groupId, idCat, val) {
 
     //-- Add material, if custom color defined, use it
-    var back = '#000';
+    var back = '#fff';
     if(val.color != undefined) {
       Ed3d.addCustomMaterial(idCat, val.color);
       back = '#'+val.color;

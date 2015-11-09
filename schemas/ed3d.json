@@ -20,9 +20,9 @@
             },
             "color": {
               "type": "string"
-            }
-          },
-          "required": ["id", "name"]
+            },
+            "required": ["id", "name"]
+          }
         }
       }
     },
@@ -67,8 +67,8 @@
                 }
               }
             }
-        },
-        "required": ["id", "name", "x", "y", "z"]
+          },
+          "required": ["id", "name", "x", "y", "z"]
         }
       }
     },

@@ -29,10 +29,9 @@ var System = {
     scene.add(sprite); // this centers the glow at the mesh
 
     //-- Sprite far
-/*
-    var spriteFar = new THREE.Sprite( Ed3d.material.glow_2 );
+    /*var spriteFar = new THREE.Sprite( Ed3d.material.glow_2 );
     spriteFar.position.set(parseInt(val.x), parseInt(val.y), parseInt(val.z));
-    spriteFar.scale.set(450, 450, 1.0);
+    spriteFar.scale.set(5, 5, 1.0);
     scene.add(spriteFar); // this centers the glow at the mesh*/
 
     //-- Sphere
@@ -48,6 +47,13 @@ var System = {
     sphere.idsprite = sprite.id;
 
     return sphere;
- },
+  },
+
+  /**
+   * Load Spectral system color
+   */
+  'loadSpectral' : function(val) {
+
+  }
 
 }
