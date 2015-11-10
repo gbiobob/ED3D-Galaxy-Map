@@ -84,7 +84,7 @@ var Galaxy = {
       particle_system_material
     );
 
-    particleSystem.position.set(this.x, this.y, this.z);
+    particleSystem.position.set(this.x, this.y, -this.z);
 
     scene.add(particleSystem);
   }

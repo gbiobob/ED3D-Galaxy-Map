@@ -215,7 +215,8 @@ var Ed3d = {
 
     //camera
     camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 1, 100000);
-    camera.position.set(0, 500, -500);
+
+    camera.position.set(0, 500, 500);
 
     //Scene
     scene = new THREE.Scene();
@@ -387,13 +388,15 @@ var Ed3d = {
       'size': size,
       'curveSegments': 100
     });
+
+
     var text = new THREE.ShapeGeometry(textShapes);
     var textMesh = new THREE.Mesh(text, new THREE.MeshBasicMaterial({
       color: 0xffffff
     }));
     textMesh.position.set(x, y, z);
-    textMesh.rotation.x = -Math.PI / 2;
-    textMesh.rotation.z = -Math.PI;
+    //textMesh.rotation.x = -Math.PI / 2;
+    //textMesh.rotation.z = -Math.PI;
 
     if(Ed3d.text[id] != undefined) {
       scene.remove(scene.getObjectById( Ed3d.text[id], true ));
@@ -452,9 +455,9 @@ function animate(time) {
 
   if(Ed3d.effects) composer.render();
 
-  $('#cx').html(Math.round(controls.target.x));
-  $('#cy').html(Math.round(controls.target.y));
-  $('#cz').html(Math.round(controls.target.z));
+  $('#cx').html(Math.round(controls.center.x));
+  $('#cy').html(Math.round(controls.center.y));
+  $('#cz').html(Math.round(controls.center.z));
 
   $('#distsol').html(Ed3d.calcDistSol(controls.target));
 
@@ -513,29 +516,32 @@ function enableFarView (scale, withAnim) {
       x: 1, y: 1 , z: 1
     };
     var scaleTo = {
-      x: newScale, y: newScale, z: newScale
+      x: 10, y: 10, z: 10
     };
 
     controls.enabled = false;
     Ed3d.tween = new TWEEN.Tween(scaleFrom).to(scaleTo, 1000)
       .start()
       .onUpdate(function () {
-        scene.scale.set(scaleFrom.x,scaleFrom.y,scaleFrom.z);
+        camera.scale.set(scaleFrom.x,scaleFrom.y,scaleFrom.z);
       })
       .onComplete(function () {
+
+        //camera.scale.set(newScale, newScale, newScale);
+
         controls.enabled = true;
         controls.update();
 
 
     });
   } else {
-    scene.scale.set(newScale,newScale,newScale);
+    camera.scale.set(newScale,newScale,newScale);
     controls.update();
   }
 
   //-- Show element
 
-  Galaxy.obj.scale.set(1000,1000,1000);
+  Galaxy.obj.scale.set(20,20,20);
   if(Action.cursorSel != null)  Action.cursorSel.scale.set(100,100,100);
   Ed3d.grid1H.obj.visible = false;
   Ed3d.grid1K.obj.visible = false;
@@ -568,7 +574,7 @@ function disableFarView(scale, withAnim) {
     Ed3d.tween = new TWEEN.Tween(scaleFrom).to(scaleTo, 1000)
       .start()
       .onUpdate(function () {
-        scene.scale.set(scaleFrom.x,scaleFrom.y,scaleFrom.z);
+        camera.scale.set(scaleFrom.x,scaleFrom.y,scaleFrom.z);
         controls.update();
       })
       .onComplete(function () {
@@ -578,14 +584,14 @@ function disableFarView(scale, withAnim) {
     controls = new THREE.OrbitControls(camera, container);
     });
   } else {
-    scene.scale.set(1,1,1);
+    camera.scale.set(1,1,1);
   }
 
 
 
   //-- Show element
   Galaxy.obj.scale.set(1,1,1);
-  scene.scale.set(1,1,1);
+  camera.scale.set(1,1,1);
   if(Action.cursorSel != null)  Action.cursorSel.scale.set(1,1,1);
   Ed3d.grid1H.obj.visible = true;
   Ed3d.grid1K.obj.visible = true;

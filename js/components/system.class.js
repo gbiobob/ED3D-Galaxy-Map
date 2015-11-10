@@ -7,9 +7,9 @@ var System = {
    */
   'create' : function(val) {
 
-    val.x = parseInt(val.x);
+    val.x = parseInt(val.x); //-- Revert X coord
     val.y = parseInt(val.y);
-    val.z = parseInt(val.z);
+    val.z = -parseInt(val.z);
 
 
     //Ed3d.addText(val.name, val.x, val.y, val.z, 5);

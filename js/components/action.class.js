@@ -114,7 +114,7 @@ var Action = {
       mx: controls.center.x, my: controls.center.y , mz: controls.center.z
     };
     var moveCoords = {
-      x: obj.position.x, y: obj.position.y + 100, z: obj.position.z - 100,
+      x: obj.position.x, y: obj.position.y + 100, z: obj.position.z + 100,
       mx: obj.position.x, my: obj.position.y , mz: obj.position.z
     };
 

@@ -45,16 +45,34 @@ var Grid = {
       }
       this.coordGrid.visible = true;
 
-      var posX = Math.ceil(controls.target.x/this.size)*this.size;
-      var posZ = Math.ceil(controls.target.z/this.size)*this.size;
+      var posX = Math.round(controls.target.x/this.size)*this.size;
+      var posZ = Math.round(controls.target.z/this.size)*this.size;
 
-      this.coordGrid.position.set(posX, this.obj.position.y, posZ);
+      var textCoords = posX+' : '+this.obj.position.y+' : '+(-posZ);
 
-      var textCoords = posX+' : '+this.obj.position.y+' : '+posZ;
+      //var pozXTxt = posX-50;
+      //this.coordGrid.position.set(-10+posX, this.obj.position.y, posZ+10);
+
       var textShapes = THREE.FontUtils.generateShapes( textCoords, options );
       var text = new THREE.ShapeGeometry( textShapes );
+
+
+
+      var center = THREE.GeometryUtils.center( text );
+      this.coordGrid.position.set(center.x+posX-(this.size/100), this.obj.position.y, center.z+posZ+(this.size/30));
+
+
       this.coordGrid.geometry = text;
       this.coordGrid.geometry.needsUpdate = true;
+
+
+      //this.coordGrid.rotation.y = -Math.PI;
+      //
+      //this.coordGrid.rotation.z = Math.PI;
+
+      //this.coordGrid.geometry.center( -50, 0, 0 );
+      //this.coordGrid.rotateZ(Math.PI);
+
 
     } else {
 
@@ -63,7 +81,12 @@ var Grid = {
       this.coordGrid = new THREE.Mesh(text, Ed3d.material.darkblue);
       this.coordGrid.position.set(this.obj.position.x, this.obj.position.y, this.obj.position.z);
       this.coordGrid.rotation.x = -Math.PI / 2;
-      this.coordGrid.rotation.z = -Math.PI;
+      //this.coordGrid.rotation.z = -Math.PI;
+      //this.coordGrid.rotation.z = -Math.PI;
+
+
+
+
       scene.add(this.coordGrid);
     }
 
