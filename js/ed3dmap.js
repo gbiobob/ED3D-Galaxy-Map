@@ -105,7 +105,7 @@ var Ed3d = {
         jsonPath: Ed3d.jsonPath,
         withEffects: Ed3d.effects,
     }, options);
-    
+
 
     $('#loader').show();
 
@@ -115,19 +115,11 @@ var Ed3d = {
     //-- Load dependencies
     $.when(
 
-<<<<<<< HEAD
-        $.getScript("vendor/three-js/OrbitControls.js"),
-        //$.getScript("vendor/three-js/CSS3DRenderer.js"),
-        $.getScript("vendor/three-js/Projector.js"),
-        $.getScript("vendor/three-js/FontUtils.js"),
-        $.getScript("vendor/three-js/helvetiker_regular.typeface.js"),
-=======
         $.getScript(Ed3d.basePath + "vendor/three-js/OrbitControls.js"),
         $.getScript(Ed3d.basePath + "vendor/three-js/CSS3DRenderer.js"),
         $.getScript(Ed3d.basePath + "vendor/three-js/Projector.js"),
         $.getScript(Ed3d.basePath + "vendor/three-js/FontUtils.js"),
         $.getScript(Ed3d.basePath + "vendor/three-js/helvetiker_regular.typeface.js"),
->>>>>>> 6cdd8efca459e8ebaae5355992fdb6d5b16f1961
 
         $.getScript(Ed3d.basePath + "js/components/grid.class.js"),
         $.getScript(Ed3d.basePath + "js/components/hud.class.js"),
@@ -312,20 +304,10 @@ var Ed3d = {
       $.each(data.systems, function(key, val) {
 
         system = System.create(val);
-<<<<<<< HEAD
         if(system != '') {
           if(val.cat != undefined) Ed3d.addObjToCategories(system,val.cat);
           if(val.cat != undefined) Ed3d.systems.push(system);
         }
-=======
-        
-        if(val.cat != undefined)
-            Ed3d.addObjToCategories(system,val.cat);
-        
-        Ed3d.systems.push(system);
-
-        scene.add(system);
->>>>>>> 6cdd8efca459e8ebaae5355992fdb6d5b16f1961
 
       });
 
