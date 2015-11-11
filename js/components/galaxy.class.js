@@ -40,9 +40,7 @@ var Galaxy = {
     objVal.cat = [];
 
 
-    this.obj = System.create(objVal);
-    scene.add(this.obj);
-
+    this.obj = System.create(objVal, true);
 
 
     var sprite = new THREE.Sprite( Ed3d.material.glow_2 );
@@ -110,7 +108,7 @@ var Galaxy = {
       var pix = imgd.data;
 
       var j=0;
-      var min = 10;
+      var min = 2;
       var nb = 0;
       var maxDensity = 14;
 
@@ -135,9 +133,9 @@ var Galaxy = {
             );
             particles.vertices.push(particle);
 
-            var r = Math.round((pix[i]+25)/10)*10; if(r>255) r = 255;
-            var g = Math.round((pix[i+1]+25)/10)*10; if(g>255) g = 255;
-            var b = Math.round((pix[i+2]+25)/10)*10; if(b>255) b = 255;
+            var r = Math.round((pix[i]+50)/10)*10; if(r>255) r = 255;
+            var g = Math.round((pix[i+1]+50)/10)*10; if(g>255) g = 255;
+            var b = Math.round((pix[i+2]+50)/10)*10; if(b>255) b = 255;
 
             this.colors[nb] = new THREE.Color("rgb("+r+", "+g+", "+b+")");
             nb++;

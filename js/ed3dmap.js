@@ -106,7 +106,7 @@ var Ed3d = {
     $.when(
 
         $.getScript("vendor/three-js/OrbitControls.js"),
-        $.getScript("vendor/three-js/CSS3DRenderer.js"),
+        //$.getScript("vendor/three-js/CSS3DRenderer.js"),
         $.getScript("vendor/three-js/Projector.js"),
         $.getScript("vendor/three-js/FontUtils.js"),
         $.getScript("vendor/three-js/helvetiker_regular.typeface.js"),
@@ -289,13 +289,15 @@ var Ed3d = {
 
       //-- Loop into systems
 
+      limit = 0;
+
       $.each(data.systems, function(key, val) {
 
         system = System.create(val);
-        if(val.cat != undefined) Ed3d.addObjToCategories(system,val.cat);
-        Ed3d.systems.push(system);
-
-        scene.add(system);
+        if(system != '') {
+          if(val.cat != undefined) Ed3d.addObjToCategories(system,val.cat);
+          if(val.cat != undefined) Ed3d.systems.push(system);
+        }
 
       });
 

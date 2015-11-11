@@ -7,52 +7,53 @@ var System = {
   /**
    *
    */
-  'create' : function(val) {
+  'create' : function(val, withSolid) {
 
-    val.x = parseInt(val.x); //-- Revert X coord
+    if(withSolid==undefined) withSolid = false;
+
+    val.x = parseInt(val.x);
     val.y = parseInt(val.y);
-    val.z = -parseInt(val.z);
-
-
-    //Ed3d.addText(val.name, val.x, val.y, val.z, 5);
-
-
-
-    //-- Add glow sprite from first cat color if defined, else take white glow
-
-    var mat = Ed3d.material.glow_1;
-    if(Ed3d.material.custom[val.cat[0]] != undefined) {
-      mat = Ed3d.material.custom[val.cat[0]];
-    }
-
-    var sprite = new THREE.Sprite( mat );
-    sprite.position.set(parseInt(val.x), parseInt(val.y), parseInt(val.z));
-    sprite.scale.set(50, 50, 1.0);
-    scene.add(sprite); // this centers the glow at the mesh
+    val.z = -parseInt(val.z); //-- Revert Z coord
 
     //-- Particle for far view far
     if(this.particleGeo !== null) {
       var particle = new THREE.Vector3(parseInt(val.x), parseInt(val.y), parseInt(val.z));
 
       particle.clickable = true;
-      particle.idsprite = sprite.id;
       this.particleGeo.vertices.push(particle);
 
     }
 
-    //-- Sphere
-    var geometry = new THREE.SphereGeometry(2, 10, 10);
+    if(withSolid) {
+      //-- Add glow sprite from first cat color if defined, else take white glow
 
-    var sphere = new THREE.Mesh(geometry, Ed3d.material.white);
+      var mat = Ed3d.material.glow_1;
+      if(val.cat != undefined && Ed3d.material.custom[val.cat[0]] != undefined) {
+        mat = Ed3d.material.custom[val.cat[0]];
+      }
 
-    sphere.position.set(parseInt(val.x), parseInt(val.y), parseInt(val.z));
+      var sprite = new THREE.Sprite( mat );
+      sprite.position.set(parseInt(val.x), parseInt(val.y), parseInt(val.z));
+      sprite.scale.set(50, 50, 1.0);
+      scene.add(sprite); // this centers the glow at the mesh
 
-    sphere.name = val.name;
 
-    sphere.clickable = true;
-    sphere.idsprite = sprite.id;
+      //-- Sphere
+      var geometry = new THREE.SphereGeometry(2, 10, 10);
 
-    return sphere;
+      var sphere = new THREE.Mesh(geometry, Ed3d.material.white);
+
+      sphere.position.set(parseInt(val.x), parseInt(val.y), parseInt(val.z));
+
+      sphere.name = val.name;
+
+      sphere.clickable = true;
+      sphere.idsprite = sprite.id;
+      scene.add(sphere);
+
+      return sphere;
+    }
+
   },
 
 
