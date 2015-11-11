@@ -177,7 +177,7 @@ var Ed3d = {
     var texloader = new THREE.TextureLoader();
 
     //-- Load textures
-    this.textures.flare_white = texloader.load("textures/lensflare/flare2.png");
+    this.textures.flare_white  = texloader.load("textures/lensflare/flare2.png");
     this.textures.flare_yellow = texloader.load("textures/lensflare/star_grey.png");
     this.textures.flare_center = texloader.load("textures/lensflare/flare3.png");
 
@@ -189,7 +189,7 @@ var Ed3d = {
     });
     Ed3d.material.glow_2 = new THREE.SpriteMaterial({
       map: this.textures.flare_center,
-      color: 0xffffff, transparent: false,
+      color: 0xFEECDE, transparent: false,
        fog: true
     });
 
@@ -285,14 +285,14 @@ var Ed3d = {
       Galaxy.addGalaxyCenter();
 
       //-- Load cat filters
-      HUD.initFilters(data.categories);
+      if(data.categories != undefined) HUD.initFilters(data.categories);
 
       //-- Loop into systems
 
       $.each(data.systems, function(key, val) {
 
         system = System.create(val);
-        Ed3d.addObjToCategories(system,val.cat);
+        if(val.cat != undefined) Ed3d.addObjToCategories(system,val.cat);
         Ed3d.systems.push(system);
 
         scene.add(system);
@@ -300,26 +300,11 @@ var Ed3d = {
       });
 
       //-- Routes
-      if(data.routes != undefined)
-      $.each(data.routes, function(key1, route) {
-        Route.createRoute(key1, route.list, route.cat);
-      });
-
-      //-- Permit
-
-      if(data.permits != undefined)
-      $.each(data.permits, function(key, val) {
-
-        system = System.create(val);
-        Ed3d.addObjToCategories(system,val.cat);
-        Ed3d.systems.push(system);
-
-        scene.add(system);
-
-
-      });
-
-
+      if(data.routes != undefined) {
+        $.each(data.routes, function(key1, route) {
+          Route.createRoute(key1, route.list, route.cat);
+        });
+      }
 
 
     }).done(function() {

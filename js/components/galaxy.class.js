@@ -45,9 +45,9 @@ var Galaxy = {
 
 
 
-   /* var sprite = new THREE.Sprite( Ed3d.material.glow_2 );
-    sprite.scale.set(50, 50, 1.0);
-    this.obj.add(sprite); /// this centers the glow at the mesh*/
+    var sprite = new THREE.Sprite( Ed3d.material.glow_2 );
+    sprite.scale.set(100, 100, 1.0);
+    this.obj.add(sprite); /// this centers the glow at the mesh
 
     this.createParticles();
 
@@ -135,9 +135,9 @@ var Galaxy = {
             );
             particles.vertices.push(particle);
 
-            var r = pix[i]+25; if(r>255) r = 255;
-            var g = pix[i+1]+25; if(g>255) g = 255;
-            var b = pix[i+2]+25; if(b>255) b = 255;
+            var r = Math.round((pix[i]+25)/10)*10; if(r>255) r = 255;
+            var g = Math.round((pix[i+1]+25)/10)*10; if(g>255) g = 255;
+            var b = Math.round((pix[i+2]+25)/10)*10; if(b>255) b = 255;
 
             this.colors[nb] = new THREE.Color("rgb("+r+", "+g+", "+b+")");
             nb++;
@@ -150,10 +150,13 @@ var Galaxy = {
         particles.colors = this.colors;
 
     var particleMaterial = new THREE.PointsMaterial({
-      map: Ed3d.textures.flare_white, transparent: true, size: 14,
+      map: Ed3d.textures.flare_white, transparent: true, size: 15,
       vertexColors: THREE.VertexColors,
-      blending: THREE.AdditiveBlending
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
     });
+
+
     //particleMaterial.color.setHSL( 1.0, 0.2, 0.7 );
 
     var starfield = new THREE.Points(particles, particleMaterial);
