@@ -304,7 +304,7 @@ var Ed3d = {
       $.each(data.systems, function(key, val) {
 
         system = System.create(val);
-        if(system != '') {
+        if(system != undefined) {
           if(val.cat != undefined) Ed3d.addObjToCategories(system,val.cat);
           if(val.cat != undefined) Ed3d.systems.push(system);
         }
