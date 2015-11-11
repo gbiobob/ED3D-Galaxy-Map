@@ -9,7 +9,25 @@ var System = {
    */
   'create' : function(val, withSolid) {
 
+<<<<<<< HEAD
     if(withSolid==undefined) withSolid = false;
+=======
+    val.x = parseInt(val.x); //-- Revert X coord
+    val.y = parseInt(val.y);
+    val.z = -parseInt(val.z);
+
+
+    //Ed3d.addText(val.name, val.x, val.y, val.z, 5);
+
+
+
+    //-- Add glow sprite from first cat color if defined, else take white glow
+
+    var mat = Ed3d.material.glow_1;
+    if(val.cat != undefined && Ed3d.material.custom[val.cat[0]] != undefined) {
+      mat = Ed3d.material.custom[val.cat[0]];
+    }
+>>>>>>> 6cdd8efca459e8ebaae5355992fdb6d5b16f1961
 
     val.x = parseInt(val.x);
     val.y = parseInt(val.y);
