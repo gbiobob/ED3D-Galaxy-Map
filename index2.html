@@ -42,7 +42,11 @@
   <!-- Launch ED3Dmap -->
   <script src="js/ed3dmap.js?v=2"></script>
   <script type="text/javascript">
-    Ed3d.init('edmap',"./../cache/map/1.json", true);
+    Ed3d.init({
+        container   : 'edmap',
+        jsonPath    : "./../cache/map/1.json",
+        withEffects : true
+    });
   </script>
 
 </body>

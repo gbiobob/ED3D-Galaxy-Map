@@ -65,7 +65,7 @@ var Galaxy = {
 
         // plane
       /*  var geometry = new THREE.PlaneGeometry(10,10,9,9);
-        var texture = THREE.ImageUtils.loadTexture( 'textures/heightmap3.jpg' );
+        var texture = THREE.ImageUtils.loadTexture( Ed3d.basePath + 'textures/heightmap3.jpg' );
         var material = new THREE.MeshLambertMaterial( { map: texture } );
         plane = new THREE.Mesh( geometry, material );
 
@@ -79,7 +79,7 @@ var Galaxy = {
 
     };
     // load img source
-    img.src = "textures/heightmap2.jpg";
+    img.src = Ed3d.basePath + "textures/heightmap2.jpg";
 
 
   },

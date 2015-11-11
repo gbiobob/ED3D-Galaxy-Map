@@ -17,9 +17,10 @@ var lensFlareSel;
 
 var Ed3d = {
 
-  'container' : null,
-  'jsonPath' : null,
-  'effects' : false,
+  'container'   : null,
+  'basePath'    : './',
+  'jsonPath'    : null,
+  'effects'     : false,
 
   'grid1H' : null,
   'grid1K' : null,
@@ -96,39 +97,48 @@ var Ed3d = {
    * @param {String} Json path to load for systems data
    */
 
-  'init' : function(container, jsonPath, withEffects) {
+  'init' : function(options) {
+    // Merge options with defaults
+    var options = $.extend({
+        container: Ed3d.container,
+        basePath: Ed3d.basePath,
+        jsonPath: Ed3d.jsonPath,
+        withEffects: Ed3d.effects,
+    }, options);
+    
 
     $('#loader').show();
 
-    this.effects = withEffects;
+    this.basePath   = options.basePath;
+    this.effects    = options.withEffects;
 
     //-- Load dependencies
     $.when(
 
-        $.getScript("vendor/three-js/OrbitControls.js"),
-        $.getScript("vendor/three-js/CSS3DRenderer.js"),
-        $.getScript("vendor/three-js/Projector.js"),
-        $.getScript("vendor/three-js/FontUtils.js"),
-        $.getScript("vendor/three-js/helvetiker_regular.typeface.js"),
+        $.getScript(Ed3d.basePath + "vendor/three-js/OrbitControls.js"),
+        $.getScript(Ed3d.basePath + "vendor/three-js/CSS3DRenderer.js"),
+        $.getScript(Ed3d.basePath + "vendor/three-js/Projector.js"),
+        $.getScript(Ed3d.basePath + "vendor/three-js/FontUtils.js"),
+        $.getScript(Ed3d.basePath + "vendor/three-js/helvetiker_regular.typeface.js"),
 
-        $.getScript("js/components/grid.class.js"),
-        $.getScript("js/components/hud.class.js"),
-        $.getScript("js/components/action.class.js"),
-        $.getScript("js/components/route.class.js"),
-        $.getScript("js/components/system.class.js"),
-        $.getScript("js/components/galaxy.class.js"),
+        $.getScript(Ed3d.basePath + "js/components/grid.class.js"),
+        $.getScript(Ed3d.basePath + "js/components/hud.class.js"),
+        $.getScript(Ed3d.basePath + "js/components/action.class.js"),
+        $.getScript(Ed3d.basePath + "js/components/route.class.js"),
+        $.getScript(Ed3d.basePath + "js/components/system.class.js"),
+        $.getScript(Ed3d.basePath + "js/components/galaxy.class.js"),
 
-        $.getScript("vendor/tween-js/Tween.js"),
+        $.getScript(Ed3d.basePath + "vendor/tween-js/Tween.js"),
 
 
-      /*  $.getScript("vendor/three-js/shaders/CopyShader.js"),
-        $.getScript("vendor/three-js/shaders/BokehShader.js"),
-        $.getScript("vendor/three-js/postprocessing/EffectComposer.js"),
-        $.getScript("vendor/three-js/postprocessing/RenderPass.js"),
-        $.getScript("vendor/three-js/postprocessing/MaskPass.js"),
-        $.getScript("vendor/three-js/postprocessing/ShaderPass.js"),
-        $.getScript("vendor/three-js/postprocessing/BokehPass.js"),
-        $.getScript("vendor/three-js/postprocessing/BloomPass.js"),*/
+      /*  $.getScript(Ed3d.basePath + "vendor/three-js/shaders/CopyShader.js"),
+        $.getScript(Ed3d.basePath + "vendor/three-js/shaders/BokehShader.js"),
+        $.getScript(Ed3d.basePath + "vendor/three-js/postprocessing/EffectComposer.js"),
+        $.getScript(Ed3d.basePath + "vendor/three-js/postprocessing/RenderPass.js"),
+        $.getScript(Ed3d.basePath + "vendor/three-js/postprocessing/MaskPass.js"),
+        $.getScript(Ed3d.basePath + "vendor/three-js/postprocessing/ShaderPass.js"),
+        $.getScript(Ed3d.basePath + "vendor/three-js/postprocessing/BokehPass.js"),
+        $.getScript(Ed3d.basePath + "vendor/three-js/postprocessing/BloomPass.js"),*/
 
 
 
@@ -138,8 +148,8 @@ var Ed3d = {
 
     ).done(function() {
 
-      Ed3d.container = container;
-      Ed3d.jsonPath  = jsonPath;
+      Ed3d.container = options.container;
+      Ed3d.jsonPath  = options.jsonPath;
 
 
       Ed3d.loadTextures();
@@ -177,9 +187,9 @@ var Ed3d = {
     var texloader = new THREE.TextureLoader();
 
     //-- Load textures
-    this.textures.flare_white = texloader.load("textures/lensflare/flare2.png");
-    this.textures.flare_yellow = texloader.load("textures/lensflare/star_grey.png");
-    this.textures.flare_center = texloader.load("textures/lensflare/flare3.png");
+    this.textures.flare_white = texloader.load(Ed3d.basePath + "textures/lensflare/flare2.png");
+    this.textures.flare_yellow = texloader.load(Ed3d.basePath + "textures/lensflare/star_grey.png");
+    this.textures.flare_center = texloader.load(Ed3d.basePath + "textures/lensflare/flare3.png");
 
     //-- Load sprites
     Ed3d.material.glow_1 = new THREE.SpriteMaterial({
