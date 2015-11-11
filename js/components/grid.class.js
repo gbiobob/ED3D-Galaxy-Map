@@ -45,8 +45,8 @@ var Grid = {
       }
       this.coordGrid.visible = true;
 
-      var posX = Math.round(controls.target.x/this.size)*this.size;
-      var posZ = Math.round(controls.target.z/this.size)*this.size;
+      var posX = Math.ceil(controls.target.x/this.size)*this.size;
+      var posZ = Math.ceil(controls.target.z/this.size)*this.size;
 
       var textCoords = posX+' : '+this.obj.position.y+' : '+(-posZ);
 
@@ -58,7 +58,7 @@ var Grid = {
 
 
 
-      var center = THREE.GeometryUtils.center( text );
+      var center = text.center();
       this.coordGrid.position.set(center.x+posX-(this.size/100), this.obj.position.y, center.z+posZ+(this.size/30));
 
 

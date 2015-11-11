@@ -79,7 +79,7 @@ var Ed3d = {
 
   },
 
-
+  //-- Systems
   'systems' : [],
 
   //-- Starfield
@@ -140,6 +140,7 @@ var Ed3d = {
 
       Ed3d.container = container;
       Ed3d.jsonPath  = jsonPath;
+
 
       Ed3d.loadTextures();
 
@@ -214,7 +215,7 @@ var Ed3d = {
     container = document.getElementById("ed3dmap");
 
     //camera
-    camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 1, 100000);
+    camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 1, 200000);
 
     camera.position.set(0, 500, 500);
 
@@ -247,10 +248,6 @@ var Ed3d = {
     renderer.setClearColor(scene.fog.color, 1);
     Ed3d.fogDensity = scene.fog.density;
 
-    // Add galaxy center
-    Galaxy.addGalaxyCenter();
-
-
     // postprocessing
     if(Ed3d.effects) {
       composer = new THREE.EffectComposer( renderer );
@@ -281,6 +278,11 @@ var Ed3d = {
     $.getJSON(this.jsonPath, function(data) {
 
       HUD.create("ed3dmap");
+
+      System.initParticleSystem();
+
+      // Add galaxy center
+      Galaxy.addGalaxyCenter();
 
       //-- Load cat filters
       HUD.initFilters(data.categories);
@@ -344,7 +346,6 @@ var Ed3d = {
     });
 
   },
-
 
   /**
    * Create a skybox of particle stars
@@ -440,10 +441,6 @@ function animate(time) {
   controls.update();
 
   TWEEN.update(time);
-
-
-
-  requestAnimationFrame( animate );
     /*setTimeout( function() {
 
         requestAnimationFrame( animate );
@@ -491,6 +488,10 @@ function animate(time) {
     disableFarView(scale);
 
   }
+
+
+
+  requestAnimationFrame( animate );
 
 
 }
@@ -658,6 +659,10 @@ function refreshWithCamPos() {
   //-- Refresh only every 5 sec
   if(n % 1 != 0) return;
 
+
+  Ed3d.grid1H.addCoords();
+  Ed3d.grid1K.addCoords();
+
   //-- Refresh only if the camera moved
   var p = Ed3d.optDistObj/2;
   if(
@@ -668,9 +673,6 @@ function refreshWithCamPos() {
 
   //-- Execute sdome refresh
   refreshShowSystems();
-
-  Ed3d.grid1H.addCoords();
-  Ed3d.grid1K.addCoords();
 
   //-- Save new pos
 
@@ -726,6 +728,7 @@ function testPerfomances() {
     Ed3d.systems[p].add(sprite); // this centers the glow at the mesh
 
     scene.add(Ed3d.systems[p]);
+
 
     particle_system_geometry.vertices.push(new THREE.Vector3(x, y, z));
 
