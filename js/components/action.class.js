@@ -3,6 +3,7 @@ var Action = {
 
   'cursorSel' : null,
   'mouseVector' : null,
+  'raycaster' : null,
   'oldSel' : null,
   'objHover' : null,
 
@@ -12,6 +13,7 @@ var Action = {
   'init' : function() {
 
     this.mouseVector = new THREE.Vector3();
+    this.raycaster = new THREE.Raycaster();
 
     container.addEventListener('click', this.onMouseClick, false);
     //container.addEventListener('mousemove', this.onMouseHover, false);
@@ -30,10 +32,12 @@ var Action = {
       1);
 
     this.mouseVector.unproject(camera);
-    var raycaster = new THREE.Raycaster(camera.position, this.mouseVector.sub(camera.position).normalize());
+    //this.raycaster = new THREE.Raycaster(camera.position, this.mouseVector.sub(camera.position).normalize());
+
+    this.raycaster.setFromCamera( this.mouseVector, camera );
 
     // create an array containing all objects in the scene with which the ray intersects
-    var intersects = raycaster.intersectObjects(scene.children);
+    var intersects = this.raycaster.intersectObjects(scene.children);
     if (intersects.length > 0) {
       for( var i = 0; i < intersects.length; i++ ) {
         var intersection = intersects[ i ];
@@ -73,19 +77,26 @@ var Action = {
       1);
 
     this.mouseVector.unproject(camera);
-    var raycaster = new THREE.Raycaster(camera.position, this.mouseVector.sub(camera.position).normalize());
+    this.raycaster = new THREE.Raycaster(camera.position, this.mouseVector.sub(camera.position).normalize());
+    this.raycaster.params.Points.threshold = 5;
 
     // create an array containing all objects in the scene with which the ray intersects
-    var intersects = raycaster.intersectObjects(scene.children);
+    var intersects = this.raycaster.intersectObjects(scene.children);
     if (intersects.length > 0) {
 
       for( var i = 0; i < intersects.length; i++ ) {
         var intersection = intersects[ i ];
         if(intersection.object.clickable) {
+
+          var indexPoint = intersection.index;
+          var selPoint = intersection.object.geometry.vertices[indexPoint];
+
+          console.log(intersection);
           $('#hud #infos').html(
-            "<h2>"+intersection.object.name+"</h2>"
+           // "<h2>"+intersection.object.name+"</h2>"
+            "<h2>"+selPoint.name+"</h2>"
           );
-          Action.moveToObj(intersection.object);
+          Action.moveToObj(selPoint);
         }
       }
 
@@ -100,6 +111,9 @@ var Action = {
 
   'moveToObj' : function (obj) {
 
+    var goX = obj.x;
+    var goY = obj.y;
+    var goZ = obj.z;
 
     //-- If in far view reset to classic view
     disableFarView(25, false);
@@ -114,8 +128,8 @@ var Action = {
       mx: controls.center.x, my: controls.center.y , mz: controls.center.z
     };
     var moveCoords = {
-      x: obj.position.x, y: obj.position.y + 100, z: obj.position.z + 100,
-      mx: obj.position.x, my: obj.position.y , mz: obj.position.z
+      x: goX, y: goY + 100, z: goZ + 100,
+      mx: goX, my: goY , mz: goZ
     };
 
     controls.enabled = false;
@@ -130,7 +144,6 @@ var Action = {
         controls.update();
       });
 
-
     //-- 3D Cursor on selected object
 
     if (this.oldSel !== null) this.oldSel.material = Ed3d.material.white;
@@ -139,19 +152,19 @@ var Action = {
     this.oldSel = obj;
 
 
-    this.addCusorOnSelect(obj.position.x, obj.position.y, obj.position.z);
-
+    this.addCusorOnSelect(goX, goY, goZ);
 
 
 
     //-- Add text
     var textAdd = obj.name;
-    textAdd += ' - ' + Math.round(obj.position.x) + ', ' + Math.round(obj.position.y) + ', ' + Math.round(obj.position.z);
+    textAdd += ' - ' + Math.round(goX) + ', ' + Math.round(goY) + ', ' + Math.round(goZ);
 
-    Ed3d.addText('system', textAdd, obj.position.x, obj.position.y, obj.position.z, 5);
+    Ed3d.addText('system', textAdd, goX, goY, goZ, 5);
+
 
     //-- Move grid to object
-    this.moveGridTo(obj);
+    this.moveGridTo(goX, goY, goZ);
   },
 
   'addCusorOnSelect' : function (x, y, z) {
@@ -192,10 +205,10 @@ var Action = {
 
   },
 
-  'moveGridTo' : function (obj) {
-    var posX = Math.floor(obj.position.x/1000)*1000;
-    var posY = Math.floor(obj.position.y);
-    var posZ = Math.floor(obj.position.z/1000)*1000;
+  'moveGridTo' : function (goX, goY, goZ) {
+    var posX = Math.floor(goX/1000)*1000;
+    var posY = Math.floor(goY);
+    var posZ = Math.floor(goZ/1000)*1000;
 
     Ed3d.grid1H.obj.position.set(posX, posY, posZ);
     Ed3d.grid1K.obj.position.set(posX, posY, posZ);

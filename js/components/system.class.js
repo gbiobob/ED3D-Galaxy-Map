@@ -20,6 +20,7 @@ var System = {
       var particle = new THREE.Vector3(parseInt(val.x), parseInt(val.y), parseInt(val.z));
 
       particle.clickable = true;
+      particle.name = val.name;
       this.particleGeo.vertices.push(particle);
 
     }
@@ -36,7 +37,6 @@ var System = {
       sprite.position.set(parseInt(val.x), parseInt(val.y), parseInt(val.z));
       sprite.scale.set(50, 50, 1.0);
       scene.add(sprite); // this centers the glow at the mesh
-
 
       //-- Sphere
       var geometry = new THREE.SphereGeometry(2, 10, 10);
@@ -62,12 +62,18 @@ var System = {
     this.particleGeo = new THREE.Geometry;
 
     var particleMaterial = new THREE.PointsMaterial({
+      map: Ed3d.textures.flare_yellow,
       color: 0xffffff,
-      size: 5,
-      fog: false
+      size: 200,
+      fog: false,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      transparent: true
     });
+
     this.particle = new THREE.Points(this.particleGeo, particleMaterial);
 
+    this.particle.clickable = true;
 
     scene.add(this.particle);
   },
