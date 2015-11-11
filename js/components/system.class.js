@@ -21,7 +21,7 @@ var System = {
     //-- Add glow sprite from first cat color if defined, else take white glow
 
     var mat = Ed3d.material.glow_1;
-    if(Ed3d.material.custom[val.cat[0]] != undefined) {
+    if(val.cat != undefined && Ed3d.material.custom[val.cat[0]] != undefined) {
       mat = Ed3d.material.custom[val.cat[0]];
     }
 
