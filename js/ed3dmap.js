@@ -199,7 +199,7 @@ var Ed3d = {
     });
     Ed3d.material.glow_2 = new THREE.SpriteMaterial({
       map: this.textures.flare_center,
-      color: 0xffffff, transparent: false,
+      color: 0xFEECDE, transparent: false,
        fog: true
     });
 
@@ -295,7 +295,7 @@ var Ed3d = {
       Galaxy.addGalaxyCenter();
 
       //-- Load cat filters
-      HUD.initFilters(data.categories);
+      if(data.categories != undefined) HUD.initFilters(data.categories);
 
       //-- Loop into systems
 
@@ -313,26 +313,11 @@ var Ed3d = {
       });
 
       //-- Routes
-      if(data.routes != undefined)
-      $.each(data.routes, function(key1, route) {
-        Route.createRoute(key1, route.list, route.cat);
-      });
-
-      //-- Permit
-
-      if(data.permits != undefined)
-      $.each(data.permits, function(key, val) {
-
-        system = System.create(val);
-        Ed3d.addObjToCategories(system,val.cat);
-        Ed3d.systems.push(system);
-
-        scene.add(system);
-
-
-      });
-
-
+      if(data.routes != undefined) {
+        $.each(data.routes, function(key1, route) {
+          Route.createRoute(key1, route.list, route.cat);
+        });
+      }
 
 
     }).done(function() {
