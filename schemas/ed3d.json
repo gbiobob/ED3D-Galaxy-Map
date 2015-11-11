@@ -59,7 +59,7 @@
             },
             "cat": {
               "description": "The list of categories for the system",
-              "type": "array"
+              "type": "array",
               "items": {
                 "id": {
                   "description": "A category ID",
