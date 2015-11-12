@@ -32,7 +32,7 @@ var System = {
       var g = Math.round(0);
       var b = Math.round(0);
 
-      if(val.cat != undefined && Ed3d.colors[val.cat[0]] != undefined) {
+      if(val.cat != undefined && val.cat[0] != undefined && Ed3d.colors[val.cat[0]] != undefined) {
         this.particleColor[this.count] = Ed3d.colors[val.cat[0]];
       } else {
         this.particleColor[this.count] = new THREE.Color('#ffffff');
