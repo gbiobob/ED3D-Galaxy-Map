@@ -22,7 +22,7 @@ var Galaxy = {
 
 
   'obj' : null,
-  'particles' : null,
+  'milkyway' : null,
   'colors' : [],
 
   'x' : 25,
@@ -44,7 +44,7 @@ var Galaxy = {
 
 
     var sprite = new THREE.Sprite( Ed3d.material.glow_2 );
-    sprite.scale.set(100, 100, 1.0);
+    sprite.scale.set(50, 40, 2.0);
     this.obj.add(sprite); /// this centers the glow at the mesh
 
     this.createParticles();
@@ -59,21 +59,7 @@ var Galaxy = {
     img.onload = function () {
 
         //get height data from img
-        var data = Galaxy.getHeightData(img,10);
-
-        // plane
-      /*  var geometry = new THREE.PlaneGeometry(10,10,9,9);
-        var texture = THREE.ImageUtils.loadTexture( Ed3d.basePath + 'textures/heightmap3.jpg' );
-        var material = new THREE.MeshLambertMaterial( { map: texture } );
-        plane = new THREE.Mesh( geometry, material );
-
-        //set height of vertices
-        for ( var i = 0; i<plane.geometry.vertices.length; i++ ) {
-             plane.geometry.vertices[i].z = data[i];
-        }
-
-        plane.geometry.scale(100,100,100);
-        scene.add(plane);*/
+        Galaxy.getHeightData(img,10);
 
     };
     // load img source
@@ -88,84 +74,82 @@ var Galaxy = {
 
     var particles = new THREE.Geometry;
 
-   if (scale == undefined) scale=1;
+    if (scale == undefined) scale=1;
 
-      var canvas = document.createElement( 'canvas' );
-      canvas.width = img.width;
-      canvas.height = img.height;
-      var context = canvas.getContext( '2d' );
+    //-- Get pixels from milkyway image
+    var canvas = document.createElement( 'canvas' );
+    canvas.width = img.width;
+    canvas.height = img.height;
+    var context = canvas.getContext( '2d' );
 
-      var size = img.width * img.height;
-      var data = new Float32Array( size );
+    var size = img.width * img.height;
 
-      context.drawImage(img,0,0);
+    context.drawImage(img,0,0);
 
-      for ( var i = 0; i < size; i ++ ) {
-          data[i] = 0
+    var imgd = context.getImageData(0, 0, img.width, img.height);
+    var pix = imgd.data;
+
+    //-- Build galaxy from image data
+    var j=0;
+    var min = 8;
+    var nb = 0;
+    var maxDensity = 14;
+
+    for (var i = 0; i<pix.length; i +=4) {
+
+      var all = pix[i]+pix[i+1]+pix[i+2];
+
+      var avg = Math.round((pix[i]+pix[i+1]+pix[i+2])/3);
+
+      if(avg>min) {
+        var x = 15.6*((i / 4) % img.width);
+        var z = 15.6*(Math.floor((i / 4) / img.height));
+
+        var density = Math.floor((pix[i]-min)/10);
+        if(density>maxDensity) density = maxDensity;
+
+
+        for (var y = -density; y < density; y++) {
+          var particle = new THREE.Vector3(
+            x+(Math.random() * 50),
+            (y*10)+(Math.random() * 50),
+            z+(Math.random() * 50)
+          );
+          particles.vertices.push(particle);
+
+          var r = Math.round(pix[i]);
+          var g = Math.round(pix[i+1]);
+          var b = Math.round(pix[i+2]);
+
+          this.colors[nb] = new THREE.Color("rgb("+r+", "+g+", "+b+")");
+          nb++;
+        };
       }
-
-      var imgd = context.getImageData(0, 0, img.width, img.height);
-      var pix = imgd.data;
-
-      var j=0;
-      var min = 2;
-      var nb = 0;
-      var maxDensity = 14;
-
-      for (var i = 0; i<pix.length; i +=4) {
-
-          var all = pix[i]+pix[i+1]+pix[i+2];
-          data[j++] = all/(12*scale);
-
-        var avg = Math.round((pix[i]+pix[i+1]+pix[i+2])/3);
-
-        if(avg>min) {
-          var x = 15.6*((i / 4) % img.width);
-          var z = 15.6*(Math.floor((i / 4) / img.height));
-
-          var density = Math.floor((pix[i]-min)/10);
-          if(density>maxDensity) density = maxDensity;
-          for (var y = -density; y < density; y++) {
-            var particle = new THREE.Vector3(
-              x+(Math.random() * 50),
-              (y*10)+(Math.random() * 50),
-              z+(Math.random() * 50)
-            );
-            particles.vertices.push(particle);
-
-            var r = Math.round((pix[i]+50)/10)*10; if(r>255) r = 255;
-            var g = Math.round((pix[i+1]+50)/10)*10; if(g>255) g = 255;
-            var b = Math.round((pix[i+2]+50)/10)*10; if(b>255) b = 255;
-
-            this.colors[nb] = new THREE.Color("rgb("+r+", "+g+", "+b+")");
-            nb++;
-          };
-        }
-
-      }
+    }
 
 
-        particles.colors = this.colors;
+    particles.colors = this.colors;
 
     var particleMaterial = new THREE.PointsMaterial({
-      map: Ed3d.textures.flare_white, transparent: true, size: 15,
+      map: Ed3d.textures.flare_white, transparent: true, size: 25,
       vertexColors: THREE.VertexColors,
       blending: THREE.AdditiveBlending,
+      depthTest: true,
       depthWrite: false
     });
 
 
     //particleMaterial.color.setHSL( 1.0, 0.2, 0.7 );
 
-    var starfield = new THREE.Points(particles, particleMaterial);
-    starfield.sortParticles = true;
+    var points = new THREE.Points(particles, particleMaterial);
+    points.sortParticles = true;
     particles.center();
 
-    this.particles = starfield;
+    this.milkyway = points;
+    this.milkyway.visible = false;
 
-    this.obj.add(starfield);
+    this.obj.add(points);
 
-      return data;
   }
 
 }

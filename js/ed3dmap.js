@@ -76,6 +76,7 @@ var Ed3d = {
 
 
   },
+  'colors'  : [],
   'textures' : {
 
   },
@@ -198,9 +199,12 @@ var Ed3d = {
        fog: true
     });
     Ed3d.material.glow_2 = new THREE.SpriteMaterial({
-      map: this.textures.flare_center,
-      color: 0xFEECDE, transparent: false,
-       fog: true
+
+      map: Ed3d.textures.flare_white, transparent: true, size: 15,
+      vertexColors: THREE.VertexColors,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      opacity: 0.5
     });
 
   },
@@ -208,10 +212,7 @@ var Ed3d = {
   'addCustomMaterial' : function (id, color) {
 
     var color = new THREE.Color('#'+color);
-    Ed3d.material.custom[id] = new THREE.SpriteMaterial({
-      map: this.textures.flare_yellow,
-      color: color, transparent: false
-    });
+    this.colors[id] = color;
 
   },
 
@@ -225,12 +226,13 @@ var Ed3d = {
     container = document.getElementById("ed3dmap");
 
     //camera
-    camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 1, 200000);
+    camera = new THREE.PerspectiveCamera(55, container.offsetWidth / container.offsetHeight, 1, 200000);
 
     camera.position.set(0, 500, 500);
 
     //Scene
     scene = new THREE.Scene();
+    //scene.scale.set(10,10,10);
 
     //HemisphereLight
     light = new THREE.HemisphereLight(0xffffff, 0xcccccc);
@@ -321,6 +323,7 @@ var Ed3d = {
 
     }).done(function() {
 
+      System.endParticleSystem();
       HUD.init();
       Action.init();
 
@@ -538,6 +541,7 @@ function enableFarView (scale, withAnim) {
   }
 
   //-- Show element
+  Galaxy.milkyway.visible = true;
 
   Galaxy.obj.scale.set(20,20,20);
   if(Action.cursorSel != null)  Action.cursorSel.scale.set(100,100,100);
@@ -588,7 +592,9 @@ function disableFarView(scale, withAnim) {
 
 
   //-- Show element
-  Galaxy.obj.scale.set(1,1,1);
+  Galaxy.milkyway.visible = false;
+//
+  //Galaxy.obj.scale.set(1,1,1);
   camera.scale.set(1,1,1);
   if(Action.cursorSel != null)  Action.cursorSel.scale.set(1,1,1);
   Ed3d.grid1H.obj.visible = true;
@@ -596,9 +602,6 @@ function disableFarView(scale, withAnim) {
   Ed3d.starfield.visible = true;
   scene.fog.density = Ed3d.fogDensity;
 }
-
-
-
 
 
 function render() {
