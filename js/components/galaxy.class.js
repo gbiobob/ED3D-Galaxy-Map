@@ -1,22 +1,3 @@
-/*
-
-var x = -1 + Math.random() * 2;
-var y = -1 + Math.random() * 2;
-var z = -1 + Math.random() * 2;
-var d = 1 / Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2) + Math.pow(z, 2));
-x *= d;
-y *= d;
-z *= d;
-
-var starParticle = new THREE.Vector3(
-       x * starDistance,
-       y * starDistance,
-       z * starDistance
-);
-
-starParticles.vertices.push(starParticle);
-
-*/
 
 var Galaxy = {
 

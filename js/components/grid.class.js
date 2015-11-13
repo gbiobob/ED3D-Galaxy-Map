@@ -4,6 +4,10 @@ var Grid = {
   'obj' : null,
   'size' : null,
 
+  'textShapes' : null,
+  'textGeo'    : null,
+
+  'coordTxt'   : null,
 
   /**
    * Create 2 base grid scaled on Elite: Dangerous grid
@@ -28,7 +32,7 @@ var Grid = {
 
   'addCoords' : function() {
 
-    var textShow = 'TEST';
+    var textShow = '0 : 0 : 0';
     var options = {
         'font': 'helvetiker',
         'weight': 'normal',
@@ -50,44 +54,33 @@ var Grid = {
 
       var textCoords = posX+' : '+this.obj.position.y+' : '+(-posZ);
 
-      //var pozXTxt = posX-50;
-      //this.coordGrid.position.set(-10+posX, this.obj.position.y, posZ+10);
+      //-- If same coords as previously, return.
+      if(this.coordTxt == textCoords) return;
+      this.coordTxt = textCoords;
 
-      var textShapes = THREE.FontUtils.generateShapes( textCoords, options );
-      var text = new THREE.ShapeGeometry( textShapes );
+      //-- Generate a new text shape
 
+      this.textShapes = THREE.FontUtils.generateShapes( this.coordTxt, options );
+      this.textGeo.dispose();
+      this.textGeo = new THREE.ShapeGeometry(this.textShapes);
 
-
-      var center = text.center();
+      var center = this.textGeo.center();
       this.coordGrid.position.set(center.x+posX-(this.size/100), this.obj.position.y, center.z+posZ+(this.size/30));
 
 
-      this.coordGrid.geometry = text;
+      this.coordGrid.geometry = this.textGeo;
       this.coordGrid.geometry.needsUpdate = true;
-
-
-      //this.coordGrid.rotation.y = -Math.PI;
-      //
-      //this.coordGrid.rotation.z = Math.PI;
-
-      //this.coordGrid.geometry.center( -50, 0, 0 );
-      //this.coordGrid.rotateZ(Math.PI);
-
 
     } else {
 
-      var textShapes = THREE.FontUtils.generateShapes(textShow, options);
-      var text = new THREE.ShapeGeometry(textShapes);
-      this.coordGrid = new THREE.Mesh(text, Ed3d.material.darkblue);
+      this.textShapes = THREE.FontUtils.generateShapes(textShow, options);
+      this.textGeo = new THREE.ShapeGeometry(this.textShapes);
+      this.coordGrid = new THREE.Mesh(this.textGeo, Ed3d.material.darkblue);
       this.coordGrid.position.set(this.obj.position.x, this.obj.position.y, this.obj.position.z);
       this.coordGrid.rotation.x = -Math.PI / 2;
-      //this.coordGrid.rotation.z = -Math.PI;
-      //this.coordGrid.rotation.z = -Math.PI;
-
-
-
 
       scene.add(this.coordGrid);
+
     }
 
   }

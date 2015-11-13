@@ -35,7 +35,7 @@ var Route = {
     scene.add(routes[idRoute]);
 
 
-    Ed3d.addObjToCategories(routes[idRoute],cat);
+    //Ed3d.addObjToCategories(routes[idRoute],cat);
 
     //-- Add route to the HUD
     //HUD.setRoute(idRoute, nameR);

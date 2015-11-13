@@ -19,24 +19,28 @@ var System = {
 
     //-- Particle for far view far
     var colors = [];
-    var nb = 0;
     if(this.particleGeo !== null) {
       var particle = new THREE.Vector3(parseInt(val.x), parseInt(val.y), parseInt(val.z));
 
-      particle.clickable = true;
-      particle.name = val.name;
-      this.particleGeo.vertices.push(particle);
-
-
-      var r = Math.round(255);
-      var g = Math.round(0);
-      var b = Math.round(0);
+      //-- Get point color
 
       if(val.cat != undefined && val.cat[0] != undefined && Ed3d.colors[val.cat[0]] != undefined) {
         this.particleColor[this.count] = Ed3d.colors[val.cat[0]];
       } else {
         this.particleColor[this.count] = new THREE.Color('#ffffff');
       }
+
+      //-- If system got some categories, add it to cat list and save his main color
+      if(val.cat != undefined) {
+        Ed3d.addObjToCategories(this.count,val.cat);
+        particle.color = this.particleColor[this.count];
+      }
+
+      //-- Attach name and set point as clickable
+      particle.clickable = true;
+      particle.name = val.name;
+
+      this.particleGeo.vertices.push(particle);
 
       this.count++;
     }

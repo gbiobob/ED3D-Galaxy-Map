@@ -15,7 +15,7 @@ var Action = {
     this.mouseVector = new THREE.Vector3();
     this.raycaster = new THREE.Raycaster();
 
-    container.addEventListener('click', this.onMouseClick, false);
+    container.addEventListener('mousedown', this.onMouseClick, false);
     //container.addEventListener('mousemove', this.onMouseHover, false);
  },
 
@@ -96,7 +96,7 @@ var Action = {
            // "<h2>"+intersection.object.name+"</h2>"
             "<h2>"+selPoint.name+"</h2>"
           );
-          Action.moveToObj(selPoint);
+          Action.moveToObj(indexPoint, selPoint);
         }
       }
 
@@ -109,8 +109,11 @@ var Action = {
 
 
 
-  'moveToObj' : function (obj) {
+  'moveToObj' : function (index, obj) {
 
+    if (this.oldSel !== null && this.oldSel == index)  return;
+
+    this.oldSel = index;
     var goX = obj.x;
     var goY = obj.y;
     var goZ = obj.z;
@@ -128,7 +131,7 @@ var Action = {
       mx: controls.center.x, my: controls.center.y , mz: controls.center.z
     };
     var moveCoords = {
-      x: goX, y: goY + 100, z: goZ + 100,
+      x: goX, y: goY + 20, z: goZ + 20,
       mx: goX, my: goY , mz: goZ
     };
 
@@ -146,11 +149,7 @@ var Action = {
 
     //-- 3D Cursor on selected object
 
-    if (this.oldSel !== null) this.oldSel.material = Ed3d.material.white;
-
     obj.material = Ed3d.material.selected;
-    this.oldSel = obj;
-
 
     this.addCusorOnSelect(goX, goY, goZ);
 
@@ -158,9 +157,10 @@ var Action = {
 
     //-- Add text
     var textAdd = obj.name;
-    textAdd += ' - ' + Math.round(goX) + ', ' + Math.round(goY) + ', ' + Math.round(goZ);
+    var textAddC = Math.round(goX) + ', ' + Math.round(goY) + ', ' + Math.round(goZ);
 
-    Ed3d.addText('system', textAdd, goX, goY, goZ, 5);
+    Ed3d.addText('system',  textAdd, 8, 20, 0, 6, this.cursorSel);
+    Ed3d.addText('systemc', textAddC, 8, 15, 0, 3, this.cursorSel);
 
 
     //-- Move grid to object
