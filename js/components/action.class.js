@@ -32,34 +32,54 @@ var Action = {
       1);
 
     this.mouseVector.unproject(camera);
-    //this.raycaster = new THREE.Raycaster(camera.position, this.mouseVector.sub(camera.position).normalize());
-
-    this.raycaster.setFromCamera( this.mouseVector, camera );
+    this.raycaster = new THREE.Raycaster(camera.position, this.mouseVector.sub(camera.position).normalize());
+    this.raycaster.params.Points.threshold = 5;
 
     // create an array containing all objects in the scene with which the ray intersects
     var intersects = this.raycaster.intersectObjects(scene.children);
     if (intersects.length > 0) {
+
       for( var i = 0; i < intersects.length; i++ ) {
         var intersection = intersects[ i ];
-        if(intersection.object.geometry.type != 'SphereGeometry') {
+        if(intersection.object.clickable) {
 
-          $('#hud #infos').html("Intersected object: " + intersection.object.name);
-          Action.hoverOnObj(intersection.object);
+          var indexPoint = intersection.index;
+
+          Action.hoverOnObj(indexPoint);
         }
       }
 
 
+
+    } else {
+      Action.outOnObj();
     }
 
   },
 
 
-  'hoverOnObj' : function (obj) {
+  'hoverOnObj' : function (indexPoint) {
 
-    if (this.objHover !== null) this.objHover.material = Ed3d.material.white;
+    if(this.objHover == indexPoint) return;
+    this.outOnObj();
 
-    obj.material = Ed3d.material.orange;
-    this.objHover = obj;
+    System.particleGeo.colors[indexPoint] = new THREE.Color('#00ff00');
+    System.particleGeo.colorsNeedUpdate = true;
+
+    this.objHover = indexPoint;
+
+  },
+  'outOnObj' : function () {
+
+    if(this.objHover === null || System.particleGeo.vertices[this.objHover] == undefined)
+      return;
+
+    obj = System.particleGeo.vertices[this.objHover];
+
+    System.particleGeo.colors[this.objHover] = obj.color;
+    System.particleGeo.colorsNeedUpdate = true;
+
+    this.objHover = null;
 
   },
 
@@ -91,7 +111,6 @@ var Action = {
           var indexPoint = intersection.index;
           var selPoint = intersection.object.geometry.vertices[indexPoint];
 
-          console.log(intersection);
           $('#hud #infos').html(
            // "<h2>"+intersection.object.name+"</h2>"
             "<h2>"+selPoint.name+"</h2>"
@@ -123,6 +142,9 @@ var Action = {
     //controls.update();
     //render();
 
+    //-- Move grid to object
+    this.moveGridTo(goX, goY, goZ);
+
     //-- Move camera to target
     //-- Smooth move
 
@@ -131,7 +153,7 @@ var Action = {
       mx: controls.center.x, my: controls.center.y , mz: controls.center.z
     };
     var moveCoords = {
-      x: goX, y: goY + 20, z: goZ + 20,
+      x: goX, y: goY + 5, z: goZ + 5,
       mx: goX, my: goY , mz: goZ
     };
 
@@ -153,8 +175,6 @@ var Action = {
 
     this.addCusorOnSelect(goX, goY, goZ);
 
-
-
     //-- Add text
     var textAdd = obj.name;
     var textAddC = Math.round(goX) + ', ' + Math.round(goY) + ', ' + Math.round(goZ);
@@ -163,8 +183,6 @@ var Action = {
     Ed3d.addText('systemc', textAddC, 8, 15, 0, 3, this.cursorSel);
 
 
-    //-- Move grid to object
-    this.moveGridTo(goX, goY, goZ);
   },
 
   'addCusorOnSelect' : function (x, y, z) {

@@ -462,16 +462,15 @@ function animate(time) {
     controls.target.z-(controls.target.z/10)%4000
   );
 
-
   //-- Change selection cursor size depending on camera distance
 
   var scale = distanceFromTarget(camera)/200;
   if(Action.cursorSel != null) {
-    if(scale>=0.1 && scale<10) {
+    if(scale>=0.01 && scale<10) {
       Action.cursorSel.scale.set(scale, scale, scale);
-      Action.cursorSel.rotation.y = camera.rotation.y;
 
     }
+      Action.cursorSel.rotation.y =  camera.rotation.y ;
   }
 
 
@@ -486,7 +485,6 @@ function animate(time) {
     disableFarView(scale);
 
   }
-
 
   requestAnimationFrame( animate );
 
