@@ -39,6 +39,7 @@ var System = {
       //-- Attach name and set point as clickable
       particle.clickable = true;
       particle.name = val.name;
+      if(val.infos != undefined) particle.infos = val.infos;
 
       this.particleGeo.vertices.push(particle);
 

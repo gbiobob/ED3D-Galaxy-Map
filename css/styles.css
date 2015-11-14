@@ -151,6 +151,9 @@ body {
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }*/
+#systemDetails img {
+  max-width: 100%;
+}
 
 #nav {
   position: absolute;

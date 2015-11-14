@@ -207,7 +207,7 @@ var HUD = {
       '  <span>'+point.x+'</span><span>'+point.y+'</span><span>'+point.z+'</span></div>'+
       '  <p id="infos"></p>'+
       '</div>'+
-      '<div>'+''+'</div>'+
+      (point.infos != undefined ? '<div>'+point.infos+'</div>' : '')+
       '<div id="nav">'+
       '</div>'
     );
