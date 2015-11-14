@@ -9,7 +9,7 @@ var HUD = {
   'create' : function(container) {
     this.container = container;
 
-    $('body').append('<div id="hud"></div>');
+    $('#'+this.container).append('<div id="hud"></div>');
     $('#hud').append(
       '<div>'+
       '    <h2>Infos</h2>'+
@@ -34,6 +34,7 @@ var HUD = {
 
       '</div>'
     );
+    $('#'+this.container).append('<div id="systemDetails" style="display:none;"></div>');
 
   },
 
@@ -173,11 +174,104 @@ var HUD = {
   /**
    *
    */
+  'openHudDetails' : function() {
+    $('#hud').hide();
+    $('#systemDetails').show();
+  },
+  /**
+   *
+   */
+  'closeHudDetails' : function() {
+    $('#hud').show();
+    $('#systemDetails').hide();
+  },
+
+  /**
+   * Create a Line route
+   */
   'setRoute' : function(idRoute, nameR) {
     $('#routes').append('<a class="map_link" data-route="' + idRoute + '"><span class="check"> </span>' + nameR + '</a>');
+  },
+
+
+
+  /**
+   *
+   */
+
+  'setInfoPanel' : function(index, point) {
+
+    $('#systemDetails').html(
+      '<h2>'+point.name+'</h2>'+
+      '<div class="coords">'+
+      '  <span>'+point.x+'</span><span>'+point.y+'</span><span>'+point.z+'</span></div>'+
+      '  <p id="infos"></p>'+
+      '</div>'+
+      '<div>'+''+'</div>'+
+      '<div id="nav">'+
+      '</div>'
+    );
+
+    //-- Add navigation
+    $('<a/>', {'html': '<'})
+    .click(function(){Action.moveNextPrev(index-1);})
+    .appendTo("#nav");
+
+    $('<a/>', {'html': 'X'})
+    .click(function(){HUD.closeHudDetails();})
+    .appendTo("#nav");
+
+    $('<a/>', {'html': '>'})
+    .click(function(){Action.moveNextPrev(index+1);})
+    .appendTo("#nav");
+
+  },
+
+
+  /**
+   * Add Shape text
+   */
+
+  'addText' : function(id, textShow, x, y, z, size, addToObj) {
+
+    if(addToObj == undefined) addToObj = scene;
+
+   /* if(Ed3d.textSel[id] !== undefined) {
+      scene.getObjectById( Ed3d.textSel[id], true ).remove(  );
+
+      //scene.remove( Ed3d.textSel[id] );
+
+    }*/
+
+    var textShapes = THREE.FontUtils.generateShapes(textShow, {
+      'font': 'helvetiker',
+      'weight': 'normal',
+      'style': 'normal',
+      'size': size,
+      'curveSegments': 100
+    });
+
+    var textGeo = new THREE.ShapeGeometry(textShapes);
+
+    if(Ed3d.textSel[id] == undefined) {
+      var textMesh = new THREE.Mesh(textGeo, new THREE.MeshBasicMaterial({
+        color: 0xffffff
+      }));
+    } else {
+      var textMesh = Ed3d.textSel[id];
+    }
+
+
+
+    textMesh.geometry = textGeo;
+    textMesh.geometry.needsUpdate = true;
+
+    textMesh.position.set(x, y, z);
+
+    Ed3d.textSel[id] = textMesh;
+    addToObj.add(textMesh);
+
+
   }
-
-
-
 
 }

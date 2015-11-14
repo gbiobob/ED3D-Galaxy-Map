@@ -1,31 +1,25 @@
-      html, body {
-        height: 100%;
-      }
 
-      body {
-        background-color: #0a0a0a;
-        margin: 0;
-        font-family: Helvetica, sans-serif;;
-        overflow: hidden;
-      }
 
-.star {
-    color: #999;
-    font-family: Arial, Helvetica, Sans-serif;
-    font-size: 1em;
-    padding: 0;
-    position: relative;
-
+body {
+  background-color: #0a0a0a;
+  margin: 0;
 }
+
 
 /* -------------------------------------------------------------------------- */
 /* HUD */
 /* -------------------------------------------------------------------------- */
 
+#edmap {
+  position: relative;
+  height: 700px;
+}
+
 #ed3dmap {
+  font-family: Helvetica, Sans-serif;
   position: relative;
   width: 100%;
-  height: 800px;
+  height: 100%;
   margin: 0 auto;
   overflow: hidden;
 }
@@ -35,24 +29,24 @@
   height: 800px;
 }
 
-#hud {
-  font-family: "Orbitron";
+#hud,
+#systemDetails {
   font-weight: normal;
-  font-size: 12px;
+  font-size: 0.9rem;
   position: absolute;
   top: 0;
   left: 0;
-  width: 180px;
-  height: 800px;
+  width: 250px;
+  height: 100%;
   background: red;
   padding: 15px;
   color: #fff;
   z-index: 999;
 
   /*border: solid 3px rgba(255, 140, 13, 0.8);*/
-  background: rgba(25, 22, 20, 0.9);
+  background: rgba(3, 3, 6,0.8);
+  border-right: solid 1px #111;
 
-  box-shadow: 2px 2px 5px #000;
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
@@ -62,10 +56,9 @@
   clear: both;
 }
 #hud h2 {
+  font-weight: bold;
   color: #eee;
-  text-transform: uppercase;
-  font-size: 15px;
-  font-weight: normal;
+  font-size: 1rem;
   border-bottom: 1px solid #eee;
   margin: 0 0 5px;
   text-shadow: 1px 1px 2px rgb(0,0,0);
@@ -138,6 +131,49 @@
 
 .map_filter.disabled .check {
   background: #333 !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* HUD system details */
+/* -------------------------------------------------------------------------- */
+/*#hud,
+#systemDetails {
+  color: #fff;
+  font-size: 1rem;
+  width: 25%;
+  height: 100%;
+  min-width: 250px;
+  max-width: 350px;
+  padding: 20px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}*/
+
+#nav {
+  position: absolute;
+  bottom: 10px;
+  right: 0;
+  width: 100%;
+  text-align: center;
+}
+#nav > a {
+  cursor: pointer;
+  display: inline-block;
+  width: 22%;
+  margin: 2%;
+  padding: 10px;
+  border: solid 1px #222;
+  background: rgb(10,10,10);
+  background: rgba(10,10,10,0.8);
+  box-shadow: 1px 1px 3px #000;
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-align: center;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
 }
 
 /* -------------------------------------------------------------------------- */

@@ -115,7 +115,11 @@ var Action = {
            // "<h2>"+intersection.object.name+"</h2>"
             "<h2>"+selPoint.name+"</h2>"
           );
-          Action.moveToObj(indexPoint, selPoint);
+
+
+
+          var isMove = Action.moveToObj(indexPoint, selPoint);
+          if(isMove) return;
         }
       }
 
@@ -127,10 +131,23 @@ var Action = {
 
 
 
+  'moveNextPrev' : function (indexPoint) {
+
+    if (indexPoint < 0) indexPoint = System.particleGeo.vertices.length-1;
+    else if (System.particleGeo.vertices[indexPoint] == undefined) indexPoint = 0;
+
+    var selPoint = System.particleGeo.vertices[indexPoint];
+    Action.moveToObj(indexPoint, selPoint);
+
+  },
+
 
   'moveToObj' : function (index, obj) {
 
-    if (this.oldSel !== null && this.oldSel == index)  return;
+    if (this.oldSel !== null && this.oldSel == index)  return false;
+
+    HUD.setInfoPanel(index, obj);
+    HUD.openHudDetails();
 
     this.oldSel = index;
     var goX = obj.x;
@@ -153,7 +170,7 @@ var Action = {
       mx: controls.center.x, my: controls.center.y , mz: controls.center.z
     };
     var moveCoords = {
-      x: goX, y: goY + 5, z: goZ + 5,
+      x: goX, y: goY + 15, z: goZ + 15,
       mx: goX, my: goY , mz: goZ
     };
 
@@ -179,9 +196,10 @@ var Action = {
     var textAdd = obj.name;
     var textAddC = Math.round(goX) + ', ' + Math.round(goY) + ', ' + Math.round(goZ);
 
-    Ed3d.addText('system',  textAdd, 8, 20, 0, 6, this.cursorSel);
-    Ed3d.addText('systemc', textAddC, 8, 15, 0, 3, this.cursorSel);
+    HUD.addText('system',  textAdd, 8, 20, 0, 6, this.cursorSel);
+    HUD.addText('coords',  textAddC, 8, 15, 0, 3, this.cursorSel);
 
+    return true;
 
   },
 

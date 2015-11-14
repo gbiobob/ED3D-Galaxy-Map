@@ -34,7 +34,7 @@ var Ed3d = {
   'fogDensity' : null,
 
   //-- Defined texts
-  'text' : [],
+  'textSel' : [],
 
   //-- Object list by categories
   'catObjs' : [],
@@ -377,44 +377,9 @@ var Ed3d = {
     scene.add(this.starfield);
   },
 
-  /**
-   * Add a text
-   */
-
-  'addText' : function(id, textShow, x, y, z, size, addToObj) {
-
-    if(addToObj == undefined) addToObj = scene;
-
-    var textShapes = THREE.FontUtils.generateShapes(textShow, {
-      'font': 'helvetiker',
-      'weight': 'normal',
-      'style': 'normal',
-      'size': size,
-      'curveSegments': 100
-    });
-
-
-    var text = new THREE.ShapeGeometry(textShapes);
-    var textMesh = new THREE.Mesh(text, new THREE.MeshBasicMaterial({
-      color: 0xffffff
-    }));
-    textMesh.position.set(x, y, z);
-    //textMesh.rotation.x = -Math.PI / 2;
-    //textMesh.rotation.z = -Math.PI;
-
-    if(Ed3d.text[id] != undefined) {
-      scene.getObjectById( Ed3d.text[id], true ).dispose();
-    }
-
-    Ed3d.text[id] = textMesh.id;
-
-    addToObj.add(textMesh);
-
-  },
-
 
   /**
-   * Add a text
+   * Calc distance from Sol
    */
 
   'calcDistSol' : function(target) {
@@ -471,6 +436,8 @@ function animate(time) {
 
     }
       Action.cursorSel.rotation.y =  camera.rotation.y ;
+     // Action.cursorSel.quaternion.setFromEuler(camera.rotation.y );
+     //Action.cursorSel.quaternion.copy(camera.quaternion);
   }
 
 
