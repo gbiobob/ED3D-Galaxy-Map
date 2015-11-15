@@ -34,7 +34,7 @@ Require JQuery & Three.js
   });
 </script>
 ```
-## Sample Json
+## JSon sample
 ### Simple systems list
 ```
 [
