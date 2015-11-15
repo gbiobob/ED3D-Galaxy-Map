@@ -8,14 +8,13 @@ View [demo sample](http://ed-board.net/testmap3/)
 Require JQuery & Three.js
 
 ## Options
-### container *(Required)*
-The container ID.
-### jsonPath *(Required)*
-The JSon containing systems data.
-### basePath
-Custom base path
-### withHudPanel
-Enable the HUD (panel to filter and navigate throughout systems).
+**container:** The container ID. *(Required)*
+
+**jsonPath:** The JSon containing systems data. *(Required)*
+
+**basePath:** Custom base path
+
+**withHudPanel:** Enable the HUD (panel to filter and navigate throughout systems).
 *Default: false*
 
 ## Exemple
