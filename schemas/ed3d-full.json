@@ -77,7 +77,6 @@
         },
         "required": ["name", "coords"]
       }
-      }
     },
     "required": ["systems"]
 }
