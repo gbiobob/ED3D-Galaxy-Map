@@ -15,11 +15,8 @@ var Galaxy = {
 
     var objVal = new Object;
     objVal.name = 'Sagittarius A*';
-    objVal.x = this.x;
-    objVal.y = this.y;
-    objVal.z = this.z;
+    objVal.coords = {'x':this.y,'y':this.y,'z':this.z};
     objVal.cat = [];
-
 
     this.obj = System.create(objVal, true);
 
@@ -35,12 +32,11 @@ var Galaxy = {
 
   'createParticles' : function () {
 
-       // terrain
     var img = new Image();
     img.onload = function () {
 
-        //get height data from img
-        Galaxy.getHeightData(img,10);
+      //get height data from img
+      Galaxy.getHeightData(img,10);
 
     };
     // load img source

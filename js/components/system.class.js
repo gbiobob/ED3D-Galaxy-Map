@@ -13,14 +13,16 @@ var System = {
 
     if(withSolid==undefined) withSolid = false;
 
-    val.x = parseInt(val.x);
-    val.y = parseInt(val.y);
-    val.z = -parseInt(val.z); //-- Revert Z coord
+    if(val.coords==undefined) return false;
+
+    var x = parseInt(val.coords.x);
+    var y = parseInt(val.coords.y);
+    var z = -parseInt(val.coords.z); //-- Revert Z coord
 
     //-- Particle for far view far
     var colors = [];
     if(this.particleGeo !== null) {
-      var particle = new THREE.Vector3(parseInt(val.x), parseInt(val.y), parseInt(val.z));
+      var particle = new THREE.Vector3(x, y, z);
 
       //-- Get point color
 
@@ -52,7 +54,7 @@ var System = {
       var mat = Ed3d.material.glow_1;
 
       var sprite = new THREE.Sprite( mat );
-      sprite.position.set(parseInt(val.x), parseInt(val.y), parseInt(val.z));
+      sprite.position.set(x, y, z);
       sprite.scale.set(50, 50, 1.0);
       scene.add(sprite); // this centers the glow at the mesh
 
@@ -61,7 +63,7 @@ var System = {
 
       var sphere = new THREE.Mesh(geometry, Ed3d.material.white);
 
-      sphere.position.set(parseInt(val.x), parseInt(val.y), parseInt(val.z));
+      sphere.position.set(x, y, z);
 
       sphere.name = val.name;
 

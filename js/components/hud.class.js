@@ -7,6 +7,9 @@ var HUD = {
    *
    */
   'create' : function(container) {
+
+    if(!Ed3d.withHudPanel) return;
+
     this.container = container;
 
     $('#'+this.container).append('<div id="hud"></div>');

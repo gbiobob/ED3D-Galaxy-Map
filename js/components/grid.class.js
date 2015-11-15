@@ -19,15 +19,12 @@ var Grid = {
 
     this.obj = new THREE.GridHelper(1000000, size);
     this.obj.setColors(color, color);
+
     scene.add(this.obj);
 
     this.obj.customUpdateCallback = this.addCoords;
 
     return this;
-  },
-
-  'init2' : function(size, color) {
-    alert(this.size);
   },
 
   'addCoords' : function() {

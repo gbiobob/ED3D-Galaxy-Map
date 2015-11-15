@@ -20,7 +20,6 @@ var Ed3d = {
   'container'   : null,
   'basePath'    : './',
   'jsonPath'    : null,
-  'effects'     : false,
 
   'grid1H' : null,
   'grid1K' : null,
@@ -81,6 +80,9 @@ var Ed3d = {
 
   },
 
+  //-- HUD
+  'withHudPanel' : false,
+
   //-- Systems
   'systems' : [],
 
@@ -104,14 +106,20 @@ var Ed3d = {
         container: Ed3d.container,
         basePath: Ed3d.basePath,
         jsonPath: Ed3d.jsonPath,
-        withEffects: Ed3d.effects,
+        withHudPanel: Ed3d.withHudPanel
     }, options);
 
 
     $('#loader').show();
 
-    this.basePath   = options.basePath;
-    this.effects    = options.withEffects;
+    //-- Set Option
+    this.basePath     = options.basePath;
+    this.container    = options.container;
+    this.jsonPath     = options.jsonPath;
+    this.withHudPanel = options.withHudPanel;
+
+    //-- Init 3D map container
+    $('#'+Ed3d.container).append('<div id="ed3dmap"></div>');
 
     //-- Load dependencies
     $.when(
@@ -131,27 +139,11 @@ var Ed3d = {
 
         $.getScript(Ed3d.basePath + "vendor/tween-js/Tween.js"),
 
-
-      /*  $.getScript(Ed3d.basePath + "vendor/three-js/shaders/CopyShader.js"),
-        $.getScript(Ed3d.basePath + "vendor/three-js/shaders/BokehShader.js"),
-        $.getScript(Ed3d.basePath + "vendor/three-js/postprocessing/EffectComposer.js"),
-        $.getScript(Ed3d.basePath + "vendor/three-js/postprocessing/RenderPass.js"),
-        $.getScript(Ed3d.basePath + "vendor/three-js/postprocessing/MaskPass.js"),
-        $.getScript(Ed3d.basePath + "vendor/three-js/postprocessing/ShaderPass.js"),
-        $.getScript(Ed3d.basePath + "vendor/three-js/postprocessing/BokehPass.js"),
-        $.getScript(Ed3d.basePath + "vendor/three-js/postprocessing/BloomPass.js"),*/
-
-
-
         $.Deferred(function( deferred ){
             $( deferred.resolve );
         })
 
     ).done(function() {
-
-      Ed3d.container = options.container;
-      Ed3d.jsonPath  = options.jsonPath;
-
 
       Ed3d.loadTextures();
 
@@ -262,25 +254,6 @@ var Ed3d = {
     renderer.setClearColor(scene.fog.color, 1);
     Ed3d.fogDensity = scene.fog.density;
 
-    // postprocessing
-    if(Ed3d.effects) {
-      composer = new THREE.EffectComposer( renderer );
-      composer.addPass( new THREE.RenderPass( scene, camera ) );
-
-      var bokehPass = new THREE.BokehPass( scene, camera, {
-        focus:    0.5,
-        aperture: 0.0025,
-        maxblur:  10.0,
-
-        width:  container.offsetWidth,
-        height: container.offsetHeight
-      } );
-      bokehPass.renderToScreen = true;
-      composer.addPass( bokehPass );
-    }
-
-
-
   },
 
   /**
@@ -301,11 +274,12 @@ var Ed3d = {
       //-- Load cat filters
       if(data.categories != undefined) HUD.initFilters(data.categories);
 
+      //-- Check if simple or complex json
+      list = (data.systems !== undefined) ? data.systems : data;
+
       //-- Loop into systems
 
-      limit = 0;
-
-      $.each(data.systems, function(key, val) {
+      $.each(list, function(key, val) {
 
         system = System.create(val);
         if(system != undefined) {
@@ -410,9 +384,6 @@ function animate(time) {
   TWEEN.update(time);
 
   renderer.render(scene, camera);
-
-
-  if(Ed3d.effects) composer.render();
 
   $('#cx').html(Math.round(controls.center.x));
   $('#cy').html(Math.round(controls.center.y));

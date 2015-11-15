@@ -16,14 +16,18 @@ var Route = {
 
     $.each(route, function(key2, val) {
 
+      var x = parseInt(val.coords.x);
+      var y = parseInt(val.coords.y);
+      var z = -parseInt(val.coords.z); //-- Revert Z coord
+
       //-- Add line point
       geometryL.vertices.push(
-        new THREE.Vector3(val.x, val.y, val.z)
+        new THREE.Vector3(x, y, z)
       );
 
       var geometry = new THREE.SphereGeometry(3, 10, 10);
       var sphere = new THREE.Mesh(geometry, Ed3d.material.white);
-      sphere.position.set(val.x, val.y, val.z);
+      sphere.position.set(x, y, z);
       scene.add(sphere);
 
       nameR += val.name;
