@@ -34,3 +34,25 @@ Require JQuery & Three.js
     });
   </script>
   ```
+## Sample Json
+### Simple systems list
+```
+[
+  {
+    "name": "Sol",
+    "coords": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    }
+  },
+  {
+    "name": "Solati",
+    "coords": {
+      "x": 66.53125,
+      "y": 29.1875,
+      "z": 34.6875
+    }
+  }
+]
+```
