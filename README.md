@@ -19,21 +19,21 @@ Require JQuery & Three.js
 
 ## Exemple
 ```
-  <div id="edmap"></div>
-
-  <!-- jQuery -->
-  <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-  <!-- Three.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r73/three.min.js"></script>
-  <!-- Launch ED3Dmap -->
-  <script src="js/ed3dmap.js"></script>
-  <script type="text/javascript">
-    Ed3d.init({
-        container   : 'edmap',
-        jsonPath    : "./map/system.json"
-    });
-  </script>
-  ```
+<!-- My container -->
+<div id="edmap"></div>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+<!-- Three.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r73/three.min.js"></script>
+<!-- Launch ED3Dmap -->
+<script src="js/ed3dmap.js"></script>
+<script type="text/javascript">
+  Ed3d.init({
+      container   : 'edmap',
+      jsonPath    : "./map/system.json"
+  });
+</script>
+```
 ## Sample Json
 ### Simple systems list
 ```
