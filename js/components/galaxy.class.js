@@ -48,7 +48,7 @@ var Galaxy = {
 
     };
     // load img source
-    img.src = Ed3d.basePath + "textures/heightmap2.jpg";
+    img.src = Ed3d.basePath + "textures/heightmap6.jpg";
 
 
   },

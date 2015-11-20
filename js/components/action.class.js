@@ -29,7 +29,8 @@ var Action = {
     e.preventDefault();
 
     this.mouseVector = new THREE.Vector3(
-      (e.clientX / container.offsetWidth) * 2 - 1, -(e.clientY / container.offsetHeight) * 2 + 1,
+      ( ( e.clientX - position.left ) / renderer.domElement.width ) * 2 - 1,
+      - ( ( e.clientY - position.top ) / renderer.domElement.height ) * 2 + 1,
       1);
 
     this.mouseVector.unproject(camera);
@@ -92,8 +93,12 @@ var Action = {
 
     e.preventDefault();
 
+
+    var position = $('#ed3dmap').offset();
+
     this.mouseVector = new THREE.Vector3(
-      (e.clientX / container.offsetWidth) * 2 - 1, -(e.clientY / container.offsetHeight) * 2 + 1,
+      ( ( e.clientX - position.left ) / renderer.domElement.width ) * 2 - 1,
+      - ( ( e.clientY - position.top ) / renderer.domElement.height ) * 2 + 1,
       1);
 
     this.mouseVector.unproject(camera);
@@ -190,7 +195,8 @@ var Action = {
     };
 
     controls.enabled = false;
-    Ed3d.tween = new TWEEN.Tween(moveFrom).to(moveCoords, timer)
+
+    Ed3d.tween = new TWEEN.Tween(moveFrom, {override:true}).to(moveCoords, timer)
       .start()
       .onUpdate(function () {
         camera.position.set(moveFrom.x, moveFrom.y, moveFrom.z);
@@ -241,7 +247,7 @@ var Action = {
     };
 
     controls.enabled = false;
-    Ed3d.tween = new TWEEN.Tween(moveFrom).to(moveCoords, 800)
+    Ed3d.tween = new TWEEN.Tween(moveFrom, {override:true}).to(moveCoords, 800)
       .start()
       .onUpdate(function () {
         camera.position.set(moveFrom.x, moveFrom.y, moveFrom.z);

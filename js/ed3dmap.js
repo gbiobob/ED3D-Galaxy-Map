@@ -465,7 +465,7 @@ function enableFarView (scale, withAnim) {
   if(withAnim) {
 
     //controls.enabled = false;
-    Ed3d.tween = new TWEEN.Tween(scaleFrom).to(scaleTo, 500)
+    Ed3d.tween = new TWEEN.Tween(scaleFrom, {override:true}).to(scaleTo, 500)
       .start()
       .onUpdate(function () {
         Galaxy.milkyway[0].material.size = scaleFrom.zoom;
@@ -507,7 +507,7 @@ function disableFarView(scale, withAnim) {
   if(withAnim) {
 
     //controls.enabled = false;
-    Ed3d.tween = new TWEEN.Tween(scaleFrom).to(scaleTo, 500)
+    Ed3d.tween = new TWEEN.Tween(scaleFrom, {override:true}).to(scaleTo, 500)
       .start()
       .onUpdate(function () {
         Galaxy.milkyway[0].material.size = scaleFrom.zoom;
