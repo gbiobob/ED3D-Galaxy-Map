@@ -82,12 +82,16 @@ var Ed3d = {
 
   //-- HUD
   'withHudPanel' : false,
+  'hudMultipleSelect' : true,
 
   //-- Systems
   'systems' : [],
 
   //-- Starfield
   'starfield' : null,
+
+  //-- Start animation
+  'startAnim' : true,
 
   //-- Graphical Options
   'optDistObj' : 1500,
@@ -101,27 +105,35 @@ var Ed3d = {
    */
 
   'init' : function(options) {
+
     // Merge options with defaults
     var options = $.extend({
         container: Ed3d.container,
         basePath: Ed3d.basePath,
         jsonPath: Ed3d.jsonPath,
-        withHudPanel: Ed3d.withHudPanel
+        withHudPanel: Ed3d.withHudPanel,
+        hudMultipleSelect: Ed3d.hudMultipleSelect,
+        startAnim: Ed3d.startAnim
     }, options);
-
 
     $('#loader').show();
 
     //-- Set Option
-    this.basePath     = options.basePath;
-    this.container    = options.container;
-    this.jsonPath     = options.jsonPath;
-    this.withHudPanel = options.withHudPanel;
+    this.basePath          = options.basePath;
+    this.container         = options.container;
+    this.jsonPath          = options.jsonPath;
+    this.withHudPanel      = options.withHudPanel;
+    this.hudMultipleSelect = options.hudMultipleSelect;
+    this.startAnim         = options.startAnim;
 
     //-- Init 3D map container
     $('#'+Ed3d.container).append('<div id="ed3dmap"></div>');
 
+
     //-- Load dependencies
+
+    if(typeof isMinified !== 'undefined') return Ed3d.launchMap();
+
     $.when(
 
         $.getScript(Ed3d.basePath + "vendor/three-js/OrbitControls.js"),
@@ -145,6 +157,19 @@ var Ed3d = {
 
     ).done(function() {
 
+      Ed3d.launchMap();
+
+    });
+
+  },
+
+  /**
+   * Launch
+   */
+
+  'launchMap' : function() {
+
+
       Ed3d.loadTextures();
 
       Ed3d.initScene();
@@ -165,10 +190,7 @@ var Ed3d = {
       // Animate
       animate();
 
-    });
-
   },
-
 
   /**
    * Init Three.js scene
@@ -225,7 +247,6 @@ var Ed3d = {
     camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 1, 200000);
 
     camera.position.set(0, 500, 500);
-
 
     //HemisphereLight
     light = new THREE.HemisphereLight(0xffffff, 0xcccccc);
@@ -304,8 +325,6 @@ var Ed3d = {
       HUD.init();
       Action.init();
 
-      //-- Init Events
-      $('#loader').hide();
     });;
   },
 
@@ -407,9 +426,7 @@ function animate(time) {
       Action.cursorSel.scale.set(scale, scale, scale);
 
     }
-      Action.cursorSel.rotation.y =  camera.rotation.y ;
-     // Action.cursorSel.quaternion.setFromEuler(camera.rotation.y );
-     //Action.cursorSel.quaternion.copy(camera.quaternion);
+    Action.cursorSel.rotation.y =  camera.rotation.y ;
   }
 
 

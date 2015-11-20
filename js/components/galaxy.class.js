@@ -38,6 +38,14 @@ var Galaxy = {
       //get height data from img
       Galaxy.getHeightData(img);
 
+
+      //-- If using start animation: launch it
+      if(Ed3d.startAnim) {
+        camera.position.set(-10000, 40000, 50000);
+        Action.moveInitalPosition(4000);
+      }
+      $('#loader').hide();
+
     };
     // load img source
     img.src = Ed3d.basePath + "textures/heightmap2.jpg";

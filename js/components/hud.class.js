@@ -17,14 +17,14 @@ var HUD = {
       '<div>'+
       '    <h2>Infos</h2>'+
       '     Dist. Sol <span id="distsol"></span>'+
-      '    <div id="coords">'+
+      '    <div id="coords" class="coords">'+
       '      <span id="cx"></span><span id="cy"></span><span id="cz"></span></div>'+
       '      <p id="infos"></p>'+
       '    </div>'+
-      '  <div id="search">'+
+      /*'  <div id="search">'+
       '    <h2>Search</h2>'+
       '    <input type="text" />'+
-      '  </div>'+
+      '  </div>'+*/
       '  <div id="filters">'+
       '  </div>'+
 
@@ -52,13 +52,14 @@ var HUD = {
 
 
     //-- Disable 3D controls when mouse hover the Hud
-    $( "#hud, #systemDetails" ).hover(
+    $( "#hud" ).hover(
       function() {
         controls.enabled = false;
       }, function() {
         controls.enabled = true;
       }
     );
+    $( "#systemDetails" ).hide();
 
     //-- Add Count filters
     $('.map_filter').each(function(e) {
@@ -73,13 +74,26 @@ var HUD = {
       var active = $(this).data('active');
       active = (Math.abs(active-1));
 
+      if(!Ed3d.hudMultipleSelect) {
+
+        $('.map_filter').addClass('disabled');
+
+        $(System.particleGeo.vertices).each(function(index, point) {
+          point.visible  = 0;
+          point.filtered = 0;
+          System.particleGeo.colors[index] = new THREE.Color('#111111');
+          active = 1;
+        });
+
+      }
+
       $(Ed3d.catObjs[idCat]).each(function(key, indexPoint) {
 
         obj = System.particleGeo.vertices[indexPoint];
 
         System.particleGeo.colors[indexPoint] = (active==1)
           ? obj.color
-          : new THREE.Color('#000000');
+          : new THREE.Color('#111111');
 
         obj.visible = (active==1);
         obj.filtered = (active==1);
@@ -90,6 +104,10 @@ var HUD = {
       });
       $(this).data('active',active);
       $(this).toggleClass('disabled');
+
+      //-- If current selection is no more visible, disable active selection
+      if(Action.oldSel != null && !Action.oldSel.visible) Action.disableSelection();
+      Action.moveInitalPosition();
     });
 
 
@@ -157,7 +175,13 @@ var HUD = {
    */
   'openHudDetails' : function() {
     $('#hud').hide();
-    $('#systemDetails').show();
+    $('#systemDetails').show().hover(
+      function() {
+        controls.enabled = false;
+      }, function() {
+        controls.enabled = true;
+      }
+    );
   },
   /**
    *
@@ -194,8 +218,9 @@ var HUD = {
     );
 
     //-- Add navigation
+
     $('<a/>', {'html': '<'})
-    .click(function(){Action.moveNextPrev(index-1);})
+    .click(function(){Action.moveNextPrev(index-1, -1);})
     .appendTo("#nav");
 
     $('<a/>', {'html': 'X'})
@@ -203,7 +228,7 @@ var HUD = {
     .appendTo("#nav");
 
     $('<a/>', {'html': '>'})
-    .click(function(){Action.moveNextPrev(index+1);})
+    .click(function(){Action.moveNextPrev(index+1, 1);})
     .appendTo("#nav");
 
   },

@@ -111,15 +111,15 @@ var Action = {
           var indexPoint = intersection.index;
           var selPoint = intersection.object.geometry.vertices[indexPoint];
 
-          $('#hud #infos').html(
-           // "<h2>"+intersection.object.name+"</h2>"
-            "<h2>"+selPoint.name+"</h2>"
-          );
+          if(selPoint.visible) {
+            $('#hud #infos').html(
+              "<h2>"+selPoint.name+"</h2>"
+            );
 
+            var isMove = Action.moveToObj(indexPoint, selPoint);
+            if(isMove) return;
+          }
 
-
-          var isMove = Action.moveToObj(indexPoint, selPoint);
-          if(isMove) return;
         }
       }
 
@@ -135,17 +135,74 @@ var Action = {
    * @param {int} indexPoint
    */
 
-  'moveNextPrev' : function (indexPoint) {
+  'moveNextPrev' : function (indexPoint, increment) {
 
-    //-- If next|previous is undefined, loop to the first|last
-    if (indexPoint < 0) indexPoint = System.particleGeo.vertices.length-1;
-    else if (System.particleGeo.vertices[indexPoint] == undefined) indexPoint = 0;
+    var find = false;
+    while(!find) {
+
+      //-- If next|previous is undefined, loop to the first|last
+      if (indexPoint < 0) indexPoint = System.particleGeo.vertices.length-1;
+      else if (System.particleGeo.vertices[indexPoint] == undefined) indexPoint = 0;
+
+      if(System.particleGeo.vertices[indexPoint].visible == true) {
+        find = true;
+      } else {
+        indexPoint += increment
+      }
+    }
+
 
     //-- Move to
     var selPoint = System.particleGeo.vertices[indexPoint];
     Action.moveToObj(indexPoint, selPoint);
 
   },
+
+  /**
+   * Disable current selection
+   */
+
+  'disableSelection' : function () {
+
+    this.oldSel = null;
+    this.cursorSel.visible = false;
+
+    $('#hud #infos').html('');
+
+  },
+
+  /**
+   * Move to inital position
+   */
+  'moveInitalPosition' : function (timer) {
+
+    if(timer == undefined) timer = 800;
+
+    //-- Move camera to initial position
+
+    var moveFrom = {
+      x: camera.position.x, y: camera.position.y , z: camera.position.z,
+      mx: controls.center.x, my: controls.center.y , mz: controls.center.z
+    };
+    var moveCoords = {
+      x: 0, y: 500, z: 500,
+      mx: 0, my: 0 , mz: 0
+    };
+
+    controls.enabled = false;
+    Ed3d.tween = new TWEEN.Tween(moveFrom).to(moveCoords, timer)
+      .start()
+      .onUpdate(function () {
+        camera.position.set(moveFrom.x, moveFrom.y, moveFrom.z);
+        controls.center.set(moveFrom.mx, moveFrom.my, moveFrom.mz);
+      })
+      .onComplete(function () {
+        controls.enabled = true;
+        controls.update();
+      });
+
+  },
+
 
   /**
    * Move camera to a system
@@ -253,6 +310,7 @@ var Action = {
       scene.add(this.cursorSel);
     }
 
+    this.cursorSel.visible = true;
     this.cursorSel.position.set(x, y, z);
     this.cursorSel.scale.set(1, 1, 1);
 

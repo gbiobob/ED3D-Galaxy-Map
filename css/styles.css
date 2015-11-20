@@ -99,22 +99,27 @@ body {
   margin: 2px;
   background: rgba(0,0,0,0.5);
 }
-#coords {
+.coords {
   padding-bottom: 5px;
   margin-bottom: 10px;
   border-bottom: solid 1px #444;
+  font-family: "Courier New";
 }
-#coords > span {
+.coords > span {
   display: block;
-  font-weight: bold;
-  font-size: 1.1rem;
+  font-size: 1rem;
   float: left;
   width: 33%;
   text-align: center;
+  background: rgba(30,30,30,0.5);
+  padding: 5px 0;
+  line-height: 100%;
+  border: solid 3px #000;
+  box-shadow: 2px 2px 5px #000;
   box-sizing: border-box;
   -webkit-box-sizing: border-box;
 }
-#coords:after {
+.coords:after {
   content: ' ';
   display: block;
   clear: both;
