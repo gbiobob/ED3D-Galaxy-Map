@@ -9,16 +9,19 @@ var Grid = {
 
   'coordTxt'   : null,
 
+  'minDistView' : null,
+
   /**
    * Create 2 base grid scaled on Elite: Dangerous grid
    */
 
-  'init' : function(size, color) {
+  'init' : function(size, color, minDistView) {
 
     this.size = size;
 
     this.obj = new THREE.GridHelper(1000000, size);
     this.obj.setColors(color, color);
+    this.obj.minDistView = minDistView;
 
     scene.add(this.obj);
 
@@ -40,7 +43,10 @@ var Grid = {
 
     if(this.coordGrid != null) {
 
-      if(Math.abs(camera.position.y-this.obj.position.y)>this.size*10) {
+      if(
+        Math.abs(camera.position.y-this.obj.position.y)>this.size*10
+        || Math.abs(camera.position.y-this.obj.position.y) < this.obj.minDistView
+      ) {
         this.coordGrid.visible = false;
         return;
       }

@@ -8,8 +8,9 @@ var Action = {
   'objHover' : null,
 
   /**
-   * Create a Line route
+   * Init Raycaster for events on Systems
    */
+
   'init' : function() {
 
     this.mouseVector = new THREE.Vector3();
@@ -17,7 +18,7 @@ var Action = {
 
     container.addEventListener('mousedown', this.onMouseClick, false);
     //container.addEventListener('mousemove', this.onMouseHover, false);
- },
+  },
 
   /**
    * Mouse Hover
@@ -57,7 +58,6 @@ var Action = {
 
   },
 
-
   'hoverOnObj' : function (indexPoint) {
 
     if(this.objHover == indexPoint) return;
@@ -69,6 +69,7 @@ var Action = {
     this.objHover = indexPoint;
 
   },
+
   'outOnObj' : function () {
 
     if(this.objHover === null || System.particleGeo.vertices[this.objHover] == undefined)
@@ -83,9 +84,8 @@ var Action = {
 
   },
 
-
   /**
-   * Mouse down
+   * On system click
    */
 
   'onMouseClick' : function (e) {
@@ -129,18 +129,30 @@ var Action = {
 
   },
 
-
+  /**
+   * Move to the next visible system
+   *
+   * @param {int} indexPoint
+   */
 
   'moveNextPrev' : function (indexPoint) {
 
+    //-- If next|previous is undefined, loop to the first|last
     if (indexPoint < 0) indexPoint = System.particleGeo.vertices.length-1;
     else if (System.particleGeo.vertices[indexPoint] == undefined) indexPoint = 0;
 
+    //-- Move to
     var selPoint = System.particleGeo.vertices[indexPoint];
     Action.moveToObj(indexPoint, selPoint);
 
   },
 
+  /**
+   * Move camera to a system
+   *
+   * @param {int} index - The system index
+   * @param {object} obj - System datas
+   */
 
   'moveToObj' : function (index, obj) {
 
@@ -156,14 +168,11 @@ var Action = {
 
     //-- If in far view reset to classic view
     disableFarView(25, false);
-    //controls.update();
-    //render();
 
     //-- Move grid to object
     this.moveGridTo(goX, goY, goZ);
 
-    //-- Move camera to target
-    //-- Smooth move
+    //-- Move camera to target (Smooth move using Tween)
 
     var moveFrom = {
       x: camera.position.x, y: camera.position.y , z: camera.position.z,
@@ -203,6 +212,14 @@ var Action = {
 
   },
 
+  /**
+   * Create a cusros on selected system
+   *
+   * @param {number} x
+   * @param {number} y
+   * @param {number} z
+   */
+
   'addCusorOnSelect' : function (x, y, z) {
 
     if(this.cursorSel == null) {
@@ -225,9 +242,9 @@ var Action = {
       this.cursorSel.add(cone);
 
       //-- Inner cone
-      var geometryConeInner = new THREE.CylinderGeometry(0, 4, 16, 4, 1, false);
+      var geometryConeInner = new THREE.CylinderGeometry(0, 3.6, 16, 4, 1, false);
       var coneInner = new THREE.Mesh(geometryConeInner, Ed3d.material.black);
-      coneInner.position.set(0, 20.1, 0);
+      coneInner.position.set(0, 20.2, 0);
       coneInner.rotation.x = Math.PI;
       this.cursorSel.add(coneInner);
 
@@ -240,6 +257,14 @@ var Action = {
     this.cursorSel.scale.set(1, 1, 1);
 
   },
+
+  /**
+   * Move grid to selection
+   *
+   * @param {number} goX
+   * @param {number} goY
+   * @param {number} goZ
+   */
 
   'moveGridTo' : function (goX, goY, goZ) {
     var posX = Math.floor(goX/1000)*1000;

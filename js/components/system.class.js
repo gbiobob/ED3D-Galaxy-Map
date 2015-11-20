@@ -7,8 +7,12 @@ var System = {
   'count' : 0,
 
   /**
+   * Add a system in galaxy
    *
+   * @param  {object} val        System properties (x, y, z, name are mandatory)
+   * @param  {string} withSolid  Add a solid sphere (default: false)
    */
+
   'create' : function(val, withSolid) {
 
     if(withSolid==undefined) withSolid = false;
@@ -49,6 +53,7 @@ var System = {
     }
 
     if(withSolid) {
+
       //-- Add glow sprite from first cat color if defined, else take white glow
 
       var mat = Ed3d.material.glow_1;
@@ -77,11 +82,18 @@ var System = {
   },
 
 
+  /**
+   * Init the galaxy particle geometry
+   */
+
   'initParticleSystem' : function () {
-
     this.particleGeo = new THREE.Geometry;
-
   },
+
+  /**
+   * Create the particle system
+   */
+
   'endParticleSystem' : function () {
 
     this.particleGeo.colors = this.particleColor;
@@ -89,7 +101,7 @@ var System = {
     var particleMaterial = new THREE.PointsMaterial({
       map: Ed3d.textures.flare_yellow,
       vertexColors: THREE.VertexColors,
-      size: 200,
+      size: 64,
       fog: false,
       blending: THREE.AdditiveBlending,
       transparent: true,
@@ -109,6 +121,7 @@ var System = {
   /**
    * Load Spectral system color
    */
+
   'loadSpectral' : function(val) {
 
   }

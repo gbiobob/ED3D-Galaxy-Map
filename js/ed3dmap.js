@@ -151,9 +151,9 @@ var Ed3d = {
 
       // Create grid
 
-      Ed3d.grid1H  = $.extend({}, Grid.init(100, 0x111E23), {});
-      Ed3d.grid1K  = $.extend({}, Grid.init(1000, 0x22323A), {});
-      Ed3d.grid1XL = $.extend({}, Grid.init(10000, 0x22323A), {});
+      Ed3d.grid1H  = $.extend({}, Grid.init(100, 0x111E23, 0), {});
+      Ed3d.grid1K  = $.extend({}, Grid.init(1000, 0x22323A, 1000), {});
+      Ed3d.grid1XL = $.extend({}, Grid.init(10000, 0x22323A, 10000), {});
 
 
       // Add some scene enhancement
@@ -181,7 +181,7 @@ var Ed3d = {
 
     //-- Load textures
     this.textures.flare_white = texloader.load(Ed3d.basePath + "textures/lensflare/flare2.png");
-    this.textures.flare_yellow = texloader.load(Ed3d.basePath + "textures/lensflare/star_grey.png");
+    this.textures.flare_yellow = texloader.load(Ed3d.basePath + "textures/lensflare/star_grey2.png");
     this.textures.flare_center = texloader.load(Ed3d.basePath + "textures/lensflare/flare3.png");
 
     //-- Load sprites
@@ -219,7 +219,7 @@ var Ed3d = {
 
     //Scene
     scene = new THREE.Scene();
-    //scene.scale.set(10,10,10);
+    /*scene.scale.set(10,10,10);*/
 
     //camera
     camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 1, 200000);
@@ -246,6 +246,7 @@ var Ed3d = {
     controls.rotateSpeed = 1.0;
     controls.zoomSpeed = 3.0;
     controls.panSpeed = 0.8;
+    controls.maxDistance = 40000;
     controls.noZoom=!1;controls.noPan=!1;controls.staticMoving=!0;controls.dynamicDampingFactor=.3;
 
     // Add Fog
@@ -332,7 +333,7 @@ var Ed3d = {
     var sizeStars = 10000;
 
     var particles = new THREE.Geometry;
-    for (var p = 0; p < 5000; p++) {
+    for (var p = 0; p < 5; p++) {
       var particle = new THREE.Vector3(
         Math.random() * sizeStars - (sizeStars / 2),
         Math.random() * sizeStars - (sizeStars / 2),
@@ -442,45 +443,32 @@ function enableFarView (scale, withAnim) {
 
 
   //-- Scale change animation
-  var newScale = parseFloat(1/(25/3));
+  var scaleFrom = {zoom:25};
+  var scaleTo = {zoom:500};
   if(withAnim) {
 
-    var scaleFrom = {
-      x: 1, y: 1 , z: 1
-    };
-    var scaleTo = {
-      x: 10, y: 10, z: 10
-    };
-
-    controls.enabled = false;
-    Ed3d.tween = new TWEEN.Tween(scaleFrom).to(scaleTo, 1000)
+    //controls.enabled = false;
+    Ed3d.tween = new TWEEN.Tween(scaleFrom).to(scaleTo, 500)
       .start()
       .onUpdate(function () {
-        camera.scale.set(scaleFrom.x,scaleFrom.y,scaleFrom.z);
-      })
-      .onComplete(function () {
+        Galaxy.milkyway[0].material.size = scaleFrom.zoom;
+        Galaxy.milkyway[1].material.size = scaleFrom.zoom*4;
 
-        //camera.scale.set(newScale, newScale, newScale);
+        System.particle.material.size = scaleFrom.zoom*4;
+      });
 
-        controls.enabled = true;
-        controls.update();
-
-
-    });
   } else {
-    camera.scale.set(newScale,newScale,newScale);
-    controls.update();
+    Galaxy.milkyway[0].material.size = scaleTo;
+    Galaxy.milkyway[1].material.size = scaleTo*4;
   }
 
-  //-- Show element
-  Galaxy.milkyway.visible = true;
 
-  Galaxy.obj.scale.set(20,20,20);
-  if(Action.cursorSel != null)  Action.cursorSel.scale.set(100,100,100);
+  //Galaxy.obj.scale.set(20,20,20);
+  if(Action.cursorSel != null)  Action.cursorSel.scale.set(60,60,60);
   Ed3d.grid1H.obj.visible = false;
   Ed3d.grid1K.obj.visible = false;
   Ed3d.starfield.visible = false;
-  scene.fog.density = 0.00005;
+  scene.fog.density = 0.000009;
 
 
 
@@ -489,42 +477,36 @@ function enableFarView (scale, withAnim) {
 function disableFarView(scale, withAnim) {
 
   if(!isFarView) return;
-  if(withAnim == undefined) withAnim = false;
+  if(withAnim == undefined) withAnim = true;
 
   isFarView = false;
   var oldScale = parseFloat(1/(25/3));
 
-  //Ed3d.systems.forEach(function(el) {scene.getObjectById( el.idsprite, true ).scale.set(1, 1, 1.0)});
 
   //-- Scale change animation
+
+  var scaleFrom = {zoom:250};
+  var scaleTo = {zoom:64};
   if(withAnim) {
-    var scaleFrom = {
-      x: oldScale, y: oldScale, z: oldScale
-    };
-    var scaleTo = {
-      x: 1, y: 1 , z: 1
-    };
-    controls.enabled = false;
-    Ed3d.tween = new TWEEN.Tween(scaleFrom).to(scaleTo, 1000)
+
+    //controls.enabled = false;
+    Ed3d.tween = new TWEEN.Tween(scaleFrom).to(scaleTo, 500)
       .start()
       .onUpdate(function () {
-        camera.scale.set(scaleFrom.x,scaleFrom.y,scaleFrom.z);
-        controls.update();
-      })
-      .onComplete(function () {
-        controls.enabled = true;
-        controls.update();
+        Galaxy.milkyway[0].material.size = scaleFrom.zoom;
+        Galaxy.milkyway[1].material.size = scaleFrom.zoom;
+        System.particle.material.size = scaleFrom.zoom;
+      });
 
-    //controls = new THREE.OrbitControls(camera, container);
-    });
   } else {
-    camera.scale.set(1,1,1);
+    Galaxy.milkyway[0].material.size = scaleTo;
+    Galaxy.milkyway[1].material.size = scaleTo;
   }
 
 
-
   //-- Show element
-  Galaxy.milkyway.visible = false;
+ // Galaxy.milkyway[0].visible = true;
+  Galaxy.milkyway[0].material.size = 16;
 //
   //Galaxy.obj.scale.set(1,1,1);
   camera.scale.set(1,1,1);

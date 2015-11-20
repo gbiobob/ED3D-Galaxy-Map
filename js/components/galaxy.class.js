@@ -3,7 +3,7 @@ var Galaxy = {
 
 
   'obj' : null,
-  'milkyway' : null,
+  'milkyway' : [],
   'colors' : [],
 
   'x' : 25,
@@ -36,7 +36,7 @@ var Galaxy = {
     img.onload = function () {
 
       //get height data from img
-      Galaxy.getHeightData(img,10);
+      Galaxy.getHeightData(img);
 
     };
     // load img source
@@ -45,15 +45,19 @@ var Galaxy = {
 
   },
 
-  //return array with height data from img
-  'getHeightData' : function(img,scale) {
+  /**
+   * Create a particle cloud milkyway from an image
+   *
+   * @param  {Image} img - Image object
+   */
 
+  'getHeightData' : function(img) {
 
     var particles = new THREE.Geometry;
-
-    if (scale == undefined) scale=1;
+    var particlesBig = new THREE.Geometry;
 
     //-- Get pixels from milkyway image
+
     var canvas = document.createElement( 'canvas' );
     canvas.width = img.width;
     canvas.height = img.height;
@@ -67,10 +71,14 @@ var Galaxy = {
     var pix = imgd.data;
 
     //-- Build galaxy from image data
+
     var j=0;
     var min = 8;
     var nb = 0;
-    var maxDensity = 14;
+    var maxDensity = 15;
+
+    var colorsBig = [];
+    var nbBig = 0;
 
     for (var i = 0; i<pix.length; i +=4) {
 
@@ -79,54 +87,93 @@ var Galaxy = {
       var avg = Math.round((pix[i]+pix[i+1]+pix[i+2])/3);
 
       if(avg>min) {
+
         var x = 15.6*((i / 4) % img.width);
         var z = 15.6*(Math.floor((i / 4) / img.height));
 
         var density = Math.floor((pix[i]-min)/10);
         if(density>maxDensity) density = maxDensity;
 
+        var add = Math.ceil(density/maxDensity*2);
+        for (var y = -density; y < density; y = y+add) {
 
-        for (var y = -density; y < density; y++) {
           var particle = new THREE.Vector3(
-            x+(Math.random() * 50),
+            x+(Math.random() * 25),
             (y*10)+(Math.random() * 50),
-            z+(Math.random() * 50)
+            z+(Math.random() * 25)
           );
-          particles.vertices.push(particle);
+
+          //-- Particle color from pixel
 
           var r = Math.round(pix[i]);
           var g = Math.round(pix[i+1]);
           var b = Math.round(pix[i+2]);
 
-          this.colors[nb] = new THREE.Color("rgb("+r+", "+g+", "+b+")");
-          nb++;
+
+          //-- Big particle
+
+          if(density>=2 && Math.abs(y)-1==0 &&  Math.random() * 1000 < 200) {
+            particlesBig.vertices.push(particle);
+            colorsBig[nbBig] = new THREE.Color("rgb("+r+", "+g+", "+b+")");
+            nbBig++;
+
+          //-- Small particle
+
+          } else if(density<4 || (Math.random() * 1000 < 400-(density*2))) {
+            particles.vertices.push(particle);
+            this.colors[nb] = new THREE.Color("rgb("+r+", "+g+", "+b+")");
+            nb++;
+          }
         };
       }
     }
 
+    //-- Create small particles milkyway
 
     particles.colors = this.colors;
 
     var particleMaterial = new THREE.PointsMaterial({
-      map: Ed3d.textures.flare_white, transparent: true, size: 25,
+      map: Ed3d.textures.flare_yellow,
+      transparent: true,
+      size: 64,
       vertexColors: THREE.VertexColors,
       blending: THREE.AdditiveBlending,
       depthTest: true,
       depthWrite: false
     });
 
-
-    //particleMaterial.color.setHSL( 1.0, 0.2, 0.7 );
-
     var points = new THREE.Points(particles, particleMaterial);
     points.sortParticles = true;
     particles.center();
 
-    this.milkyway = points;
-    this.milkyway.visible = false;
+    this.milkyway[0] = points;
+    this.milkyway[0].scale.set(20,20,20);
 
     this.obj.add(points);
 
+
+    //-- Create big particles milkyway
+
+    particlesBig.colors = colorsBig;
+
+    var particleMaterialBig = new THREE.PointsMaterial({
+      map: Ed3d.textures.flare_yellow,
+      transparent: true,
+      vertexColors: THREE.VertexColors,
+      size: 16,
+      blending: THREE.AdditiveBlending,
+      depthTest: true,
+      depthWrite: false
+    });
+
+    var pointsBig = new THREE.Points(particlesBig, particleMaterialBig);
+    pointsBig.sortParticles = true;
+    particlesBig.center();
+
+    this.milkyway[1] = pointsBig;
+    this.milkyway[1].scale.set(20,20,20);
+
+    this.obj.add(pointsBig);
   }
 
 }

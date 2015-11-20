@@ -28,12 +28,6 @@ var HUD = {
       '  <div id="filters">'+
       '  </div>'+
 
-      '  <div id="options">'+
-      '    <h2>Options</h2>'+
-      '    <p>Distance obj<input id="opt_distance" type="range" value="1000" max="3000" min="500" step="500"></p>'+
-      '    <p>Fog<input id="opt_fog" type="range" value="0.0001" max="0.0004" min="0.00005" step="0.00001"></p>'+
-      '  </div>'+
-
 
       '</div>'
     );
@@ -58,7 +52,7 @@ var HUD = {
 
 
     //-- Disable 3D controls when mouse hover the Hud
-    $( "#hud" ).hover(
+    $( "#hud, #systemDetails" ).hover(
       function() {
         controls.enabled = false;
       }, function() {
@@ -83,21 +77,16 @@ var HUD = {
 
         obj = System.particleGeo.vertices[indexPoint];
 
-        /*System.particleGeo.vertices.splice(key, 1);
-        System.particleGeo.verticesNeedUpdate = true;*/
         System.particleGeo.colors[indexPoint] = (active==1)
           ? obj.color
           : new THREE.Color('#000000');
 
-        //obj = scene.getObjectById( idObj, true );
         obj.visible = (active==1);
         obj.filtered = (active==1);
 
-       // System.particleGeo.verticesNeedUpdate = true;
         System.particleGeo.colorsNeedUpdate = true;
 
 
-        //scene.getObjectById( obj.idsprite, true ).visible = (active==1);
       });
       $(this).data('active',active);
       $(this).toggleClass('disabled');
@@ -118,17 +107,6 @@ var HUD = {
 
       var elId = $(this).parent().data('route');
       routes[elId].visible = !routes[elId].visible;
-    });
-
-
-    $('#opt_distance').change(function(e) {
-      Ed3d.optDistObj = $(this).val();
-    });
-
-
-    $('#opt_fog').change(function(e) {
-      scene.fog.density = $(this).val();
-      Ed3d.fogDensity = scene.fog.density;
     });
 
   },
@@ -238,13 +216,6 @@ var HUD = {
   'addText' : function(id, textShow, x, y, z, size, addToObj) {
 
     if(addToObj == undefined) addToObj = scene;
-
-   /* if(Ed3d.textSel[id] !== undefined) {
-      scene.getObjectById( Ed3d.textSel[id], true ).remove(  );
-
-      //scene.remove( Ed3d.textSel[id] );
-
-    }*/
 
     var textShapes = THREE.FontUtils.generateShapes(textShow, {
       'font': 'helvetiker',
