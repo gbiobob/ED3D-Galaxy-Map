@@ -30,7 +30,7 @@ Require JQuery & Three.js
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r73/three.min.js"></script>
 <!-- Launch ED3Dmap -->
 <link href="css/styles.css" rel="stylesheet" type="text/css" />
-<script src="js/ed3dmap.js"></script>
+<script src="js/ed3dmap.min.js"></script>
 <script type="text/javascript">
   Ed3d.init({
       container   : 'edmap',
