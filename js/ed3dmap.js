@@ -542,8 +542,12 @@ function render() {
 
 window.addEventListener('resize', function () {
   if(renderer != undefined) {
-    renderer.setSize(container.offsetWidth, container.offsetHeight);
-    camera.aspect = container.offsetWidth / container.offsetHeight;
+    var width = container.offsetWidth;
+    var height = container.offsetHeight;
+    if(width<100) width = 100;
+    if(height<100) height = 100;
+    renderer.setSize(width, height);
+    camera.aspect = width / height;
     camera.updateProjectionMatrix();
   }
 });
