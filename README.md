@@ -4,8 +4,17 @@ Work with JSon file to embed stelar systems data.
 
 View [demo sample](http://en.ed-board.net/3Dgalnet/)
 
+## Features
+* JSON file to fill the map.
+* Manage click event to display information related to a system (if detailed infos, need to be in the JSON file).
+* Display a global view of the galaxy that reproduces the ingame galaxy - Generated from a volumetric particle cloud from an ingame screenshot (a kind of heightmap).
+* HUD with customizable categories to filter the map. [Optional] 
+* CSS+HTML HUD to fit to any style.
+* Systems colorizations using color attribute that can be set on each category and soon use color from ingame stellar type (if stellar type defined in JSon file for each system). [Optional]
+* Can show exploration routes.
+
 ## Requirement
-Require JQuery & Three.js
+Require Three.js & JQuery
 
 ## Options
 **container:** The container ID. *(Required)*
