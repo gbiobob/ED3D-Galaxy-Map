@@ -44,7 +44,8 @@ var Galaxy = {
         camera.position.set(-10000, 40000, 50000);
         Action.moveInitalPosition(4000);
       }
-      $('#loader').hide();
+
+      Ed3d.showScene();
 
     };
     // load img source

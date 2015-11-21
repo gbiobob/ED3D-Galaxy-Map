@@ -246,6 +246,7 @@ var Ed3d = {
 
     //Scene
     scene = new THREE.Scene();
+    scene.visible = false;
     /*scene.scale.set(10,10,10);*/
 
     //camera
@@ -280,6 +281,17 @@ var Ed3d = {
     scene.fog = new THREE.FogExp2(0x0D0D10, 0.000128);
     renderer.setClearColor(scene.fog.color, 1);
     Ed3d.fogDensity = scene.fog.density;
+
+  },
+
+  /**
+   * Show the scene when fully loaded
+   */
+
+  'showScene' : function() {
+
+      $('#loader').hide();
+      scene.visible = true;
 
   },
 
