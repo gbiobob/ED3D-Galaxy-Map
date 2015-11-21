@@ -116,6 +116,7 @@ var Ed3d = {
         jsonPath: Ed3d.jsonPath,
         withHudPanel: Ed3d.withHudPanel,
         hudMultipleSelect: Ed3d.hudMultipleSelect,
+        effectSystemFar: Ed3d.effectSystemFar,
         startAnim: Ed3d.startAnim
     }, options);
 
