@@ -94,7 +94,7 @@ var Ed3d = {
   'startAnim' : true,
 
   //-- Effect on far view for system
-  'effectSystemFar' : false,
+  'effectSystemFar' : true,
 
   //-- Graphical Options
   'optDistObj' : 1500,

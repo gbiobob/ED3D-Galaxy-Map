@@ -50,6 +50,14 @@ var HUD = {
    */
   'initHudAction' : function() {
 
+    //-- Disable 3D controls when mouse hover the Hud
+    $( "canvas" ).hover(
+      function() {
+        controls.enabled = true;
+      }, function() {
+        controls.enabled = false;
+      }
+    );
 
     //-- Disable 3D controls when mouse hover the Hud
     $( "#hud" ).hover(
