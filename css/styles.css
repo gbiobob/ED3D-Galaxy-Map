@@ -10,10 +10,6 @@ body {
 /* HUD */
 /* -------------------------------------------------------------------------- */
 
-#edmap {
-  position: relative;
-  height: 700px;
-}
 
 #ed3dmap {
   font-family: Helvetica, Sans-serif;
