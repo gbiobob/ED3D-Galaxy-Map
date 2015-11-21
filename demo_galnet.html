@@ -6,20 +6,29 @@
   <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
   <title>ED-Board - 3D Galaxy map test</title>
   <link href="http://fonts.googleapis.com/css?family=Orbitron:400" rel="stylesheet" type="text/css" />
-  <!-- Load CSS -->
-  <link href="css/styles.css" rel="stylesheet" type="text/css" />
+  <!-- Custom CSS -->
+  <style type="text/css">
+  #systemDetails,
+  #hud {
+    width:450px;
+  }
+
+  #edmap {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+  }
+  </style>
+
 </head>
 
   <body>
 
 
 
-    <div id="edmap">
-
-
-      <div id="ed3dmap"></div>
-
-    </div>
+    <div id="edmap"></div>
 
 
     <!-- Loader -->
@@ -28,25 +37,25 @@
     </div>
 
 
-
-
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
   <!-- Three.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r73/three.min.js"></script>
 
 
-
-
-
   <!-- Launch ED3Dmap -->
-  <script src="js/ed3dmap.js?v=2"></script>
+  <link href="css/styles.css" rel="stylesheet" type="text/css" />
+  <script src="js/ed3dmap.min.js?v=4"></script>
   <script type="text/javascript">
+
     Ed3d.init({
         container   : 'edmap',
-        jsonPath    : "./../cache/map/1.json",
-        withEffects : true
+        jsonPath    : "json_samples/galnet.json",
+        withHudPanel : true,
+        hudMultipleSelect : false,
+        startAnim: true
     });
+
   </script>
 
 </body>
