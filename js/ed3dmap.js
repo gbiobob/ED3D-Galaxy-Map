@@ -20,6 +20,7 @@ var Ed3d = {
   'container'   : null,
   'basePath'    : './',
   'jsonPath'    : null,
+  'jsonContainer' : null,
 
   'grid1H' : null,
   'grid1K' : null,
@@ -114,6 +115,7 @@ var Ed3d = {
         container: Ed3d.container,
         basePath: Ed3d.basePath,
         jsonPath: Ed3d.jsonPath,
+        jsonContainer: Ed3d.jsonContainer,
         withHudPanel: Ed3d.withHudPanel,
         hudMultipleSelect: Ed3d.hudMultipleSelect,
         effectScaleSystem: Ed3d.effectScaleSystem,
@@ -126,6 +128,7 @@ var Ed3d = {
     this.basePath          = options.basePath;
     this.container         = options.container;
     this.jsonPath          = options.jsonPath;
+    this.jsonContainer     = options.jsonContainer;
     this.withHudPanel      = options.withHudPanel;
     this.hudMultipleSelect = options.hudMultipleSelect;
     this.startAnim         = options.startAnim;
@@ -190,7 +193,8 @@ var Ed3d = {
       Ed3d.skyboxStars();
 
       // Load systems
-      Ed3d.loadDatas();
+      if(this.jsonPath != null) Ed3d.loadDatasFromFile();
+      else if(this.jsonContainer != null) Ed3d.loadDatasFromContainer();
 
       // Animate
       animate();
@@ -300,9 +304,29 @@ var Ed3d = {
    * Load Json file to fill map
    */
 
-  'loadDatas' : function() {
+  'loadDatasFromFile' : function() {
 
     $.getJSON(this.jsonPath, function(data) {
+
+      Ed3d.loadDatas(data);
+
+    }).done(function() {
+
+      Ed3d.loadDatasComplete();
+
+    });
+  },
+
+  'loadDatasFromContainer' : function() {
+
+    var content = $('#'+this.jsonContainer).html();
+    var json = JSON.parse(content)
+    Ed3d.loadDatas(json);
+    Ed3d.loadDatasComplete();
+
+  },
+
+  'loadDatas' : function(data) {
 
       HUD.create("ed3dmap");
 
@@ -336,18 +360,15 @@ var Ed3d = {
         });
       }
 
+  },
 
-    }).done(function() {
+  'loadDatasComplete' : function() {
 
       System.endParticleSystem();
       HUD.init();
       Action.init();
 
-    });;
   },
-
-
-
 
   /**
    * Add an object to a category
