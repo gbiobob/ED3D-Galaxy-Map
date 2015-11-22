@@ -93,8 +93,8 @@ var Ed3d = {
   //-- Start animation
   'startAnim' : true,
 
-  //-- Effect on far view for system
-  'effectSystemFar' : true,
+  //-- Scale system effect
+  'effectScaleSystem' : [10,800],
 
   //-- Graphical Options
   'optDistObj' : 1500,
@@ -116,7 +116,7 @@ var Ed3d = {
         jsonPath: Ed3d.jsonPath,
         withHudPanel: Ed3d.withHudPanel,
         hudMultipleSelect: Ed3d.hudMultipleSelect,
-        effectSystemFar: Ed3d.effectSystemFar,
+        effectScaleSystem: Ed3d.effectScaleSystem,
         startAnim: Ed3d.startAnim
     }, options);
 
@@ -129,7 +129,7 @@ var Ed3d = {
     this.withHudPanel      = options.withHudPanel;
     this.hudMultipleSelect = options.hudMultipleSelect;
     this.startAnim         = options.startAnim;
-    this.effectSystemFar   = options.effectSystemFar;
+    this.effectScaleSystem = options.effectScaleSystem;
 
     //-- Init 3D map container
     $('#'+Ed3d.container).append('<div id="ed3dmap"></div>');
@@ -449,7 +449,8 @@ function animate(time) {
 
 
   //-- Zoom on on galaxy effect
-  //if(Galaxy.obj != null)
+  Action.sizeOnScroll(scale);
+
   if(scale>25) {
 
     enableFarView(scale);
@@ -474,9 +475,6 @@ function enableFarView (scale, withAnim) {
 
   isFarView = true;
 
-
-
-
   //-- Scale change animation
   var scaleFrom = {zoom:25};
   var scaleTo = {zoom:500};
@@ -488,7 +486,6 @@ function enableFarView (scale, withAnim) {
       .onUpdate(function () {
         Galaxy.milkyway[0].material.size = scaleFrom.zoom;
         Galaxy.milkyway[1].material.size = scaleFrom.zoom*4;
-        if(Ed3d.effectSystemFar) System.particle.material.size = scaleFrom.zoom*4;
       });
 
   } else {
@@ -529,7 +526,6 @@ function disableFarView(scale, withAnim) {
       .onUpdate(function () {
         Galaxy.milkyway[0].material.size = scaleFrom.zoom;
         Galaxy.milkyway[1].material.size = scaleFrom.zoom;
-        if(Ed3d.effectSystemFar) System.particle.material.size = scaleFrom.zoom;
       });
 
   } else {

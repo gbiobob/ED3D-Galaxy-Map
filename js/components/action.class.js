@@ -8,6 +8,8 @@ var Action = {
   'objHover' : null,
   'mouseUpDownTimer' : null,
 
+  'prevScale' : null,
+
   /**
    * Init Raycaster for events on Systems
    */
@@ -33,6 +35,31 @@ var Action = {
     event.preventDefault();
     event.stopPropagation();
   },
+
+
+  /**
+   * Update particle size on zoom in/out
+   */
+
+  'sizeOnScroll' : function (scale) {
+
+    if(System.particle == undefined || scale<=0) return;
+
+    var minScale = Ed3d.effectScaleSystem[0];
+    var maxScale = Ed3d.effectScaleSystem[1];
+    var newScale = scale*20;
+
+    if(this.prevScale == newScale) return;
+    this.prevScale = newScale;
+
+
+    if(newScale>maxScale) newScale = maxScale;
+    if(newScale<minScale) newScale = minScale;
+
+    System.particle.material.size = newScale;
+
+  },
+
 
   /**
    * Mouse Hover
@@ -137,7 +164,7 @@ var Action = {
 
     this.mouseVector.unproject(camera);
     this.raycaster = new THREE.Raycaster(camera.position, this.mouseVector.sub(camera.position).normalize());
-    this.raycaster.params.Points.threshold = 5;
+    this.raycaster.params.Points.threshold = 2;
 
     // create an array containing all objects in the scene with which the ray intersects
     var intersects = this.raycaster.intersectObjects(scene.children);

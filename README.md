@@ -8,7 +8,7 @@ View [demo sample](http://en.ed-board.net/3Dgalnet/)
 * JSON file to fill the map.
 * Manage click event to display information related to a system (if detailed infos, need to be in the JSON file).
 * Display a global view of the galaxy that reproduces the ingame galaxy - Generated from a volumetric particle cloud from an ingame screenshot (a kind of heightmap).
-* HUD with customizable categories to filter the map. [Optional] 
+* HUD with customizable categories to filter the map. [Optional]
 * CSS+HTML HUD to fit to any style.
 * Systems colorizations using color attribute that can be set on each category and soon use color from ingame stellar type (if stellar type defined in JSon file for each system). [Optional]
 * Can show exploration routes.
@@ -26,6 +26,8 @@ Require Three.js & JQuery
 **withHudPanel:** Enable the HUD (panel to filter and navigate throughout systems). *Default: false*
 
 **hudMultipleSelect:** Enable showing multiple filters at same time *Default: true*
+
+**effectScaleSystem:** Set min & max value for system scale effect on zoom in/out *Default: [10,800]*
 
 **startAnim:** Use initial animation (Zoom into the galaxy) *Default: true*
 
