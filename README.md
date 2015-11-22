@@ -21,13 +21,15 @@ Require Three.js & JQuery
 
 **jsonPath:** The JSon containing systems data. *(Required)*
 
+**jsonContainer:** Optionaly set an Id of container with JSon systems data. (Can be used on small project, JSon file stay better).
+
 **basePath:** Custom base path
 
 **withHudPanel:** Enable the HUD (panel to filter and navigate throughout systems). *Default: false*
 
 **hudMultipleSelect:** Enable showing multiple filters at same time *Default: true*
 
-**effectScaleSystem:** Set min & max value for system scale effect on zoom in/out *Default: [10,800]*
+**effectScaleSystem:** Set an array with min & max value for system scale effect on zoom in/out *Default: [10,800]*
 
 **startAnim:** Use initial animation (Zoom into the galaxy) *Default: true*
 
