@@ -6,6 +6,7 @@ var Action = {
   'raycaster' : null,
   'oldSel' : null,
   'objHover' : null,
+  'mouseUpDownTimer' : null,
 
   /**
    * Init Raycaster for events on Systems
@@ -16,7 +17,8 @@ var Action = {
     this.mouseVector = new THREE.Vector3();
     this.raycaster = new THREE.Raycaster();
 
-    container.addEventListener('mousedown', this.onMouseClick, false);
+    container.addEventListener('mousedown', this.onMouseDown, false);
+    container.addEventListener('mouseup', this.onMouseUp, false);
     //container.addEventListener('mousemove', this.onMouseHover, false);
   },
 
@@ -89,10 +91,30 @@ var Action = {
    * On system click
    */
 
-  'onMouseClick' : function (e) {
+  'onMouseDown' : function (e) {
+
+    this.mouseUpDownTimer = Date.now();
+
+  },
+
+
+  /**
+   * On system click
+   */
+
+  'onMouseUp' : function (e) {
 
     e.preventDefault();
 
+    //-- If long clic down, don't do anything
+    var difference = (Date.now()-this.mouseUpDownTimer)/1000;
+    if (difference > 0.2) {
+      this.mouseUpDownTimer = null;
+      return;
+    }
+    this.mouseUpDownTimer = null;
+
+    //-- Raycast object
 
     var position = $('#ed3dmap').offset();
 
@@ -122,13 +144,12 @@ var Action = {
             );
 
             var isMove = Action.moveToObj(indexPoint, selPoint);
+
             if(isMove) return;
           }
 
         }
       }
-
-
 
     }
 
@@ -221,6 +242,8 @@ var Action = {
 
     if (this.oldSel !== null && this.oldSel == index)  return false;
 
+    controls.enabled = false;
+
     HUD.setInfoPanel(index, obj);
     HUD.openHudDetails();
 
@@ -246,7 +269,6 @@ var Action = {
       mx: goX, my: goY , mz: goZ
     };
 
-    controls.enabled = false;
     Ed3d.tween = new TWEEN.Tween(moveFrom, {override:true}).to(moveCoords, 800)
       .start()
       .onUpdate(function () {
@@ -254,7 +276,6 @@ var Action = {
         controls.center.set(moveFrom.mx, moveFrom.my, moveFrom.mz);
       })
       .onComplete(function () {
-        controls.enabled = true;
         controls.update();
       });
 
@@ -270,6 +291,8 @@ var Action = {
 
     HUD.addText('system',  textAdd, 8, 20, 0, 6, this.cursorSel);
     HUD.addText('coords',  textAddC, 8, 15, 0, 3, this.cursorSel);
+
+    controls.enabled = true;
 
     return true;
 
