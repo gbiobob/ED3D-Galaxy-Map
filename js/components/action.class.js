@@ -19,7 +19,19 @@ var Action = {
 
     container.addEventListener('mousedown', this.onMouseDown, false);
     container.addEventListener('mouseup', this.onMouseUp, false);
+
+    container.addEventListener( 'mousewheel', this.stopWinScroll, false );
+    container.addEventListener( 'DOMMouseScroll', this.stopWinScroll, false ); // FF
     //container.addEventListener('mousemove', this.onMouseHover, false);
+  },
+
+  /**
+   * Stop window scroll when mouse on scene
+   */
+
+  'stopWinScroll' : function (event) {
+    event.preventDefault();
+    event.stopPropagation();
   },
 
   /**

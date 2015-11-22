@@ -276,6 +276,7 @@ var Ed3d = {
     controls.maxDistance = 40000;
     controls.noZoom=!1;controls.noPan=!1;controls.staticMoving=!0;controls.dynamicDampingFactor=.3;
 
+
     // Add Fog
 
     scene.fog = new THREE.FogExp2(0x0D0D10, 0.000128);
