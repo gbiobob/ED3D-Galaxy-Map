@@ -33,6 +33,11 @@ Require Three.js & JQuery
 
 **startAnim:** Use initial animation (Zoom into the galaxy) *Default: true*
 
+## Methods
+**Ed3d.init({options}):** Initialize the scene
+
+**Ed3d.rebuild():** Destroy & rebuild the scene (Hard way to refresh the scene to load new JSon data)
+
 ## Exemple
 ```
 <!-- My container -->

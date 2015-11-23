@@ -172,11 +172,26 @@ var Ed3d = {
   },
 
   /**
+   * Rebuild completely the scene
+   */
+
+  'rebuild' : function(options) {
+
+    var handler = window.requestAnimationFrame(animate);
+    window.cancelAnimationFrame(handler);
+    $('#'+Ed3d.container).html('');
+
+    $('#'+Ed3d.container).append('<div id="ed3dmap"></div>');
+
+    Ed3d.launchMap();
+
+  },
+
+  /**
    * Launch
    */
 
   'launchMap' : function() {
-
 
       Ed3d.loadTextures();
 
@@ -191,6 +206,12 @@ var Ed3d = {
 
       // Add some scene enhancement
       Ed3d.skyboxStars();
+
+      // Create HUD
+      HUD.create("ed3dmap");
+
+      // Add galaxy center
+      Galaxy.addGalaxyCenter();
 
       // Load systems
       if(this.jsonPath != null) Ed3d.loadDatasFromFile();
@@ -328,12 +349,8 @@ var Ed3d = {
 
   'loadDatas' : function(data) {
 
-      HUD.create("ed3dmap");
-
+      //-- Init Particle system
       System.initParticleSystem();
-
-      // Add galaxy center
-      Galaxy.addGalaxyCenter();
 
       //-- Load cat filters
       if(data.categories != undefined) HUD.initFilters(data.categories);
