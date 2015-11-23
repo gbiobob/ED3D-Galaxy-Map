@@ -177,13 +177,15 @@ var Ed3d = {
 
   'rebuild' : function(options) {
 
+    this.startAnim = false;
+
     var handler = window.requestAnimationFrame(animate);
     window.cancelAnimationFrame(handler);
-    $('#'+Ed3d.container).html('');
+    $('#'+this.container).html('');
 
-    $('#'+Ed3d.container).append('<div id="ed3dmap"></div>');
+    $('#'+this.container).append('<div id="ed3dmap"></div>');
 
-    Ed3d.launchMap();
+    this.launchMap();
 
   },
 
