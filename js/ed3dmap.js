@@ -185,6 +185,8 @@ var Ed3d = {
     if(this.jsonPath != null) Ed3d.loadDatasFromFile();
     else if(this.jsonContainer != null) Ed3d.loadDatasFromContainer();
 
+    Action.moveInitalPosition();
+
   },
 
   /**
