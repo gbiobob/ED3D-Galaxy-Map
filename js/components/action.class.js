@@ -57,9 +57,9 @@ var Action = {
     if(newScale<minScale) newScale = minScale;
 
     System.particle.material.size = newScale;
+    System.scaleSize = newScale;
 
   },
-
 
   /**
    * Mouse Hover

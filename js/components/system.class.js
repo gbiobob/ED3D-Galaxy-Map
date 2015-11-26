@@ -5,6 +5,7 @@ var System = {
   'particleGeo' : null,
   'particleColor' : [],
   'count' : 0,
+  'scaleSize' : 64,
 
   /**
    * Add a system in galaxy
@@ -102,7 +103,7 @@ var System = {
     var particleMaterial = new THREE.PointsMaterial({
       map: Ed3d.textures.flare_yellow,
       vertexColors: THREE.VertexColors,
-      size: 64,
+      size: this.scaleSize,
       fog: false,
       blending: THREE.AdditiveBlending,
       transparent: true,
@@ -118,6 +119,19 @@ var System = {
     scene.add(this.particle);
   },
 
+
+  /**
+   * Remove systems list
+   */
+
+  'remove' : function() {
+
+    this.particleColor = [];
+    this.particleGeo = null;
+    this.count = 0;
+    scene.remove(this.particle);
+
+  },
 
   /**
    * Load Spectral system color

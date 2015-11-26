@@ -159,6 +159,18 @@ var HUD = {
 
   },
 
+
+  /**
+   * Remove filters list
+   */
+
+  'removeFilters' : function() {
+
+    $('#hud #filters').html('');
+
+  },
+
+
   /**
    *
    */

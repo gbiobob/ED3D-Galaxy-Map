@@ -172,20 +172,18 @@ var Ed3d = {
   },
 
   /**
-   * Rebuild completely the scene
+   * Rebuild completely system list and filter (for new JSon content)
    */
 
   'rebuild' : function(options) {
 
-    this.startAnim = false;
+    // Remove System & HUD filters
+    System.remove();
+    HUD.removeFilters();
 
-    var handler = window.requestAnimationFrame(animate);
-    window.cancelAnimationFrame(handler);
-    $('#'+this.container).html('');
-
-    $('#'+this.container).append('<div id="ed3dmap"></div>');
-
-    this.launchMap();
+    // Reload from JSon
+    if(this.jsonPath != null) Ed3d.loadDatasFromFile();
+    else if(this.jsonContainer != null) Ed3d.loadDatasFromContainer();
 
   },
 
