@@ -98,6 +98,8 @@ var System = {
 
   'endParticleSystem' : function () {
 
+    if(this.particleGeo == null) return;
+
     this.particleGeo.colors = this.particleColor;
 
     var particleMaterial = new THREE.PointsMaterial({

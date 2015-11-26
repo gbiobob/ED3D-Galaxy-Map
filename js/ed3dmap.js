@@ -341,13 +341,14 @@ var Ed3d = {
   'loadDatasFromContainer' : function() {
 
     var content = $('#'+this.jsonContainer).html();
+    var json = null;
 
     try {
-      var json = JSON.parse(content);
-      Ed3d.loadDatas(json);
+      json = JSON.parse(content);
     } catch (e) {
-      console.error("Parsing error:", e);
+      console.log("Can't load JSon for systems");
     }
+    if(json != null) Ed3d.loadDatas(json);
 
     Ed3d.loadDatasComplete();
 
