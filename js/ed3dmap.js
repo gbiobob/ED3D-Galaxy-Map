@@ -341,8 +341,14 @@ var Ed3d = {
   'loadDatasFromContainer' : function() {
 
     var content = $('#'+this.jsonContainer).html();
-    var json = JSON.parse(content)
-    Ed3d.loadDatas(json);
+
+    try {
+      var json = JSON.parse(content);
+      Ed3d.loadDatas(json);
+    } catch (e) {
+      console.error("Parsing error:", e);
+    }
+
     Ed3d.loadDatasComplete();
 
   },
