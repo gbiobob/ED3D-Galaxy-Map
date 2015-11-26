@@ -7,6 +7,7 @@ var Action = {
   'oldSel' : null,
   'objHover' : null,
   'mouseUpDownTimer' : null,
+  'animPosition' : null,
 
   'prevScale' : null,
 
@@ -229,6 +230,8 @@ var Action = {
 
   'disableSelection' : function () {
 
+    if(this.cursorSel == null) return;
+
     this.oldSel = null;
     this.cursorSel.visible = false;
 
@@ -243,6 +246,8 @@ var Action = {
 
     if(timer == undefined) timer = 800;
 
+    this.disableSelection();
+
     //-- Move camera to initial position
 
     var moveFrom = {
@@ -256,6 +261,12 @@ var Action = {
 
     controls.enabled = false;
 
+    //-- Remove previous anim
+    if(Ed3d.tween != null) {
+      TWEEN.removeAll();
+    }
+
+    //-- Launch anim
     Ed3d.tween = new TWEEN.Tween(moveFrom, {override:true}).to(moveCoords, timer)
       .start()
       .onUpdate(function () {
