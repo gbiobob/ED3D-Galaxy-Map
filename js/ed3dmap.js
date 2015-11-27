@@ -472,7 +472,7 @@ function animate(time) {
 
   $('#cx').html(Math.round(controls.center.x));
   $('#cy').html(Math.round(controls.center.y));
-  $('#cz').html(Math.round(controls.center.z));
+  $('#cz').html(Math.round(-controls.center.z)); // Reverse z coord
 
   $('#distsol').html(Ed3d.calcDistSol(controls.target));
 
