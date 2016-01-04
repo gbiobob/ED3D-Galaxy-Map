@@ -33,6 +33,8 @@ Require Three.js & JQuery
 
 **startAnim:** Use initial animation (Zoom into the galaxy) *Default: true*
 
+**playerPos: [x,y,z]** Player position, ex.:[150,269,28] (used for initial camera position)  *Default: null*
+
 ## Methods
 **Ed3d.init({options}):** Initialize the scene
 
