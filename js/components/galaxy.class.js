@@ -43,13 +43,15 @@ var Galaxy = {
       if(Ed3d.startAnim) {
         camera.position.set(-10000, 40000, 50000);
         Action.moveInitalPosition(4000);
+      } else {
+        Action.moveInitalPositionNoAnim();
       }
 
       Ed3d.showScene();
 
     };
     // load img source
-    img.src = Ed3d.basePath + "textures/heightmap2.jpg";
+    img.src = Ed3d.basePath + "textures/heightmap7.jpg";
 
 
   },
@@ -86,10 +88,12 @@ var Galaxy = {
     var nb = 0;
     var maxDensity = 15;
 
+    var scaleImg = 16.4;
+
     var colorsBig = [];
     var nbBig = 0;
 
-    for (var i = 0; i<pix.length; i +=4) {
+    for (var i = 0; i<pix.length; i += 12) {
 
       var all = pix[i]+pix[i+1]+pix[i+2];
 
@@ -97,8 +101,8 @@ var Galaxy = {
 
       if(avg>min) {
 
-        var x = 15.6*((i / 4) % img.width);
-        var z = 15.6*(Math.floor((i / 4) / img.height));
+        var x = scaleImg*((i / 4) % img.width);
+        var z = scaleImg*(Math.floor((i / 4) / img.height));
 
         var density = Math.floor((pix[i]-min)/10);
         if(density>maxDensity) density = maxDensity;

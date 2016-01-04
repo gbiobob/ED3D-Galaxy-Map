@@ -100,6 +100,11 @@ var Ed3d = {
   //-- Graphical Options
   'optDistObj' : 1500,
 
+  //-- Player position
+  'playerPos' : null,
+
+  //-- Active 2D top view
+  'isTopView' : false,
 
   /**
    * Init Ed3d map
@@ -119,7 +124,8 @@ var Ed3d = {
         withHudPanel: Ed3d.withHudPanel,
         hudMultipleSelect: Ed3d.hudMultipleSelect,
         effectScaleSystem: Ed3d.effectScaleSystem,
-        startAnim: Ed3d.startAnim
+        startAnim: Ed3d.startAnim,
+        playerPos: Ed3d.playerPos
     }, options);
 
     $('#loader').show();
@@ -133,6 +139,7 @@ var Ed3d = {
     this.hudMultipleSelect = options.hudMultipleSelect;
     this.startAnim         = options.startAnim;
     this.effectScaleSystem = options.effectScaleSystem;
+    this.playerPos         = options.playerPos;
 
     //-- Init 3D map container
     $('#'+Ed3d.container).append('<div id="ed3dmap"></div>');
@@ -278,6 +285,7 @@ var Ed3d = {
 
     //camera
     camera = new THREE.PerspectiveCamera(45, container.offsetWidth / container.offsetHeight, 1, 200000);
+    //camera = new THREE.OrthographicCamera( container.offsetWidth / - 2, container.offsetWidth / 2, container.offsetHeight / 2, container.offsetHeight / - 2, - 500, 1000 );
 
     camera.position.set(0, 500, 500);
 
@@ -463,10 +471,22 @@ var Ed3d = {
 function animate(time) {
 
   refreshWithCamPos();
+ //controls.noRotate().set(false);
+ //controls.noPan().set(false);
+ //controls.minPolarAngle = 0;
+ //controls.maxPolarAngle = 0;
 
   controls.update();
 
   TWEEN.update(time);
+
+  //-- If 2D top view, lock camera pos
+  if(Ed3d.isTopView) {
+    camera.rotation.set(-Math.PI/2,0,0);
+    camera.position.x = controls.center.x;
+    camera.position.z = controls.center.z;
+  }
+
 
   renderer.render(scene, camera);
 
@@ -492,6 +512,13 @@ function animate(time) {
 
     }
     Action.cursorSel.rotation.y =  camera.rotation.y ;
+  }
+
+  if(Ed3d.textSel['system'] != undefined)
+  if(Ed3d.isTopView) {
+    Ed3d.textSel['system'].rotation.set(-Math.PI/2,0,0);
+  } else {
+    Ed3d.textSel['system'].rotation.set(0,0,0);
   }
 
 

@@ -4,6 +4,7 @@ var System = {
   'particle' : null,
   'particleGeo' : null,
   'particleColor' : [],
+  'particleInfos' : [],
   'count' : 0,
   'scaleSize' : 64,
 
@@ -27,6 +28,16 @@ var System = {
     //-- Particle for far view far
     var colors = [];
     if(this.particleGeo !== null) {
+
+      //-- If system with info already registered, concat datas
+      var idSys = x+'_'+y+'_'+z;
+      if(val.infos != undefined && this.particleInfos[idSys]) {
+        var indexParticle = this.particleInfos[idSys]
+        this.particleGeo.vertices[indexParticle].infos += val.infos;
+        if(val.cat != undefined) Ed3d.addObjToCategories(indexParticle,val.cat);
+        return;
+      }
+
       var particle = new THREE.Vector3(x, y, z);
 
       //-- Get point color
@@ -47,7 +58,10 @@ var System = {
       particle.clickable = true;
       particle.visible = true;
       particle.name = val.name;
-      if(val.infos != undefined) particle.infos = val.infos;
+      if(val.infos != undefined) {
+        particle.infos = val.infos;
+        this.particleInfos[idSys] = this.count;
+      }
 
       this.particleGeo.vertices.push(particle);
 

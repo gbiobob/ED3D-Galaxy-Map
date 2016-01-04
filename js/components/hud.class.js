@@ -27,11 +27,16 @@ var HUD = {
       '  </div>'+*/
       '  <div id="filters">'+
       '  </div>'+
-
-
       '</div>'
     );
     $('#'+this.container).append('<div id="systemDetails" style="display:none;"></div>');
+
+    $('#'+this.container).append(
+      '  <div id="controls">'+
+      '    <a href="#" data-view="3d" class="selected">3D</a>'+
+      '    <a href="#" data-view="top">2D</a>'+
+      '  </div>'
+    );
 
   },
 
@@ -42,6 +47,60 @@ var HUD = {
   'init' : function() {
 
     this.initHudAction();
+    this.initControls();
+
+  },
+
+  /**
+   * Controls init for camera views
+   */
+  'initControls' : function() {
+
+    $('#controls a').click(function(e) {
+
+      $('#controls a').removeClass('selected')
+      $(this).addClass('selected');
+
+      var view = $(this).data('view');
+
+      var moveFrom = {
+        x: camera.position.x, y: camera.position.y , z: camera.position.z
+      };
+
+      switch(view) {
+
+        case 'top':
+          var moveCoords = {x: controls.center.x, y: controls.center.y+500, z: controls.center.z};
+          break;
+
+        case '3d':
+        default:
+          Ed3d.isTopView = false;
+          var moveCoords = {x: controls.center.x-100, y: controls.center.y+500, z: controls.center.z+500};
+          break;
+
+      }
+
+      Ed3d.tween = new TWEEN.Tween(moveFrom, {override:true}).to(moveCoords, 800)
+        .start()
+        .onUpdate(function () {
+          camera.position.set(moveFrom.x, moveFrom.y, moveFrom.z);
+        })
+        .onComplete(function () {
+          controls.update();
+          switch(view) {
+
+            case 'top':
+              Ed3d.isTopView = true;
+              break;
+
+          }
+        });
+
+
+
+
+    });
 
   },
 
@@ -279,8 +338,6 @@ var HUD = {
     } else {
       var textMesh = Ed3d.textSel[id];
     }
-
-
 
     textMesh.geometry = textGeo;
     textMesh.geometry.needsUpdate = true;
