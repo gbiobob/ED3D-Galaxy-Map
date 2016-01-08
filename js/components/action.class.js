@@ -248,8 +248,8 @@ var Action = {
 
 
     var moveTo = {
-      x:  Ed3d.playerPos[0], y:  Ed3d.playerPos[1]+500, z: Ed3d.playerPos[1]+500,
-      mx: Ed3d.playerPos[0], my: Ed3d.playerPos[1] ,   mz: Ed3d.playerPos[2]
+      x:  Ed3d.playerPos[0], y:  Ed3d.playerPos[1]+500, z: -Ed3d.playerPos[2]+500,
+      mx: Ed3d.playerPos[0], my: Ed3d.playerPos[1] ,   mz: -Ed3d.playerPos[2]
     };
     camera.position.set(moveTo.x, moveTo.y, moveTo.z);
     controls.center.set(moveTo.mx, moveTo.my, moveTo.mz);
@@ -277,8 +277,8 @@ var Action = {
     if(Ed3d.playerPos != null) {
 
       var moveCoords = {
-        x:  Ed3d.playerPos[0], y:  Ed3d.playerPos[1]+500, z: Ed3d.playerPos[1]+500,
-        mx: Ed3d.playerPos[0], my: Ed3d.playerPos[1] ,   mz: Ed3d.playerPos[2]
+        x:  Ed3d.playerPos[0], y:  Ed3d.playerPos[1]+500, z: -Ed3d.playerPos[2]+500,
+        mx: Ed3d.playerPos[0], my: Ed3d.playerPos[1] ,   mz: -Ed3d.playerPos[2]
       };
 
     } else {

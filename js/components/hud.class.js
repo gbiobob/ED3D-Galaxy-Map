@@ -131,7 +131,8 @@ var HUD = {
     //-- Add Count filters
     $('.map_filter').each(function(e) {
       var idCat = $(this).data('filter');
-      $(this).append(' ('+Ed3d.catObjs[idCat].length+')');
+      var count = Ed3d.catObjs[idCat].length;
+      if(count>1) $(this).append(' ('+count+')');
     });
 
     //-- Add map filters
@@ -198,11 +199,11 @@ var HUD = {
 
   'initFilters' : function(categories) {
 
+    var grpNb = 1;
     $.each(categories, function(typeFilter, values) {
 
       if(typeof values === "object" ) {
-        var groupId = typeFilter.toLowerCase();
-        groupId.replace(" ", "-");
+        var groupId = 'group_'+grpNb;
 
         $('#filters').append('<h2>'+typeFilter+'</h2>');
         $('#filters').append('<div id="'+groupId+'"></div>');
@@ -211,6 +212,7 @@ var HUD = {
           HUD.addFilter(groupId, key, val);
           Ed3d.catObjs[key] = []
         });
+        grpNb++;
       }
 
     });
