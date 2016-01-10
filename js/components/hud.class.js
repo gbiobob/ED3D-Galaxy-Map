@@ -6,6 +6,16 @@ var HUD = {
   /**
    *
    */
+  'init' : function() {
+
+    this.initHudAction();
+    this.initControls();
+
+  },
+
+  /**
+   *
+   */
   'create' : function(container) {
 
     if(!Ed3d.withHudPanel) return;
@@ -33,21 +43,46 @@ var HUD = {
 
     $('#'+this.container).append(
       '  <div id="controls">'+
-      '    <a href="#" data-view="3d" class="selected">3D</a>'+
-      '    <a href="#" data-view="top">2D</a>'+
+      '    <a href="#" data-view="3d" class="view selected">3D</a>'+
+      '    <a href="#" data-view="top" class="view">2D</a>'+
+      '    <a href="#" data-view="options">'+Ico.cog+'</a>'+
+      '    <div id="options" style="display:none;"></div>'+
       '  </div>'
     );
+    this.createSubOptions();
 
   },
 
-
   /**
-   *
+   * Create option panel
    */
-  'init' : function() {
+  'createSubOptions' : function() {
 
-    this.initHudAction();
-    this.initControls();
+    //-- Toggle milky way
+    $( "<a></a>" )
+      .addClass( "sub-opt active" )
+      .attr('href','#')
+      .html('Toggle Milky Way')
+      .click(function() {
+        var state = Galaxy.milkyway[0].visible;
+        Galaxy.milkyway[0].visible = !state;
+        Galaxy.milkyway[1].visible = !state;
+        $(this).toggleClass('active');
+      })
+      .appendTo( "#options" );
+
+    //-- Toggle Grid
+    $( "<a></a>" )
+      .addClass( "sub-opt active" )
+      .attr('href','#')
+      .html('Toggle grid')
+      .click(function() {
+        Ed3d.grid1H.toggleGrid();
+        Ed3d.grid1K.toggleGrid();
+        Ed3d.grid1XL.toggleGrid();
+        $(this).toggleClass('active');
+      })
+      .appendTo( "#options" );
 
   },
 
@@ -58,49 +93,57 @@ var HUD = {
 
     $('#controls a').click(function(e) {
 
-      $('#controls a').removeClass('selected')
-      $(this).addClass('selected');
+      if($(this).hasClass('view')) {
+        $('#controls a.view').removeClass('selected')
+        $(this).addClass('selected');
+      }
 
       var view = $(this).data('view');
 
-      var moveFrom = {
-        x: camera.position.x, y: camera.position.y , z: camera.position.z
-      };
 
       switch(view) {
 
         case 'top':
+          Ed3d.isTopView = true;
+          var moveFrom = {x: camera.position.x, y: camera.position.y , z: camera.position.z};
           var moveCoords = {x: controls.center.x, y: controls.center.y+500, z: controls.center.z};
+          HUD.moveCamera(moveFrom,moveCoords);
           break;
 
         case '3d':
-        default:
           Ed3d.isTopView = false;
+          var moveFrom = {x: camera.position.x, y: camera.position.y , z: camera.position.z};
           var moveCoords = {x: controls.center.x-100, y: controls.center.y+500, z: controls.center.z+500};
+          HUD.moveCamera(moveFrom,moveCoords);
+          break;
+
+
+        case 'options':
+          $('#options').toggle();
           break;
 
       }
-
-      Ed3d.tween = new TWEEN.Tween(moveFrom, {override:true}).to(moveCoords, 800)
-        .start()
-        .onUpdate(function () {
-          camera.position.set(moveFrom.x, moveFrom.y, moveFrom.z);
-        })
-        .onComplete(function () {
-          controls.update();
-          switch(view) {
-
-            case 'top':
-              Ed3d.isTopView = true;
-              break;
-
-          }
-        });
 
 
 
 
     });
+
+  },
+
+  /**
+   * Move camera to a target
+   */
+  'moveCamera' : function(from, to) {
+
+    Ed3d.tween = new TWEEN.Tween(from, {override:true}).to(to, 800)
+      .start()
+      .onUpdate(function () {
+        camera.position.set(from.x, from.y, from.z);
+      })
+      .onComplete(function () {
+        controls.update();
+      });
 
   },
 
