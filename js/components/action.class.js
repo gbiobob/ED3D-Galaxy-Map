@@ -439,9 +439,9 @@ var Action = {
     var posY = Math.floor(goY);
     var posZ = Math.floor(goZ/1000)*1000;
 
-    Ed3d.grid1H.obj.position.set(posX, posY, posZ);
-    Ed3d.grid1K.obj.position.set(posX, posY, posZ);
-    Ed3d.grid1XL.obj.position.set(posX, posY, posZ);
+    if(!Ed3d.grid1H.fixed) Ed3d.grid1H.obj.position.set(posX, posY, posZ);
+    if(!Ed3d.grid1H.fixed) Ed3d.grid1K.obj.position.set(posX, posY, posZ);
+    if(!Ed3d.grid1H.fixed) Ed3d.grid1XL.obj.position.set(posX, posY, posZ);
 
   }
 

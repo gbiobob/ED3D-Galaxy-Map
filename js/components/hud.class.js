@@ -67,6 +67,7 @@ var HUD = {
         var state = Galaxy.milkyway[0].visible;
         Galaxy.milkyway[0].visible = !state;
         Galaxy.milkyway[1].visible = !state;
+        Galaxy.milkyway2D.visible  = !state;
         $(this).toggleClass('active');
       })
       .appendTo( "#options" );

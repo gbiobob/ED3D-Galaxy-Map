@@ -4,6 +4,7 @@ var Galaxy = {
 
   'obj' : null,
   'milkyway' : [],
+  'milkyway2D' : null,
   'colors' : [],
 
   'x' : 25,
@@ -26,6 +27,7 @@ var Galaxy = {
     this.obj.add(sprite); /// this centers the glow at the mesh
 
     this.createParticles();
+    this.add2DPlane();
 
 
   },
@@ -50,8 +52,93 @@ var Galaxy = {
       Ed3d.showScene();
 
     };
-    // load img source
+
+    //-- load img source
     img.src = Ed3d.basePath + "textures/heightmap7.jpg";
+
+    //-- Add optional infos
+    if(Ed3d.showGalaxyInfos) this.showGalaxyInfos();
+
+  },
+
+  /**
+   * Add 2D image plane
+   */
+
+  'showGalaxyInfos' : function() {
+
+    this.addText('The Orion Spur',10,0,0,0);
+    this.addText('Galactic Core Region',this.x,this.y,-this.z,0);
+    this.addText('The outer arm vacuus',10,0,14500,0);
+
+    this.addText('The Carina-Sagittarius arm',35000,0,-18000,90);
+
+  },
+
+  /**
+   * Add 2D image plane
+   */
+
+  'add2DPlane' : function() {
+
+    var texloader = new THREE.TextureLoader();
+
+    //-- Load textures
+    var back2D = texloader.load(Ed3d.basePath + "textures/heightmap7.jpg");
+
+
+    var floorMaterial = new THREE.MeshBasicMaterial( {
+      map: back2D,
+      transparent: true,
+      opacity: 0.4,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    } );
+
+    var floorGeometry = new THREE.PlaneGeometry(104000, 104000, 1, 1);
+    this.milkyway2D = new THREE.Mesh(floorGeometry, floorMaterial);
+    this.milkyway2D.position.set(this.x, this.y, -this.z);
+    this.milkyway2D.rotation.x = -Math.PI / 2;
+    scene.add(this.milkyway2D);
+
+  },
+
+  /**
+   * Add Shape text
+   */
+
+  'addText' : function(textShow, x, y, z, rot) {
+
+    var size = 600;
+    textShow = textShow.toUpperCase();
+
+    var textShapes = THREE.FontUtils.generateShapes(textShow, {
+      'font': 'helvetiker',
+      'weight': 'normal',
+      'style': 'normal',
+      'size': size,
+      'curveSegments': 100
+    });
+
+    var textGeo = new THREE.ShapeGeometry(textShapes);
+
+      var textMesh = new THREE.Mesh(textGeo, new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+      blending: THREE.AdditiveBlending
+      }));
+
+    textMesh.geometry = textGeo;
+    textMesh.geometry.needsUpdate = true;
+
+    x -= Math.round(textShow.length*400/2);
+
+    if(rot != 0) textMesh.rotation.z = Math.PI * (rot) / 180;
+    textMesh.position.set(x, -1000, z);
+    textMesh.rotation.x = -Math.PI / 2;
+
+
+    scene.add(textMesh);
 
 
   },
@@ -88,7 +175,8 @@ var Galaxy = {
     var nb = 0;
     var maxDensity = 15;
 
-    var scaleImg = 16.4;
+    //var scaleImg = 16.4;
+    var scaleImg = 19.6;
 
     var colorsBig = [];
     var nbBig = 0;

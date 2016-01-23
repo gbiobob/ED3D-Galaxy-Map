@@ -77,9 +77,7 @@ var Ed3d = {
 
   },
   'colors'  : [],
-  'textures' : {
-
-  },
+  'textures' : {},
 
   //-- HUD
   'withHudPanel' : false,
@@ -106,6 +104,9 @@ var Ed3d = {
   //-- Active 2D top view
   'isTopView' : false,
 
+  //-- Show galaxy infos
+  'showGalaxyInfos' : false,
+
   /**
    * Init Ed3d map
    *
@@ -123,7 +124,8 @@ var Ed3d = {
         hudMultipleSelect: Ed3d.hudMultipleSelect,
         effectScaleSystem: Ed3d.effectScaleSystem,
         startAnim: Ed3d.startAnim,
-        playerPos: Ed3d.playerPos
+        playerPos: Ed3d.playerPos,
+        showGalaxyInfos: false
     }, options);
 
     $('#loader').show();
@@ -138,6 +140,7 @@ var Ed3d = {
     this.startAnim         = options.startAnim;
     this.effectScaleSystem = options.effectScaleSystem;
     this.playerPos         = options.playerPos;
+    this.showGalaxyInfos   = options.showGalaxyInfos;
 
     //-- Init 3D map container
     $('#'+Ed3d.container).append('<div id="ed3dmap"></div>');
@@ -209,7 +212,7 @@ var Ed3d = {
 
       Ed3d.grid1H  = $.extend({}, Grid.init(100, 0x111E23, 0), {});
       Ed3d.grid1K  = $.extend({}, Grid.init(1000, 0x22323A, 1000), {});
-      Ed3d.grid1XL = $.extend({}, Grid.init(10000, 0x22323A, 10000), {});
+      Ed3d.grid1XL = $.extend({}, Grid.Infos(10000, 0x22323A, 10000), {});
 
 
       // Add some scene enhancement
@@ -224,6 +227,12 @@ var Ed3d = {
       // Load systems
       if(this.jsonPath != null) Ed3d.loadDatasFromFile();
       else if(this.jsonContainer != null) Ed3d.loadDatasFromContainer();
+
+
+      if(!this.startAnim) {
+        Ed3d.grid1XL.hide();
+        Galaxy.milkyway2D.visible = false;
+      }
 
       // Animate
       animate();
@@ -566,11 +575,15 @@ function enableFarView (scale, withAnim) {
     Galaxy.milkyway[1].material.size = scaleTo*4;
   }
 
+  //-- Enable 2D galaxy
+  Galaxy.milkyway2D.visible = true;
+
 
   //Galaxy.obj.scale.set(20,20,20);
   if(Action.cursorSel != null)  Action.cursorSel.scale.set(60,60,60);
   Ed3d.grid1H.hide();
   Ed3d.grid1K.hide();
+  Ed3d.grid1XL.show();
   Ed3d.starfield.visible = false;
   scene.fog.density = 0.000009;
 
@@ -606,6 +619,8 @@ function disableFarView(scale, withAnim) {
     Galaxy.milkyway[1].material.size = scaleTo;
   }
 
+  //-- Disable 2D galaxy
+  Galaxy.milkyway2D.visible = false;
 
   //-- Show element
   Galaxy.milkyway[0].material.size = 16;
@@ -614,6 +629,7 @@ function disableFarView(scale, withAnim) {
   if(Action.cursorSel != null)  Action.cursorSel.scale.set(1,1,1);
   Ed3d.grid1H.show();
   Ed3d.grid1K.show();
+  Ed3d.grid1XL.hide();
   Ed3d.starfield.visible = true;
   scene.fog.density = Ed3d.fogDensity;
 }
