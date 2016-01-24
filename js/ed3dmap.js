@@ -212,7 +212,7 @@ var Ed3d = {
 
       Ed3d.grid1H  = $.extend({}, Grid.init(100, 0x111E23, 0), {});
       Ed3d.grid1K  = $.extend({}, Grid.init(1000, 0x22323A, 1000), {});
-      Ed3d.grid1XL = $.extend({}, Grid.Infos(10000, 0x22323A, 10000), {});
+      Ed3d.grid1XL = $.extend({}, Grid.infos(10000, 0x22323A, 10000), {});
 
 
       // Add some scene enhancement
@@ -532,6 +532,8 @@ function animate(time) {
 
   //-- Zoom on on galaxy effect
   Action.sizeOnScroll(scale);
+
+  Galaxy.infosUpdateCallback(scale);
 
   if(scale>25) {
 

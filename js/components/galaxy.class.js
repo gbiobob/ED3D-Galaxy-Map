@@ -3,6 +3,7 @@ var Galaxy = {
 
 
   'obj' : null,
+  'infos' : null,
   'milkyway' : [],
   'milkyway2D' : null,
   'colors' : [],
@@ -67,11 +68,74 @@ var Galaxy = {
 
   'showGalaxyInfos' : function() {
 
-    this.addText('The Orion Spur',10,0,0,0);
-    this.addText('Galactic Core Region',this.x,this.y,-this.z,0);
-    this.addText('The outer arm vacuus',10,0,14500,0);
+    this.infos = new THREE.Object3D();
 
-    this.addText('The Carina-Sagittarius arm',35000,0,-18000,90);
+    $.getJSON(Ed3d.basePath + "data/milkyway.json", function(data) {
+
+      $.each(data.quadrants, function(key, val) {
+
+        Galaxy.addText(key,val.x,-100,val.z,val.rotate);
+
+      });
+
+      $.each(data.arms, function(key, val) {
+
+        $.each(val, function(keyCh, valCh) {
+          Galaxy.addText(key,valCh.x,0,valCh.z,valCh.rotate,300,true);
+        });
+
+      });
+
+      $.each(data.gaps, function(key, val) {
+
+        $.each(val, function(keyCh, valCh) {
+          Galaxy.addText(key,valCh.x,0,valCh.z,valCh.rotate,160,true);
+        });
+
+      });
+
+      $.each(data.others, function(key, val) {
+
+        $.each(val, function(keyCh, valCh) {
+          Galaxy.addText(key,valCh.x,0,valCh.z,valCh.rotate,160,true);
+        });
+
+      });
+
+
+    }).done(function() {
+
+      scene.add(Galaxy.infos);
+      console.log(Galaxy.infos);
+
+    });
+
+  },
+
+  /**
+   * Appli opacity for Milky Way info based on distance
+   */
+
+  'infosUpdateCallback' : function(scale) {
+
+    if(this.infos == null) return;
+
+    scale -= 70;
+
+    var opacity = Math.round(scale/10)/10;
+    if(opacity<0) opacity = 0;
+    if(opacity>0.8) opacity = 0.8;
+    if(Galaxy.infos.previousOpacity == opacity) return;
+
+    var opacityMiddle = 1.1-opacity;
+    if(opacityMiddle<=0.4) opacityMiddle = 0.2;
+
+    for( var i = 0; i < Galaxy.infos.children.length; i++ ) {
+      var txt = Galaxy.infos.children[ i ];
+      txt.material.opacity = (!txt.revert) ? opacity : opacityMiddle;
+    }
+
+    Galaxy.infos.previousOpacity = opacity;
 
   },
 
@@ -100,6 +164,8 @@ var Galaxy = {
     this.milkyway2D = new THREE.Mesh(floorGeometry, floorMaterial);
     this.milkyway2D.position.set(this.x, this.y, -this.z);
     this.milkyway2D.rotation.x = -Math.PI / 2;
+    this.milkyway2D.showCoord = true;
+
     scene.add(this.milkyway2D);
 
   },
@@ -108,9 +174,10 @@ var Galaxy = {
    * Add Shape text
    */
 
-  'addText' : function(textShow, x, y, z, rot) {
+  'addText' : function(textShow, x, y, z, rot, size, revert) {
 
-    var size = 600;
+    if(revert==undefined) revert = false;
+    if(size==undefined) size = 450;
     textShow = textShow.toUpperCase();
 
     var textShapes = THREE.FontUtils.generateShapes(textShow, {
@@ -123,23 +190,31 @@ var Galaxy = {
 
     var textGeo = new THREE.ShapeGeometry(textShapes);
 
-      var textMesh = new THREE.Mesh(textGeo, new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-      blending: THREE.AdditiveBlending
-      }));
+    var textMesh = new THREE.Mesh(textGeo, new THREE.MeshBasicMaterial({
+      color: 0x999999,
+      transparent: true,
+      opacity: 0.7,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    }));
 
     textMesh.geometry = textGeo;
     textMesh.geometry.needsUpdate = true;
 
-    x -= Math.round(textShow.length*400/2);
+    //x -= Math.round(textShow.length*400/2);
+    var middleTxt = Math.round(size/2);
+    z -= middleTxt;
 
-    if(rot != 0) textMesh.rotation.z = Math.PI * (rot) / 180;
-    textMesh.position.set(x, -1000, z);
     textMesh.rotation.x = -Math.PI / 2;
+    textMesh.geometry.applyMatrix( new THREE.Matrix4().makeTranslation(-Math.round(textShow.length*size/2), 0, -middleTxt) );
+    if(rot != 0) {
+      textMesh.rotateOnAxis (new THREE.Vector3( 0, 0, 1 ), Math.PI * (rot) / 180);
+    }
+    textMesh.position.set(x, y, -z);
 
+    textMesh.revert = revert;
 
-    scene.add(textMesh);
-
+    Galaxy.infos.add(textMesh);
 
   },
 
