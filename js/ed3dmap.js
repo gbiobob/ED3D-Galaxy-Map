@@ -579,6 +579,7 @@ function enableFarView (scale, withAnim) {
 
   //-- Enable 2D galaxy
   Galaxy.milkyway2D.visible = true;
+  Galaxy.infos.visible = true;
 
 
   //Galaxy.obj.scale.set(20,20,20);
@@ -623,6 +624,7 @@ function disableFarView(scale, withAnim) {
 
   //-- Disable 2D galaxy
   Galaxy.milkyway2D.visible = false;
+  Galaxy.infos.visible = false;
 
   //-- Show element
   Galaxy.milkyway[0].material.size = 16;

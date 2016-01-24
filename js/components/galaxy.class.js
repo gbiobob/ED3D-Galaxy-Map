@@ -58,7 +58,7 @@ var Galaxy = {
     img.src = Ed3d.basePath + "textures/heightmap7.jpg";
 
     //-- Add optional infos
-    if(Ed3d.showGalaxyInfos) this.showGalaxyInfos();
+    this.showGalaxyInfos();
 
   },
 
@@ -69,6 +69,7 @@ var Galaxy = {
   'showGalaxyInfos' : function() {
 
     this.infos = new THREE.Object3D();
+    if(!Ed3d.showGalaxyInfos) return;
 
     $.getJSON(Ed3d.basePath + "data/milkyway.json", function(data) {
 
