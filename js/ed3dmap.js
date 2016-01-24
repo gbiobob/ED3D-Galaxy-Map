@@ -316,7 +316,7 @@ var Ed3d = {
     controls.rotateSpeed = 1.0;
     controls.zoomSpeed = 3.0;
     controls.panSpeed = 0.8;
-    controls.maxDistance = 40000;
+    controls.maxDistance = 60000;
     controls.noZoom=!1;controls.noPan=!1;controls.staticMoving=!0;controls.dynamicDampingFactor=.3;
 
 

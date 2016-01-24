@@ -176,12 +176,15 @@ var Galaxy = {
     var maxDensity = 15;
 
     //var scaleImg = 16.4;
-    var scaleImg = 19.6;
+    var scaleImg = 21;
 
     var colorsBig = [];
     var nbBig = 0;
 
-    for (var i = 0; i<pix.length; i += 12) {
+    for (var i = 0; i<pix.length; i += 20) {
+
+      if(Math.random() > 0.5) i += 8;
+
 
       var all = pix[i]+pix[i+1]+pix[i+2];
 
@@ -199,9 +202,9 @@ var Galaxy = {
         for (var y = -density; y < density; y = y+add) {
 
           var particle = new THREE.Vector3(
-            x+(Math.random() * 25),
-            (y*10)+(Math.random() * 50),
-            z+(Math.random() * 25)
+            x+((Math.random()-0.5) * 25),
+            (y*10)+((Math.random()-0.5) * 50),
+            z+((Math.random()-0.5) * 25)
           );
 
           //-- Particle color from pixel
@@ -228,6 +231,8 @@ var Galaxy = {
         };
       }
     }
+
+    console.log(nbBig+nb);
 
     //-- Create small particles milkyway
 
