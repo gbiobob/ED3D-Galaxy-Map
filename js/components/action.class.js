@@ -69,6 +69,7 @@ var Action = {
   'onMouseHover' : function (e) {
 
     e.preventDefault();
+    var position = $('#ed3dmap').offset();
 
     this.mouseVector = new THREE.Vector3(
       ( ( e.clientX - position.left ) / renderer.domElement.width ) * 2 - 1,
@@ -167,6 +168,7 @@ var Action = {
     this.raycaster = new THREE.Raycaster(camera.position, this.mouseVector.sub(camera.position).normalize());
     this.raycaster.params.Points.threshold = 2;
 
+
     // create an array containing all objects in the scene with which the ray intersects
     var intersects = this.raycaster.intersectObjects(scene.children);
     if (intersects.length > 0) {
@@ -187,6 +189,12 @@ var Action = {
 
             if(isMove) return;
           }
+
+        }
+
+        if(intersection.object.showCoord) {
+
+          console.log (intersection.point.x+' , '+(-intersection.point.z));
 
         }
       }
@@ -439,9 +447,9 @@ var Action = {
     var posY = Math.floor(goY);
     var posZ = Math.floor(goZ/1000)*1000;
 
-    if(!Ed3d.grid1H.fixed) Ed3d.grid1H.obj.position.set(posX, posY, posZ);
-    if(!Ed3d.grid1H.fixed) Ed3d.grid1K.obj.position.set(posX, posY, posZ);
-    if(!Ed3d.grid1H.fixed) Ed3d.grid1XL.obj.position.set(posX, posY, posZ);
+    if(!Ed3d.grid1H.fixed)  Ed3d.grid1H.obj.position.set(posX, posY, posZ);
+    if(!Ed3d.grid1K.fixed)  Ed3d.grid1K.obj.position.set(posX, posY, posZ);
+    if(!Ed3d.grid1XL.fixed) Ed3d.grid1XL.obj.position.set(posX, posY, posZ);
 
   }
 
