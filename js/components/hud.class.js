@@ -18,9 +18,20 @@ var HUD = {
    */
   'create' : function(container) {
 
-    if(!Ed3d.withHudPanel) return;
-
     this.container = container;
+
+    $('#'+this.container).append(
+      '  <div id="controls">'+
+      '    <a href="#" data-view="3d" class="view selected">3D</a>'+
+      '    <a href="#" data-view="top" class="view">2D</a>'+
+      '    <a href="#" data-view="infos" class="'+(Ed3d.showGalaxyInfos ? 'selected' : '')+'">i</a>'+
+      '    <a href="#" data-view="options">'+Ico.cog+'</a>'+
+      '    <div id="options" style="display:none;"></div>'+
+      '  </div>'
+    );
+    this.createSubOptions();
+
+    if(!Ed3d.withHudPanel) return;
 
     $('#'+this.container).append('<div id="hud"></div>');
     $('#hud').append(
@@ -40,16 +51,6 @@ var HUD = {
       '</div>'
     );
     $('#'+this.container).append('<div id="systemDetails" style="display:none;"></div>');
-
-    $('#'+this.container).append(
-      '  <div id="controls">'+
-      '    <a href="#" data-view="3d" class="view selected">3D</a>'+
-      '    <a href="#" data-view="top" class="view">2D</a>'+
-      '    <a href="#" data-view="options">'+Ico.cog+'</a>'+
-      '    <div id="options" style="display:none;"></div>'+
-      '  </div>'
-    );
-    this.createSubOptions();
 
   },
 
@@ -118,6 +119,16 @@ var HUD = {
           HUD.moveCamera(moveFrom,moveCoords);
           break;
 
+        case 'infos':
+          if(!Ed3d.showGalaxyInfos) {
+            Ed3d.showGalaxyInfos = true;
+            Galaxy.infosShow();
+          } else {
+            Ed3d.showGalaxyInfos = false;
+            Galaxy.infosHide();
+          }
+          $(this).toggleClass('selected');
+          break;
 
         case 'options':
           $('#options').toggle();

@@ -194,7 +194,6 @@ var Action = {
 
         if(intersection.object.showCoord) {
 
-          console.log (intersection.point.x+' , '+(-intersection.point.z));
           $('#debug').html(Math.round(intersection.point.x)+' , '+Math.round(-intersection.point.z));
 
         }

@@ -6,6 +6,7 @@ var Galaxy = {
   'infos' : null,
   'milkyway' : [],
   'milkyway2D' : null,
+  'backActive' : true,
   'colors' : [],
 
   'x' : 25,
@@ -68,8 +69,9 @@ var Galaxy = {
 
   'showGalaxyInfos' : function() {
 
-    this.infos = new THREE.Object3D();
     if(!Ed3d.showGalaxyInfos) return;
+
+    this.infos = new THREE.Object3D();
 
     $.getJSON(Ed3d.basePath + "data/milkyway.json", function(data) {
 
@@ -107,10 +109,24 @@ var Galaxy = {
     }).done(function() {
 
       scene.add(Galaxy.infos);
-      console.log(Galaxy.infos);
 
     });
 
+  },
+
+  /**
+   * Show additional galaxy infos
+   */
+  'infosShow' : function() {
+    if(Galaxy.infos == null) this.showGalaxyInfos();
+    if(Galaxy.infos !== null)  Galaxy.infos.visible = Ed3d.showGalaxyInfos;
+  },
+
+  /**
+   * Show additional galaxy infos
+   */
+  'infosHide' : function() {
+    if(Galaxy.infos !== null)  Galaxy.infos.visible = false;
   },
 
   /**
@@ -119,7 +135,7 @@ var Galaxy = {
 
   'infosUpdateCallback' : function(scale) {
 
-    if(this.infos == null) return;
+    if(!Ed3d.showGalaxyInfos || this.infos == null) return;
 
     scale -= 70;
 
@@ -186,7 +202,7 @@ var Galaxy = {
       'weight': 'normal',
       'style': 'normal',
       'size': size,
-      'curveSegments': 100
+      'curveSegments': 12
     });
 
     var textGeo = new THREE.ShapeGeometry(textShapes);
@@ -307,8 +323,6 @@ var Galaxy = {
         };
       }
     }
-
-    console.log(nbBig+nb);
 
     //-- Create small particles milkyway
 
