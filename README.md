@@ -2,7 +2,10 @@
 ED3D-Galaxy-Map is a 3D galactic map (web app) for the game Elite: Dangerous.
 Work with JSon file to embed stelar systems data.
 
-View [demo sample](http://en.ed-board.net/3Dgalnet/)
+## Demo
+* [Elite: Dangerous Milky Way](http://en.ed-board.net/3Dgalaxy/)
+* [3D Galnet News](http://en.ed-board.net/3Dgalnet/)
+* [EDSM Dump test](http://en.ed-board.net/3Dedsm_test/)
 
 ## Features
 * JSON file to fill the map.
@@ -28,6 +31,8 @@ Require Three.js & JQuery
 **withHudPanel:** Enable the HUD (panel to filter and navigate throughout systems). *Default: false*
 
 **hudMultipleSelect:** Enable showing multiple filters at same time *Default: true*
+
+**showGalaxyInfos:** Show Milky Way info on start *Default: false*
 
 **effectScaleSystem:** Set an array with min & max value for system scale effect on zoom in/out *Default: [10,800]*
 
