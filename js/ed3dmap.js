@@ -79,6 +79,9 @@ var Ed3d = {
   'colors'  : [],
   'textures' : {},
 
+  //-- Default color for system sprite
+  'systemColor'  : '#eeeeee',
+
   //-- HUD
   'withHudPanel' : false,
   'hudMultipleSelect' : true,
@@ -125,6 +128,7 @@ var Ed3d = {
         effectScaleSystem: Ed3d.effectScaleSystem,
         startAnim: Ed3d.startAnim,
         playerPos: Ed3d.playerPos,
+        systemColor: Ed3d.systemColor,
         showGalaxyInfos: false
     }, options);
 
@@ -141,6 +145,7 @@ var Ed3d = {
     this.effectScaleSystem = options.effectScaleSystem;
     this.playerPos         = options.playerPos;
     this.showGalaxyInfos   = options.showGalaxyInfos;
+    this.systemColor       = options.systemColor;
 
     //-- Init 3D map container
     $('#'+Ed3d.container).append('<div id="ed3dmap"></div>');

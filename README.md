@@ -34,6 +34,8 @@ Require Three.js & JQuery
 
 **showGalaxyInfos:** Show Milky Way info on start *Default: false*
 
+**systemColor:** Set custom color(Hex) for system's sprite *Default: #eeeeee*
+
 **effectScaleSystem:** Set an array with min & max value for system scale effect on zoom in/out *Default: [10,800]*
 
 **startAnim:** Use initial animation (Zoom into the galaxy) *Default: true*
