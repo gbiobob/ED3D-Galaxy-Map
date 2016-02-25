@@ -45,7 +45,7 @@ var Ed3d = {
       color: 0xffffff
     }),
     'line' : new THREE.LineBasicMaterial({
-      color: 0x0E7F88
+      color: 0xffffff
     }),
     'white' : new THREE.MeshBasicMaterial({
       color: 0xffffff
@@ -388,6 +388,14 @@ var Ed3d = {
       //-- Check if simple or complex json
       list = (data.systems !== undefined) ? data.systems : data;
 
+      //-- Init Routes
+
+      if(data.routes != undefined) {
+        $.each(data.routes, function(key, route) {
+          Route.initRoute(key, route);
+        });
+      }
+
       //-- Loop into systems
 
       $.each(list, function(key, val) {
@@ -401,9 +409,11 @@ var Ed3d = {
       });
 
       //-- Routes
+
       if(data.routes != undefined) {
-        $.each(data.routes, function(key1, route) {
-          Route.createRoute(key1, route.list, route.cat);
+
+        $.each(data.routes, function(key, route) {
+          Route.createRoute(key, route);
         });
       }
 

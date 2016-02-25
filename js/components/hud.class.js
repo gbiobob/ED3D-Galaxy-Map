@@ -275,7 +275,6 @@ var HUD = {
 
   },
 
-
   /**
    * Remove filters list
    */
