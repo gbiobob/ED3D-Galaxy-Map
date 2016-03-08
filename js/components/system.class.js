@@ -34,7 +34,7 @@ var System = {
       //-- If system with info already registered, concat datas
       var idSys = x+'_'+y+'_'+z;
       if(val.infos != undefined && this.particleInfos[idSys]) {
-        var indexParticle = this.particleInfos[idSys]
+        var indexParticle = this.particleInfos[idSys];
         this.particleGeo.vertices[indexParticle].infos += val.infos;
         if(val.cat != undefined) Ed3d.addObjToCategories(indexParticle,val.cat);
         return;

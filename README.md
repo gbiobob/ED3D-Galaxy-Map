@@ -36,11 +36,13 @@ Require Three.js & JQuery
 
 **systemColor:** Set custom color(Hex) for system's sprite *Default: #eeeeee*
 
-**effectScaleSystem:** Set an array with min & max value for system scale effect on zoom in/out *Default: [10,800]*
+**effectScaleSystem:** Set an array with min & max value for system scale effect (sprite size) on zoom in/out *Default: [10,800]*
 
 **startAnim:** Use initial animation (Zoom into the galaxy) *Default: true*
 
-**playerPos: [x,y,z]** Player position, ex.:```[150,269,28]``` (used for initial camera position)  *Default: null*
+**playerPos: [x,y,z]** Player position, ex.:```[150,269,28]``` (used for initial camera target position)  *Default: [0,0,0]*
+
+**cameraPos: [x,y,z]** Initial camera position, ex.:```[0,45000,-45000]``` (used for initial target camera position)  *Default: [0,500,-500]*
 
 ## Methods
 **Ed3d.init({options}):** Initialize the scene

@@ -102,7 +102,10 @@ var Ed3d = {
   'optDistObj' : 1500,
 
   //-- Player position
-  'playerPos' : null,
+  'playerPos' : [0, 0, 0],
+
+  //-- Initial camera position
+  'cameraPos' : [0, 500, -500],
 
   //-- Active 2D top view
   'isTopView' : false,
@@ -128,6 +131,7 @@ var Ed3d = {
         effectScaleSystem: Ed3d.effectScaleSystem,
         startAnim: Ed3d.startAnim,
         playerPos: Ed3d.playerPos,
+        cameraPos: Ed3d.cameraPos,
         systemColor: Ed3d.systemColor,
         showGalaxyInfos: false
     }, options);
@@ -144,6 +148,7 @@ var Ed3d = {
     this.startAnim         = options.startAnim;
     this.effectScaleSystem = options.effectScaleSystem;
     this.playerPos         = options.playerPos;
+    this.cameraPos         = options.cameraPos;
     this.showGalaxyInfos   = options.showGalaxyInfos;
     this.systemColor       = options.systemColor;
 

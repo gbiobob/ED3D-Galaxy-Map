@@ -284,21 +284,10 @@ var Action = {
 
     //-- Move to player position if defined, else move to Sol
 
-    if(Ed3d.playerPos != null) {
-
-      var moveCoords = {
-        x:  Ed3d.playerPos[0], y:  Ed3d.playerPos[1]+500, z: -Ed3d.playerPos[2]+500,
-        mx: Ed3d.playerPos[0], my: Ed3d.playerPos[1] ,   mz: -Ed3d.playerPos[2]
-      };
-
-    } else {
-
-      var moveCoords = {
-        x: 0, y: 500, z: 500,
-        mx: 0, my: 0 , mz: 0
-      };
-
-    }
+    var moveCoords = {
+      x:  Ed3d.playerPos[0]+Ed3d.cameraPos[0], y:  Ed3d.playerPos[1]+Ed3d.cameraPos[1], z: -Ed3d.playerPos[2]-Ed3d.cameraPos[2],
+      mx: Ed3d.playerPos[0], my: Ed3d.playerPos[1] ,   mz: -Ed3d.playerPos[2]
+    };
 
     controls.enabled = false;
 

@@ -20,16 +20,20 @@ var HUD = {
 
     this.container = container;
 
-    $('#'+this.container).append(
-      '  <div id="controls">'+
-      '    <a href="#" data-view="3d" class="view selected">3D</a>'+
-      '    <a href="#" data-view="top" class="view">2D</a>'+
-      '    <a href="#" data-view="infos" class="'+(Ed3d.showGalaxyInfos ? 'selected' : '')+'">i</a>'+
-      '    <a href="#" data-view="options">'+Ico.cog+'</a>'+
-      '    <div id="options" style="display:none;"></div>'+
-      '  </div>'
-    );
-    this.createSubOptions();
+    if(!$('#'+this.container+' #controls').length) {
+
+      $('#'+this.container).append(
+        '  <div id="controls">'+
+        '    <a href="#" data-view="3d" class="view selected">3D</a>'+
+        '    <a href="#" data-view="top" class="view">2D</a>'+
+        '    <a href="#" data-view="infos" class="'+(Ed3d.showGalaxyInfos ? 'selected' : '')+'">i</a>'+
+        '    <a href="#" data-view="options">'+Ico.cog+'</a>'+
+        '    <div id="options" style="display:none;"></div>'+
+        '  </div>'
+      );
+      this.createSubOptions();
+
+    }
 
     if(!Ed3d.withHudPanel) return;
 
