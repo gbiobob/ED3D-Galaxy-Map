@@ -42,7 +42,7 @@ Require Three.js & JQuery
 
 **playerPos: [x,y,z]** Player position, ex.:```[150,269,28]``` (used for initial camera target position)  *Default: [0,0,0]*
 
-**cameraPos: [x,y,z]** Initial camera position, ex.:```[0,45000,-45000]``` (used for initial target camera position)  *Default: [0,500,-500]*
+**cameraPos: [x,y,z]** Initial camera position, ex.:```[0,45000,-45000]``` (used for initial target camera position)
 
 ## Methods
 **Ed3d.init({options}):** Initialize the scene
