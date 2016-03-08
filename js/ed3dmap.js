@@ -105,7 +105,7 @@ var Ed3d = {
   'playerPos' : [0, 0, 0],
 
   //-- Initial camera position
-  'cameraPos' : [0, 500, -500],
+  'cameraPos' : null,
 
   //-- Active 2D top view
   'isTopView' : false,
