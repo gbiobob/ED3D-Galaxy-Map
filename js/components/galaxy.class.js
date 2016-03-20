@@ -51,8 +51,6 @@ var Galaxy = {
         Action.moveInitalPositionNoAnim();
       }
 
-      Ed3d.showScene();
-
     };
 
     //-- load img source

@@ -8,6 +8,7 @@ var HUD = {
    */
   'init' : function() {
 
+    Loader.update('Init HUD');
     this.initHudAction();
     this.initControls();
 
@@ -257,6 +258,8 @@ var HUD = {
   },
 
   'initFilters' : function(categories) {
+
+    Loader.update('HUD Filter...');
 
     var grpNb = 1;
     $.each(categories, function(typeFilter, values) {
