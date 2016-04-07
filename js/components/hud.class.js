@@ -25,10 +25,10 @@ var HUD = {
 
       $('#'+this.container).append(
         '  <div id="controls">'+
-        '    <a href="#" data-view="3d" class="view selected">3D</a>'+
-        '    <a href="#" data-view="top" class="view">2D</a>'+
-        '    <a href="#" data-view="infos" class="'+(Ed3d.showGalaxyInfos ? 'selected' : '')+'">i</a>'+
-        '    <a href="#" data-view="options">'+Ico.cog+'</a>'+
+        '    <a data-view="3d" class="view selected">3D</a>'+
+        '    <a data-view="top" class="view">2D</a>'+
+        '    <a data-view="infos" class="'+(Ed3d.showGalaxyInfos ? 'selected' : '')+'">i</a>'+
+        '    <a data-view="options">'+Ico.cog+'</a>'+
         '    <div id="options" style="display:none;"></div>'+
         '  </div>'
       );
@@ -67,7 +67,6 @@ var HUD = {
     //-- Toggle milky way
     $( "<a></a>" )
       .addClass( "sub-opt active" )
-      .attr('href','#')
       .html('Toggle Milky Way')
       .click(function() {
         var state = Galaxy.milkyway[0].visible;
@@ -81,7 +80,6 @@ var HUD = {
     //-- Toggle Grid
     $( "<a></a>" )
       .addClass( "sub-opt active" )
-      .attr('href','#')
       .html('Toggle grid')
       .click(function() {
         Ed3d.grid1H.toggleGrid();

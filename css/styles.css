@@ -197,6 +197,9 @@ body {
   z-index: 999;
   text-align: right;
 }
+#controls a {
+  cursor: pointer;
+}
 #controls > a {
   display: inline-block;
   width:  26px;
