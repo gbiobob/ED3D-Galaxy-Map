@@ -17,7 +17,7 @@ Work with JSon file to embed stelar systems data.
 * Can show exploration routes.
 
 ## Requirement
-Require Three.js & JQuery
+Require Three.js (r75) & JQuery
 
 ## Options
 **container:** The container ID. *(Required)*
