@@ -282,8 +282,8 @@ var Ed3d = {
     });
     Ed3d.material.glow_2 = new THREE.SpriteMaterial({
 
-      map: Ed3d.textures.flare_white, transparent: true, size: 15,
-      vertexColors: THREE.VertexColors,
+      map: Ed3d.textures.flare_white,
+      transparent: true,
       blending: THREE.AdditiveBlending,
       depthWrite: false,
       opacity: 0.5
@@ -334,11 +334,11 @@ var Ed3d = {
 
     //controls
     controls = new THREE.OrbitControls(camera, container);
-    controls.rotateSpeed = 1.0;
-    controls.zoomSpeed = 3.0;
+    controls.rotateSpeed = 0.6;
+    controls.zoomSpeed = 2.0;
     controls.panSpeed = 0.8;
     controls.maxDistance = 60000;
-    controls.noZoom=!1;controls.noPan=!1;controls.staticMoving=!0;controls.dynamicDampingFactor=.3;
+    controls.enableZoom=1;controls.enablePan=1;controls.enableDamping=!0;controls.dampingFactor=.3;
 
 
     // Add Fog
@@ -516,6 +516,8 @@ var Ed3d = {
 
 function animate(time) {
 
+  //rendererStats.update(renderer);
+
   if(scene.visible == false) {
     requestAnimationFrame( animate );
     return;
@@ -534,16 +536,16 @@ function animate(time) {
   //-- If 2D top view, lock camera pos
   if(Ed3d.isTopView) {
     camera.rotation.set(-Math.PI/2,0,0);
-    camera.position.x = controls.center.x;
-    camera.position.z = controls.center.z;
+    camera.position.x = controls.target.x;
+    camera.position.z = controls.target.z;
   }
 
 
   renderer.render(scene, camera);
 
-  $('#cx').html(Math.round(controls.center.x));
-  $('#cy').html(Math.round(controls.center.y));
-  $('#cz').html(Math.round(-controls.center.z)); // Reverse z coord
+  $('#cx').html(Math.round(controls.target.x));
+  $('#cy').html(Math.round(controls.target.y));
+  $('#cz').html(Math.round(-controls.target.z)); // Reverse z coord
 
   $('#distsol').html(Ed3d.calcDistSol(controls.target));
 

@@ -113,14 +113,14 @@ var HUD = {
         case 'top':
           Ed3d.isTopView = true;
           var moveFrom = {x: camera.position.x, y: camera.position.y , z: camera.position.z};
-          var moveCoords = {x: controls.center.x, y: controls.center.y+500, z: controls.center.z};
+          var moveCoords = {x: controls.target.x, y: controls.target.y+500, z: controls.target.z};
           HUD.moveCamera(moveFrom,moveCoords);
           break;
 
         case '3d':
           Ed3d.isTopView = false;
           var moveFrom = {x: camera.position.x, y: camera.position.y , z: camera.position.z};
-          var moveCoords = {x: controls.center.x-100, y: controls.center.y+500, z: controls.center.z+500};
+          var moveCoords = {x: controls.target.x-100, y: controls.target.y+500, z: controls.target.z+500};
           HUD.moveCamera(moveFrom,moveCoords);
           break;
 

@@ -264,7 +264,7 @@ var Action = {
       mx: Ed3d.playerPos[0], my: Ed3d.playerPos[1] ,   mz: -Ed3d.playerPos[2]
     };
     camera.position.set(moveTo.x, moveTo.y, moveTo.z);
-    controls.center.set(moveTo.mx, moveTo.my, moveTo.mz);
+    controls.target.set(moveTo.mx, moveTo.my, moveTo.mz);
 
   },
 
@@ -281,7 +281,7 @@ var Action = {
 
     var moveFrom = {
       x: camera.position.x, y: camera.position.y , z: camera.position.z,
-      mx: controls.center.x, my: controls.center.y , mz: controls.center.z
+      mx: controls.target.x, my: controls.target.y , mz: controls.target.z
     };
 
     //-- Move to player position if defined, else move to Sol
@@ -307,7 +307,7 @@ var Action = {
       .start()
       .onUpdate(function () {
         camera.position.set(moveFrom.x, moveFrom.y, moveFrom.z);
-        controls.center.set(moveFrom.mx, moveFrom.my, moveFrom.mz);
+        controls.target.set(moveFrom.mx, moveFrom.my, moveFrom.mz);
       })
       .onComplete(function () {
         controls.enabled = true;
@@ -348,7 +348,7 @@ var Action = {
 
     var moveFrom = {
       x: camera.position.x, y: camera.position.y , z: camera.position.z,
-      mx: controls.center.x, my: controls.center.y , mz: controls.center.z
+      mx: controls.target.x, my: controls.target.y , mz: controls.target.z
     };
     var moveCoords = {
       x: goX, y: goY + 15, z: goZ + 15,
@@ -359,7 +359,7 @@ var Action = {
       .start()
       .onUpdate(function () {
         camera.position.set(moveFrom.x, moveFrom.y, moveFrom.z);
-        controls.center.set(moveFrom.mx, moveFrom.my, moveFrom.mz);
+        controls.target.set(moveFrom.mx, moveFrom.my, moveFrom.mz);
       })
       .onComplete(function () {
         controls.update();

@@ -66,7 +66,7 @@ var Grid = {
 
     }
 
-    this.obj = new THREE.Line( geometry, material, THREE.LinePieces );
+    this.obj = new THREE.LineSegments( geometry, material );
     this.obj.position.set(0,0,-20000);
 
     //-- Add quadrant
@@ -85,7 +85,7 @@ var Grid = {
 
     quadrant.vertices.push( new THREE.Vector3( 0, 0, - size ) );
     quadrant.vertices.push( new THREE.Vector3( 0, 0,   size ) );
-    var quadrantL = new THREE.Line( quadrant, material, THREE.LinePieces );
+    var quadrantL = new THREE.LineSegments( quadrant, material );
 
 
     this.obj.add(quadrantL);
