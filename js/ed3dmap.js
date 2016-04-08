@@ -779,7 +779,7 @@ var Loader = {
       .css('font-size','1.5rem')
       .css('font-family','Helvetica')
       .css('font-variant','small-caps')
-      .appendTo('body');
+      .appendTo('#ed3dmap');
 
 
     clearInterval(this.animCount);
