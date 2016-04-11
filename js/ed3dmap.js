@@ -17,30 +17,32 @@ var lensFlareSel;
 
 var Ed3d = {
 
-  'container'   : null,
-  'basePath'    : './',
-  'jsonPath'    : null,
-  'jsonContainer' : null,
+  'container'           : null,
+  'basePath'            : './',
+  
+  'jsonPath'            : null,
+  'jsonContainer'       : null,
+  'json'                : null,
 
-  'grid1H' : null,
-  'grid1K' : null,
-  'grid1XL' : null,
+  'grid1H'              : null,
+  'grid1K'              : null,
+  'grid1XL'             : null,
 
-  'tween' : null,
+  'tween'               : null,
 
-  'globalView' : true,
+  'globalView'          : true,
 
   //-- Fog density save
-  'fogDensity' : null,
+  'fogDensity'          : null,
 
   //-- Defined texts
-  'textSel' : [],
+  'textSel'             : [],
 
   //-- Object list by categories
-  'catObjs' : [],
+  'catObjs'             : [],
 
   //-- Materials
-  'material' : {
+  'material'            : {
     'Trd' : new THREE.MeshBasicMaterial({
       color: 0xffffff
     }),
@@ -70,48 +72,48 @@ var Ed3d = {
       transparent: true,
       opacity: 0
     }),
-    'glow_1' : null,
-    'custom' : []
+    'glow_1'            : null,
+    'custom'            : []
 
 
 
   },
-  'colors'  : [],
-  'textures' : {},
+  'colors'              : [],
+  'textures'            : {},
 
   //-- Default color for system sprite
-  'systemColor'  : '#eeeeee',
+  'systemColor'         : '#eeeeee',
 
   //-- HUD
-  'withHudPanel' : false,
-  'hudMultipleSelect' : true,
+  'withHudPanel'        : false,
+  'hudMultipleSelect'   : true,
 
   //-- Systems
-  'systems' : [],
+  'systems'             : [],
 
   //-- Starfield
-  'starfield' : null,
+  'starfield'           : null,
 
   //-- Start animation
-  'startAnim' : true,
+  'startAnim'           : true,
 
   //-- Scale system effect
-  'effectScaleSystem' : [10,800],
+  'effectScaleSystem'   : [10,800],
 
   //-- Graphical Options
-  'optDistObj' : 1500,
+  'optDistObj'          : 1500,
 
   //-- Player position
-  'playerPos' : [0, 0, 0],
+  'playerPos'           : [0, 0, 0],
 
   //-- Initial camera position
-  'cameraPos' : null,
+  'cameraPos'           : null,
 
   //-- Active 2D top view
-  'isTopView' : false,
+  'isTopView'           : false,
 
   //-- Show galaxy infos
-  'showGalaxyInfos' : false,
+  'showGalaxyInfos'     : false,
 
   /**
    * Init Ed3d map
@@ -122,35 +124,41 @@ var Ed3d = {
 
     // Merge options with defaults
     var options = $.extend({
-        container: Ed3d.container,
-        basePath: Ed3d.basePath,
-        jsonPath: Ed3d.jsonPath,
-        jsonContainer: Ed3d.jsonContainer,
-        withHudPanel: Ed3d.withHudPanel,
-        hudMultipleSelect: Ed3d.hudMultipleSelect,
-        effectScaleSystem: Ed3d.effectScaleSystem,
-        startAnim: Ed3d.startAnim,
-        playerPos: Ed3d.playerPos,
-        cameraPos: Ed3d.cameraPos,
-        systemColor: Ed3d.systemColor,
-        showGalaxyInfos: false
+        container           : Ed3d.container,
+        basePath            : Ed3d.basePath,
+        
+        jsonPath            : Ed3d.jsonPath,
+        jsonContainer       : Ed3d.jsonContainer,
+        json                : Ed3d.json,
+        
+        withHudPanel        : Ed3d.withHudPanel,
+        hudMultipleSelect   : Ed3d.hudMultipleSelect,
+        effectScaleSystem   : Ed3d.effectScaleSystem,
+        startAnim           : Ed3d.startAnim,
+        playerPos           : Ed3d.playerPos,
+        cameraPos           : Ed3d.cameraPos,
+        systemColor         : Ed3d.systemColor,
+        showGalaxyInfos     : false
     }, options);
 
     Loader.start();
 
     //-- Set Option
-    this.basePath          = options.basePath;
-    this.container         = options.container;
-    this.jsonPath          = options.jsonPath;
-    this.jsonContainer     = options.jsonContainer;
-    this.withHudPanel      = options.withHudPanel;
-    this.hudMultipleSelect = options.hudMultipleSelect;
-    this.startAnim         = options.startAnim;
-    this.effectScaleSystem = options.effectScaleSystem;
-    this.playerPos         = options.playerPos;
-    this.cameraPos         = options.cameraPos;
-    this.showGalaxyInfos   = options.showGalaxyInfos;
-    this.systemColor       = options.systemColor;
+    this.basePath           = options.basePath;
+    this.container          = options.container;
+    
+    this.jsonPath           = options.jsonPath;
+    this.jsonContainer      = options.jsonContainer;
+    this.json               = options.json;
+    
+    this.withHudPanel       = options.withHudPanel;
+    this.hudMultipleSelect  = options.hudMultipleSelect;
+    this.startAnim          = options.startAnim;
+    this.effectScaleSystem  = options.effectScaleSystem;
+    this.playerPos          = options.playerPos;
+    this.cameraPos          = options.cameraPos;
+    this.showGalaxyInfos    = options.showGalaxyInfos;
+    this.systemColor        = options.systemColor;
 
     //-- Init 3D map container
     $('#'+Ed3d.container).append('<div id="ed3dmap"></div>');
@@ -245,10 +253,25 @@ var Ed3d = {
       Galaxy.addGalaxyCenter();
 
       // Load systems
-      Loader.update('Loading json file');
-      if(this.jsonPath != null) Ed3d.loadDatasFromFile();
-      else if(this.jsonContainer != null) Ed3d.loadDatasFromContainer();
-
+      Loader.update('Loading JSON file');
+      if(this.jsonPath != null)
+      {
+         Ed3d.loadDatasFromFile();
+      }
+      else if(this.jsonContainer != null)
+      {
+         Ed3d.loadDatasFromContainer();
+      }
+      else if(this.json != null)
+      {
+         Ed3d.loadDatas(this.json);
+         Ed3d.loadDatasComplete();
+         Ed3d.showScene();
+      }
+      else
+      {
+         Loader.update('No JSON found.');
+      }
 
       if(!this.startAnim) {
         Ed3d.grid1XL.hide();

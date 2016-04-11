@@ -26,6 +26,8 @@ Require Three.js (r75) & JQuery
 
 **jsonContainer:** Optionaly set an Id of container with JSon systems data. (Can be used on small project, JSon file stay better).
 
+**json:** Optionaly set an object to load the systems data.
+
 **basePath:** Custom base path
 
 **withHudPanel:** Enable the HUD (panel to filter and navigate throughout systems). *Default: false*
