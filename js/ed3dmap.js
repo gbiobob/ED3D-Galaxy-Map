@@ -123,46 +123,8 @@ var Ed3d = {
 
   'init' : function(options) {
 
-    // Merge options with defaults
-    var options = $.extend({
-        container           : Ed3d.container,
-        basePath            : Ed3d.basePath,
-        
-        jsonPath            : Ed3d.jsonPath,
-        jsonContainer       : Ed3d.jsonContainer,
-        json                : Ed3d.json,
-        
-        withHudPanel        : Ed3d.withHudPanel,
-        withOptionsPanel    : Ed3d.withOptionsPanel,
-        hudMultipleSelect   : Ed3d.hudMultipleSelect,
-        
-        effectScaleSystem   : Ed3d.effectScaleSystem,
-        startAnim           : Ed3d.startAnim,
-        playerPos           : Ed3d.playerPos,
-        cameraPos           : Ed3d.cameraPos,
-        systemColor         : Ed3d.systemColor,
-        showGalaxyInfos     : false
-    }, options);
-
-    Loader.start();
-
-    //-- Set Option
-    this.basePath           = options.basePath;
-    this.container          = options.container;
-    
-    this.jsonPath           = options.jsonPath;
-    this.jsonContainer      = options.jsonContainer;
-    this.json               = options.json;
-    
-    this.withHudPanel       = options.withHudPanel;
-    this.withOptionsPanel   = options.withOptionsPanel;
-    this.hudMultipleSelect  = options.hudMultipleSelect;
-    this.startAnim          = options.startAnim;
-    this.effectScaleSystem  = options.effectScaleSystem;
-    this.playerPos          = options.playerPos;
-    this.cameraPos          = options.cameraPos;
-    this.showGalaxyInfos    = options.showGalaxyInfos;
-    this.systemColor        = options.systemColor;
+    // Merge options with defaults Ed3d
+    var options = $.extend(Ed3d, options);
 
     //-- Init 3D map container
     $('#'+Ed3d.container).append('<div id="ed3dmap"></div>');
