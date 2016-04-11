@@ -86,6 +86,7 @@ var Ed3d = {
 
   //-- HUD
   'withHudPanel'        : false,
+  'withOptionsPanel'    : true,
   'hudMultipleSelect'   : true,
 
   //-- Systems
@@ -132,7 +133,9 @@ var Ed3d = {
         json                : Ed3d.json,
         
         withHudPanel        : Ed3d.withHudPanel,
+        withOptionsPanel    : Ed3d.withOptionsPanel,
         hudMultipleSelect   : Ed3d.hudMultipleSelect,
+        
         effectScaleSystem   : Ed3d.effectScaleSystem,
         startAnim           : Ed3d.startAnim,
         playerPos           : Ed3d.playerPos,
@@ -152,6 +155,7 @@ var Ed3d = {
     this.json               = options.json;
     
     this.withHudPanel       = options.withHudPanel;
+    this.withOptionsPanel   = options.withOptionsPanel;
     this.hudMultipleSelect  = options.hudMultipleSelect;
     this.startAnim          = options.startAnim;
     this.effectScaleSystem  = options.effectScaleSystem;

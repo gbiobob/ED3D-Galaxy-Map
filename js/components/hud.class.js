@@ -20,8 +20,8 @@ var HUD = {
   'create' : function(container) {
 
     this.container = container;
-
-    if(!$('#'+this.container+' #controls').length) {
+    
+    if(!$('#'+this.container+' #controls').length && Ed3d.withOptionsPanel == true) {
 
       $('#'+this.container).append(
         '  <div id="controls">'+

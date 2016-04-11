@@ -32,6 +32,8 @@ Require Three.js (r75) & JQuery
 
 **withHudPanel:** Enable the HUD (panel to filter and navigate throughout systems). *Default: false*
 
+**withOptionsPanel:** Enable the HUD (panel to filter and navigate throughout systems). *Default: false*
+
 **hudMultipleSelect:** Enable showing multiple filters at same time *Default: true*
 
 **showGalaxyInfos:** Show Milky Way info on start *Default: false*
