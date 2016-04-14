@@ -786,7 +786,7 @@ var Loader = {
     this.animCount = setInterval(function () {
       var animProgress = $('#loader #loadTimer');
       animProgress.append('.');
-      if(animProgress.html().length > 10) animProgress.html('.');
+      if(animProgress.html() != undefined && animProgress.html().length > 10) animProgress.html('.');
     }, 1000);
 
   },

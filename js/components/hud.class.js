@@ -213,6 +213,10 @@ var HUD = {
 
       }
 
+
+      var center = null;
+      var nbPoint = 0;
+      var pointFar = null;
       $(Ed3d.catObjs[idCat]).each(function(key, indexPoint) {
 
         obj = System.particleGeo.vertices[indexPoint];
@@ -226,13 +230,54 @@ var HUD = {
 
         System.particleGeo.colorsNeedUpdate = true;
 
+        //-- Sum coords to detect the center & detect the most far point
+        if(center == null) {
+          center   = new THREE.Vector3(obj.x, obj.y, obj.z);
+          pointFar = new THREE.Vector3(obj.x, obj.y, obj.z);
+        } else {
+          center.set(
+            (center.x + obj.x),
+            (center.y + obj.y),
+            (center.z + obj.z)
+          );
+          if(
+            (Math.abs(pointFar.x) - Math.abs(obj.x))+
+            (Math.abs(pointFar.y) - Math.abs(obj.y))+
+            (Math.abs(pointFar.z) - Math.abs(obj.z)) < 0
+          ) {
+            pointFar.set(obj.x, obj.y, obj.z);
+          }
+        }
+        nbPoint++;
 
       });
+
+      //-- Calc center of all selected points
+      center.set(
+        Math.round(center.x/nbPoint),
+        Math.round(center.y/nbPoint),
+        -Math.round(center.z/nbPoint)
+      );
+      console.log(center);
+
       $(this).data('active',active);
       $(this).toggleClass('disabled');
 
       //-- If current selection is no more visible, disable active selection
       if(Action.oldSel != null && !Action.oldSel.visible) Action.disableSelection();
+
+      //-- Calc max distance from center of selection
+      var distance = pointFar.distanceTo( center )+200;
+      console.log(distance);
+
+      //-- Set new camera & target position
+      Ed3d.playerPos = [center.x,center.y,center.z];
+      Ed3d.cameraPos = [
+        center.x + (Math.floor((Math.random() * 100) + 1)-50), //-- Add a small rotation effect
+        center.y + distance,
+        center.z - distance
+      ];
+
       Action.moveInitalPosition();
     });
 
