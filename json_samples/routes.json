@@ -69,7 +69,15 @@
     {
       "title":"1st test route",
       "points": [
-        {"s":"Wolf 906","label":"My home"},
+        {
+          "s":"Test",
+          "label":"My home",
+          "coords": {
+              "x": "25",
+              "y": "-2100",
+              "z": "-3900"
+          }
+        },
         {"s":"Checkpoint 1"},
         {"s":"Checkpoint 2","label":"Great discovery here"},
         {"s":"Checkpoint 3"},

@@ -258,7 +258,6 @@ var HUD = {
         Math.round(center.y/nbPoint),
         -Math.round(center.z/nbPoint)
       );
-      console.log(center);
 
       $(this).data('active',active);
       $(this).toggleClass('disabled');
@@ -268,7 +267,6 @@ var HUD = {
 
       //-- Calc max distance from center of selection
       var distance = pointFar.distanceTo( center )+200;
-      console.log(distance);
 
       //-- Set new camera & target position
       Ed3d.playerPos = [center.x,center.y,center.z];

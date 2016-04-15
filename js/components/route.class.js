@@ -23,6 +23,10 @@ var Route = {
 
     $.each(route.points, function(key, val) {
       Route.systems[val.s] = false;
+      if(val.coords != undefined) {
+        val.name = val.s;
+        System.create(val);
+      }
     });
 
   },
