@@ -11,6 +11,8 @@ var Action = {
 
   'prevScale' : null,
 
+  'pointCastRadius' : 2,
+
   /**
    * Init Raycaster for events on Systems
    */
@@ -20,12 +22,15 @@ var Action = {
     this.mouseVector = new THREE.Vector3();
     this.raycaster = new THREE.Raycaster();
 
-    container.addEventListener('mousedown', this.onMouseDown, false);
-    container.addEventListener('mouseup', this.onMouseUp, false);
+    var obj = this;
 
-    container.addEventListener( 'mousewheel', this.stopWinScroll, false );
-    container.addEventListener( 'DOMMouseScroll', this.stopWinScroll, false ); // FF
-    //container.addEventListener('mousemove', this.onMouseHover, false);
+    container.addEventListener('mousedown', function(e){obj.onMouseDown(e,obj);}, false);
+    container.addEventListener('mouseup', function(e){obj.onMouseUp(e,obj);}, false);
+
+    container.addEventListener('mousewheel', this.stopWinScroll, false );
+    container.addEventListener('DOMMouseScroll', this.stopWinScroll, false ); // FF
+
+    container.addEventListener('mousemove', function(e){obj.onMouseHover(e,obj);}, false);
   },
 
   /**
@@ -37,6 +42,16 @@ var Action = {
     event.stopPropagation();
   },
 
+  /**
+   * Update point click radius: increase radius with distance
+   */
+
+  'updatePointClickRadius' : function (radius) {
+    radius = Math.round(radius);
+    if(radius<2) radius = 2;
+    if(this.pointCastRadius == radius) return;
+    this.pointCastRadius = radius;
+  },
 
   /**
    * Update particle size on zoom in/out
@@ -66,22 +81,22 @@ var Action = {
    * Mouse Hover
    */
 
-  'onMouseHover' : function (e) {
+  'onMouseHover' : function (e, obj) {
 
     e.preventDefault();
     var position = $('#ed3dmap').offset();
 
-    this.mouseVector = new THREE.Vector3(
+    obj.mouseVector = new THREE.Vector3(
       ( ( e.clientX - position.left ) / renderer.domElement.width ) * 2 - 1,
       - ( ( e.clientY - position.top ) / renderer.domElement.height ) * 2 + 1,
       1);
 
-    this.mouseVector.unproject(camera);
-    this.raycaster = new THREE.Raycaster(camera.position, this.mouseVector.sub(camera.position).normalize());
-    this.raycaster.params.Points.threshold = 5;
+    obj.mouseVector.unproject(camera);
+    obj.raycaster = new THREE.Raycaster(camera.position, obj.mouseVector.sub(camera.position).normalize());
+    obj.raycaster.params.Points.threshold = 5;
 
     // create an array containing all objects in the scene with which the ray intersects
-    var intersects = this.raycaster.intersectObjects(scene.children);
+    var intersects = obj.raycaster.intersectObjects(scene.children);
     if (intersects.length > 0) {
 
       for( var i = 0; i < intersects.length; i++ ) {
@@ -132,9 +147,9 @@ var Action = {
    * On system click
    */
 
-  'onMouseDown' : function (e) {
+  'onMouseDown' : function (e, obj) {
 
-    this.mouseUpDownTimer = Date.now();
+    obj.mouseUpDownTimer = Date.now();
 
   },
 
@@ -143,34 +158,36 @@ var Action = {
    * On system click
    */
 
-  'onMouseUp' : function (e) {
+  'onMouseUp' : function (e, obj) {
 
     e.preventDefault();
 
     //-- If long clic down, don't do anything
-    var difference = (Date.now()-this.mouseUpDownTimer)/1000;
+
+    var difference = (Date.now()-obj.mouseUpDownTimer)/1000;
     if (difference > 0.2) {
-      this.mouseUpDownTimer = null;
+      obj.mouseUpDownTimer = null;
       return;
     }
-    this.mouseUpDownTimer = null;
+    obj.mouseUpDownTimer = null;
 
     //-- Raycast object
 
     var position = $('#ed3dmap').offset();
 
-    this.mouseVector = new THREE.Vector3(
+    obj.mouseVector = new THREE.Vector3(
       ( ( e.clientX - position.left ) / renderer.domElement.width ) * 2 - 1,
       - ( ( e.clientY - position.top ) / renderer.domElement.height ) * 2 + 1,
       1);
 
-    this.mouseVector.unproject(camera);
-    this.raycaster = new THREE.Raycaster(camera.position, this.mouseVector.sub(camera.position).normalize());
-    this.raycaster.params.Points.threshold = 2;
+
+    obj.mouseVector.unproject(camera);
+    obj.raycaster = new THREE.Raycaster(camera.position, obj.mouseVector.sub(camera.position).normalize());
+    obj.raycaster.params.Points.threshold = obj.pointCastRadius;
 
 
     // create an array containing all objects in the scene with which the ray intersects
-    var intersects = this.raycaster.intersectObjects(scene.children);
+    var intersects = obj.raycaster.intersectObjects(scene.children);
     if (intersects.length > 0) {
 
       for( var i = 0; i < intersects.length; i++ ) {
@@ -185,7 +202,7 @@ var Action = {
               "<h2>"+selPoint.name+"</h2>"
             );
 
-            var isMove = Action.moveToObj(indexPoint, selPoint);
+            var isMove = obj.moveToObj(indexPoint, selPoint);
 
             if(isMove) return;
           }
@@ -230,7 +247,7 @@ var Action = {
 
     //-- Move to
     var selPoint = System.particleGeo.vertices[indexPoint];
-    Action.moveToObj(indexPoint, selPoint);
+    this.moveToObj(indexPoint, selPoint);
 
   },
 

@@ -13,6 +13,8 @@ var Galaxy = {
   'y' : -21,
   'z' : 25900,
 
+  //-- Objects
+  'Action' : null,
 
   'addGalaxyCenter' : function () {
 
@@ -37,10 +39,12 @@ var Galaxy = {
   'createParticles' : function () {
 
     var img = new Image();
+    var obj = this;
+
     img.onload = function () {
 
       //get height data from img
-      Galaxy.getHeightData(img);
+      obj.getHeightData(img, obj);
 
 
       //-- If using start animation: launch it
@@ -75,14 +79,14 @@ var Galaxy = {
 
       $.each(data.quadrants, function(key, val) {
 
-        Galaxy.addText(key,val.x,-100,val.z,val.rotate);
+        this.addText(key,val.x,-100,val.z,val.rotate);
 
       });
 
       $.each(data.arms, function(key, val) {
 
         $.each(val, function(keyCh, valCh) {
-          Galaxy.addText(key,valCh.x,0,valCh.z,valCh.rotate,300,true);
+          this.addText(key,valCh.x,0,valCh.z,valCh.rotate,300,true);
         });
 
       });
@@ -90,7 +94,7 @@ var Galaxy = {
       $.each(data.gaps, function(key, val) {
 
         $.each(val, function(keyCh, valCh) {
-          Galaxy.addText(key,valCh.x,0,valCh.z,valCh.rotate,160,true);
+          this.addText(key,valCh.x,0,valCh.z,valCh.rotate,160,true);
         });
 
       });
@@ -98,7 +102,7 @@ var Galaxy = {
       $.each(data.others, function(key, val) {
 
         $.each(val, function(keyCh, valCh) {
-          Galaxy.addText(key,valCh.x,0,valCh.z,valCh.rotate,160,true);
+          this.addText(key,valCh.x,0,valCh.z,valCh.rotate,160,true);
         });
 
       });
@@ -106,7 +110,7 @@ var Galaxy = {
 
     }).done(function() {
 
-      scene.add(Galaxy.infos);
+      scene.add(this.infos);
 
     });
 
@@ -116,15 +120,15 @@ var Galaxy = {
    * Show additional galaxy infos
    */
   'infosShow' : function() {
-    if(Galaxy.infos == null) this.showGalaxyInfos();
-    if(Galaxy.infos !== null)  Galaxy.infos.visible = Ed3d.showGalaxyInfos;
+    if(this.infos == null) this.showGalaxyInfos();
+    if(this.infos !== null)  this.infos.visible = Ed3d.showGalaxyInfos;
   },
 
   /**
    * Show additional galaxy infos
    */
   'infosHide' : function() {
-    if(Galaxy.infos !== null)  Galaxy.infos.visible = false;
+    if(this.infos !== null)  this.infos.visible = false;
   },
 
   /**
@@ -140,17 +144,17 @@ var Galaxy = {
     var opacity = Math.round(scale/10)/10;
     if(opacity<0) opacity = 0;
     if(opacity>0.8) opacity = 0.8;
-    if(Galaxy.infos.previousOpacity == opacity) return;
+    if(this.infos.previousOpacity == opacity) return;
 
     var opacityMiddle = 1.1-opacity;
     if(opacityMiddle<=0.4) opacityMiddle = 0.2;
 
-    for( var i = 0; i < Galaxy.infos.children.length; i++ ) {
-      var txt = Galaxy.infos.children[ i ];
+    for( var i = 0; i < this.infos.children.length; i++ ) {
+      var txt = this.infos.children[ i ];
       txt.material.opacity = (!txt.revert) ? opacity : opacityMiddle;
     }
 
-    Galaxy.infos.previousOpacity = opacity;
+    this.infos.previousOpacity = opacity;
 
   },
 
@@ -229,7 +233,7 @@ var Galaxy = {
 
     textMesh.revert = revert;
 
-    Galaxy.infos.add(textMesh);
+    this.infos.add(textMesh);
 
   },
 
@@ -239,7 +243,7 @@ var Galaxy = {
    * @param  {Image} img - Image object
    */
 
-  'getHeightData' : function(img) {
+  'getHeightData' : function(img, obj) {
 
     var particles = new THREE.Geometry;
     var particlesBig = new THREE.Geometry;
@@ -315,7 +319,7 @@ var Galaxy = {
 
           } else if(density<4 || (Math.random() * 1000 < 400-(density*2))) {
             particles.vertices.push(particle);
-            this.colors[nb] = new THREE.Color("rgb("+r+", "+g+", "+b+")");
+            obj.colors[nb] = new THREE.Color("rgb("+r+", "+g+", "+b+")");
             nb++;
           }
         };
@@ -324,7 +328,7 @@ var Galaxy = {
 
     //-- Create small particles milkyway
 
-    particles.colors = this.colors;
+    particles.colors = obj.colors;
 
     var particleMaterial = new THREE.PointsMaterial({
       map: Ed3d.textures.flare_yellow,
@@ -340,10 +344,10 @@ var Galaxy = {
     points.sortParticles = true;
     particles.center();
 
-    this.milkyway[0] = points;
-    this.milkyway[0].scale.set(20,20,20);
+    obj.milkyway[0] = points;
+    obj.milkyway[0].scale.set(20,20,20);
 
-    this.obj.add(points);
+    obj.obj.add(points);
 
 
     //-- Create big particles milkyway
@@ -364,10 +368,10 @@ var Galaxy = {
     pointsBig.sortParticles = true;
     particlesBig.center();
 
-    this.milkyway[1] = pointsBig;
-    this.milkyway[1].scale.set(20,20,20);
+    obj.milkyway[1] = pointsBig;
+    obj.milkyway[1].scale.set(20,20,20);
 
-    this.obj.add(pointsBig);
+    obj.obj.add(pointsBig);
   }
 
 }

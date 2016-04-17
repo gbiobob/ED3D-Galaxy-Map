@@ -113,6 +113,10 @@ var Ed3d = {
   //-- Show galaxy infos
   'showGalaxyInfos' : false,
 
+  //-- Objects
+  'Action' : null,
+  'Galaxy' : null,
+
   /**
    * Init Ed3d map
    *
@@ -193,6 +197,18 @@ var Ed3d = {
   },
 
   /**
+   * Init objects
+   */
+
+  'initObjects' : function(options) {
+
+    //-- Init Object
+    this.Action = Action;
+    this.Galaxy = Galaxy;
+
+  },
+
+  /**
    * Rebuild completely system list and filter (for new JSon content)
    */
 
@@ -208,7 +224,7 @@ var Ed3d = {
     if(this.jsonPath != null) Ed3d.loadDatasFromFile();
     else if(this.jsonContainer != null) Ed3d.loadDatasFromContainer();
 
-    Action.moveInitalPosition();
+    this.Action.moveInitalPosition();
 
     Loader.stop();
 
@@ -220,43 +236,44 @@ var Ed3d = {
 
   'launchMap' : function() {
 
+    this.initObjects();
 
-      Loader.update('Textures');
-      Ed3d.loadTextures();
+    Loader.update('Textures');
+    Ed3d.loadTextures();
 
-      Loader.update('Launch scene');
-      Ed3d.initScene();
+    Loader.update('Launch scene');
+    Ed3d.initScene();
 
-      // Create grid
+    // Create grid
 
-      Ed3d.grid1H  = $.extend({}, Grid.init(100, 0x111E23, 0), {});
-      Ed3d.grid1K  = $.extend({}, Grid.init(1000, 0x22323A, 1000), {});
-      Ed3d.grid1XL = $.extend({}, Grid.infos(10000, 0x22323A, 10000), {});
-
-
-      // Add some scene enhancement
-      Ed3d.skyboxStars();
-
-      // Create HUD
-      HUD.create("ed3dmap");
-
-      // Add galaxy center
-      Loader.update('Add Sagittarius A*');
-      Galaxy.addGalaxyCenter();
-
-      // Load systems
-      Loader.update('Loading json file');
-      if(this.jsonPath != null) Ed3d.loadDatasFromFile();
-      else if(this.jsonContainer != null) Ed3d.loadDatasFromContainer();
+    Ed3d.grid1H  = $.extend({}, Grid.init(100, 0x111E23, 0), {});
+    Ed3d.grid1K  = $.extend({}, Grid.init(1000, 0x22323A, 1000), {});
+    Ed3d.grid1XL = $.extend({}, Grid.infos(10000, 0x22323A, 10000), {});
 
 
-      if(!this.startAnim) {
-        Ed3d.grid1XL.hide();
-        Galaxy.milkyway2D.visible = false;
-      }
+    // Add some scene enhancement
+    Ed3d.skyboxStars();
 
-      // Animate
-      animate();
+    // Create HUD
+    HUD.create("ed3dmap");
+
+    // Add galaxy center
+    Loader.update('Add Sagittarius A*');
+    this.Galaxy.addGalaxyCenter();
+
+    // Load systems
+    Loader.update('Loading json file');
+    if(this.jsonPath != null) Ed3d.loadDatasFromFile();
+    else if(this.jsonContainer != null) Ed3d.loadDatasFromContainer();
+
+
+    if(!this.startAnim) {
+      Ed3d.grid1XL.hide();
+      this.Galaxy.milkyway2D.visible = false;
+    }
+
+    // Animate
+    animate();
 
   },
 
@@ -446,7 +463,7 @@ var Ed3d = {
 
       System.endParticleSystem();
       HUD.init();
-      Action.init();
+      this.Action.init();
 
   },
 
@@ -559,12 +576,12 @@ function animate(time) {
   //-- Change selection cursor size depending on camera distance
 
   var scale = distanceFromTarget(camera)/200;
-  if(Action.cursorSel != null) {
+  if(this.Action.cursorSel != null) {
     if(scale>=0.01 && scale<10) {
-      Action.cursorSel.scale.set(scale, scale, scale);
+      this.Action.cursorSel.scale.set(scale, scale, scale);
 
     }
-    Action.cursorSel.rotation.y =  camera.rotation.y ;
+    this.Action.cursorSel.rotation.y =  camera.rotation.y ;
   }
 
   if(Ed3d.textSel['system'] != undefined)
@@ -576,9 +593,9 @@ function animate(time) {
 
 
   //-- Zoom on on galaxy effect
-  Action.sizeOnScroll(scale);
+  this.Action.sizeOnScroll(scale);
 
-  Galaxy.infosUpdateCallback(scale);
+  this.Galaxy.infosUpdateCallback(scale);
 
   if(scale>25) {
 
@@ -590,6 +607,8 @@ function animate(time) {
 
   }
 
+  this.Action.updatePointClickRadius(scale);
+
   requestAnimationFrame( animate );
 
 
@@ -599,7 +618,7 @@ var isFarView = false;
 
 function enableFarView (scale, withAnim) {
 
-  if(isFarView) return;
+  if(isFarView || this.Galaxy == null) return;
   if(withAnim == undefined) withAnim = true;
 
   isFarView = true;
@@ -609,33 +628,33 @@ function enableFarView (scale, withAnim) {
   var scaleTo = {zoom:500};
   if(withAnim) {
 
+    var obj = this;
+
     //controls.enabled = false;
     Ed3d.tween = new TWEEN.Tween(scaleFrom, {override:true}).to(scaleTo, 500)
       .start()
       .onUpdate(function () {
-        Galaxy.milkyway[0].material.size = scaleFrom.zoom;
-        Galaxy.milkyway[1].material.size = scaleFrom.zoom*4;
+        obj.Galaxy.milkyway[0].material.size = scaleFrom.zoom;
+        obj.Galaxy.milkyway[1].material.size = scaleFrom.zoom*4;
       });
 
   } else {
-    Galaxy.milkyway[0].material.size = scaleTo;
-    Galaxy.milkyway[1].material.size = scaleTo*4;
+    this.Galaxy.milkyway[0].material.size = scaleTo;
+    this.Galaxy.milkyway[1].material.size = scaleTo*4;
   }
 
   //-- Enable 2D galaxy
-  Galaxy.milkyway2D.visible = true;
-  Galaxy.infosShow();
+  this.Galaxy.milkyway2D.visible = true;
+  this.Galaxy.infosShow();
 
 
-  //Galaxy.obj.scale.set(20,20,20);
-  if(Action.cursorSel != null)  Action.cursorSel.scale.set(60,60,60);
+  //this.Galaxy.obj.scale.set(20,20,20);
+  if(this.Action.cursorSel != null)  this.Action.cursorSel.scale.set(60,60,60);
   Ed3d.grid1H.hide();
   Ed3d.grid1K.hide();
   Ed3d.grid1XL.show();
   Ed3d.starfield.visible = false;
   scene.fog.density = 0.000009;
-
-
 
 }
 
@@ -654,33 +673,36 @@ function disableFarView(scale, withAnim) {
   var scaleTo = {zoom:64};
   if(withAnim) {
 
+    var obj = this;
+
     //controls.enabled = false;
     Ed3d.tween = new TWEEN.Tween(scaleFrom, {override:true}).to(scaleTo, 500)
       .start()
       .onUpdate(function () {
-        Galaxy.milkyway[0].material.size = scaleFrom.zoom;
-        Galaxy.milkyway[1].material.size = scaleFrom.zoom;
+        obj.Galaxy.milkyway[0].material.size = scaleFrom.zoom;
+        obj.Galaxy.milkyway[1].material.size = scaleFrom.zoom;
       });
 
   } else {
-    Galaxy.milkyway[0].material.size = scaleTo;
-    Galaxy.milkyway[1].material.size = scaleTo;
+    this.Galaxy.milkyway[0].material.size = scaleTo;
+    this.Galaxy.milkyway[1].material.size = scaleTo;
   }
 
   //-- Disable 2D galaxy
-  Galaxy.milkyway2D.visible = false;
-  Galaxy.infosHide();
+  this.Galaxy.milkyway2D.visible = false;
+  this.Galaxy.infosHide();
 
   //-- Show element
-  Galaxy.milkyway[0].material.size = 16;
+  this.Galaxy.milkyway[0].material.size = 16;
 //
   camera.scale.set(1,1,1);
-  if(Action.cursorSel != null)  Action.cursorSel.scale.set(1,1,1);
+  if(this.Action.cursorSel != null)  this.Action.cursorSel.scale.set(1,1,1);
   Ed3d.grid1H.show();
   Ed3d.grid1K.show();
   Ed3d.grid1XL.hide();
   Ed3d.starfield.visible = true;
   scene.fog.density = Ed3d.fogDensity;
+
 }
 
 
