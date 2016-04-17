@@ -2,6 +2,15 @@
 var Action = {
 
   'cursorSel' : null,
+  'cursorHover' : null,
+  'cursorScale' : 1,
+
+
+  'cursor' : {
+    'selection' : null,
+    'hover' : null,
+  },
+
   'mouseVector' : null,
   'raycaster' : null,
   'oldSel' : null,
@@ -26,11 +35,11 @@ var Action = {
 
     container.addEventListener('mousedown', function(e){obj.onMouseDown(e,obj);}, false);
     container.addEventListener('mouseup', function(e){obj.onMouseUp(e,obj);}, false);
+    container.addEventListener('mousemove', function(e){obj.onMouseHover(e,obj);}, false);
 
     container.addEventListener('mousewheel', this.stopWinScroll, false );
     container.addEventListener('DOMMouseScroll', this.stopWinScroll, false ); // FF
 
-    container.addEventListener('mousemove', function(e){obj.onMouseHover(e,obj);}, false);
   },
 
   /**
@@ -84,6 +93,7 @@ var Action = {
   'onMouseHover' : function (e, obj) {
 
     e.preventDefault();
+
     var position = $('#ed3dmap').offset();
 
     obj.mouseVector = new THREE.Vector3(
@@ -93,7 +103,7 @@ var Action = {
 
     obj.mouseVector.unproject(camera);
     obj.raycaster = new THREE.Raycaster(camera.position, obj.mouseVector.sub(camera.position).normalize());
-    obj.raycaster.params.Points.threshold = 5;
+    obj.raycaster.params.Points.threshold = obj.pointCastRadius;
 
     // create an array containing all objects in the scene with which the ray intersects
     var intersects = obj.raycaster.intersectObjects(scene.children);
@@ -106,6 +116,7 @@ var Action = {
           var indexPoint = intersection.index;
 
           Action.hoverOnObj(indexPoint);
+          return;
         }
       }
 
@@ -122,10 +133,10 @@ var Action = {
     if(this.objHover == indexPoint) return;
     this.outOnObj();
 
-    System.particleGeo.colors[indexPoint] = new THREE.Color('#00ff00');
-    System.particleGeo.colorsNeedUpdate = true;
-
     this.objHover = indexPoint;
+
+    var sel = System.particleGeo.vertices[indexPoint];
+    this.addCusorOnHover(sel.x, sel.y, sel.z);
 
   },
 
@@ -134,12 +145,8 @@ var Action = {
     if(this.objHover === null || System.particleGeo.vertices[this.objHover] == undefined)
       return;
 
-    obj = System.particleGeo.vertices[this.objHover];
-
-    System.particleGeo.colors[this.objHover] = obj.color;
-    System.particleGeo.colorsNeedUpdate = true;
-
     this.objHover = null;
+    this.cursor.hover.visible = false;
 
   },
 
@@ -257,10 +264,10 @@ var Action = {
 
   'disableSelection' : function () {
 
-    if(this.cursorSel == null) return;
+    if(this.cursor.selection == null) return;
 
     this.oldSel = null;
-    this.cursorSel.visible = false;
+    this.cursor.selection.visible = false;
 
     $('#hud #infos').html('');
 
@@ -392,8 +399,8 @@ var Action = {
     var textAdd = obj.name;
     var textAddC = Math.round(goX) + ', ' + Math.round(goY) + ', ' + Math.round(-goZ);
 
-    HUD.addText('system',  textAdd, 8, 20, 0, 6, this.cursorSel);
-    HUD.addText('coords',  textAddC, 8, 15, 0, 3, this.cursorSel);
+    HUD.addText('system',  textAdd, 8, 20, 0, 6, this.cursor.selection);
+    HUD.addText('coords',  textAddC, 8, 15, 0, 3, this.cursor.selection);
 
     controls.enabled = true;
 
@@ -402,7 +409,7 @@ var Action = {
   },
 
   /**
-   * Create a cusros on selected system
+   * Create a cursor on selected system
    *
    * @param {number} x
    * @param {number} y
@@ -411,40 +418,107 @@ var Action = {
 
   'addCusorOnSelect' : function (x, y, z) {
 
-    if(this.cursorSel == null) {
-      this.cursorSel = new THREE.Object3D();
+    if(this.cursor.selection == null) {
+      this.cursor.selection = new THREE.Object3D();
 
       //-- Ring around the system
-      var geometryL = new THREE.TorusGeometry( 12, 0.4, 3, 30 );
+      var geometryL = new THREE.TorusGeometry( 8, 0.4, 3, 20 );
 
       var selection = new THREE.Mesh(geometryL, Ed3d.material.selected);
       //selection.position.set(x, y, z);
       selection.rotation.x = Math.PI / 2;
 
-      this.cursorSel.add(selection);
+      this.cursor.selection.add(selection);
 
       //-- Create a cone on the selection
       var geometryCone = new THREE.CylinderGeometry(0, 5, 16, 4, 1, false);
       var cone = new THREE.Mesh(geometryCone, Ed3d.material.selected);
       cone.position.set(0, 20, 0);
       cone.rotation.x = Math.PI;
-      this.cursorSel.add(cone);
+      this.cursor.selection.add(cone);
 
       //-- Inner cone
       var geometryConeInner = new THREE.CylinderGeometry(0, 3.6, 16, 4, 1, false);
       var coneInner = new THREE.Mesh(geometryConeInner, Ed3d.material.black);
       coneInner.position.set(0, 20.2, 0);
       coneInner.rotation.x = Math.PI;
-      this.cursorSel.add(coneInner);
+      this.cursor.selection.add(coneInner);
 
 
 
-      scene.add(this.cursorSel);
+      scene.add(this.cursor.selection);
     }
 
-    this.cursorSel.visible = true;
-    this.cursorSel.position.set(x, y, z);
-    this.cursorSel.scale.set(1, 1, 1);
+    this.cursor.selection.visible = true;
+    this.cursor.selection.position.set(x, y, z);
+    this.cursor.hover.scale.set(this.cursorScale, this.cursorScale, this.cursorScale);
+
+  },
+
+  /**
+   * Create a cursor on hover
+   *
+   * @param {number} x
+   * @param {number} y
+   * @param {number} z
+   */
+
+  'addCusorOnHover' : function (x, y, z) {
+
+    if(this.cursor.hover == null) {
+      this.cursor.hover = new THREE.Object3D();
+
+      //-- Ring around the system
+      var geometryL = new THREE.TorusGeometry( 6, 0.4, 3, 20 );
+
+      var selection = new THREE.Mesh(geometryL, Ed3d.material.grey);
+      //selection.position.set(x, y, z);
+      selection.rotation.x = Math.PI / 2;
+
+      this.cursor.hover.add(selection);
+
+      //-- Create a cone on the selection
+     /* var geometryCone = new THREE.CylinderGeometry(0, 5, 16, 4, 1, false);
+      var cone = new THREE.Mesh(geometryCone, Ed3d.material.grey);
+      cone.position.set(0, 18, 0);
+      cone.rotation.x = Math.PI;
+      this.cursor.hover.add(cone);
+
+      //-- Inner cone
+      var geometryConeInner = new THREE.CylinderGeometry(0, 3.6, 16, 4, 1, false);
+      var coneInner = new THREE.Mesh(geometryConeInner, Ed3d.material.black);
+      coneInner.position.set(0, 18.2, 0);
+      coneInner.rotation.x = Math.PI;
+      this.cursor.hover.add(coneInner);*/
+
+
+
+      scene.add(this.cursor.hover);
+    }
+
+    this.cursor.hover.position.set(x, y, z);
+    this.cursor.hover.visible = true;
+    this.cursor.hover.scale.set(this.cursorScale, this.cursorScale, this.cursorScale);
+
+  },
+
+  /**
+   * Update cursor size with camera distance
+   *
+   * @param {number} distance
+   */
+
+  'updateCursorSize' : function (scale) {
+
+    var obj = this;
+
+    $.each(this.cursor, function(key, cur) {
+      if(cur != null) {
+        cur.scale.set(scale, scale, scale);
+      }
+    });
+
+    this.cursorScale = scale
 
   },
 

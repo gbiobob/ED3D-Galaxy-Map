@@ -67,6 +67,9 @@ var Ed3d = {
     'selected' : new THREE.MeshPhongMaterial({
       color: 0x0DFFFF
     }),
+    'grey' : new THREE.MeshPhongMaterial({
+      color: 0x7EA0A0
+    }),
     'transparent' : new THREE.MeshBasicMaterial({
       color: 0x000000,
       transparent: true,
@@ -565,13 +568,8 @@ function animate(time) {
   //-- Change selection cursor size depending on camera distance
 
   var scale = distanceFromTarget(camera)/200;
-  if(this.Action.cursorSel != null) {
-    if(scale>=0.01 && scale<10) {
-      this.Action.cursorSel.scale.set(scale, scale, scale);
 
-    }
-    this.Action.cursorSel.rotation.y =  camera.rotation.y ;
-  }
+  this.Action.updateCursorSize(scale);
 
   if(Ed3d.textSel['system'] != undefined)
   if(Ed3d.isTopView) {
@@ -638,7 +636,9 @@ function enableFarView (scale, withAnim) {
 
 
   //this.Galaxy.obj.scale.set(20,20,20);
-  if(this.Action.cursorSel != null)  this.Action.cursorSel.scale.set(60,60,60);
+
+  this.Action.updateCursorSize(60);
+
   Ed3d.grid1H.hide();
   Ed3d.grid1K.hide();
   Ed3d.grid1XL.show();
@@ -683,9 +683,12 @@ function disableFarView(scale, withAnim) {
 
   //-- Show element
   this.Galaxy.milkyway[0].material.size = 16;
-//
+
+  //--
   camera.scale.set(1,1,1);
-  if(this.Action.cursorSel != null)  this.Action.cursorSel.scale.set(1,1,1);
+
+  this.Action.updateCursorSize(1);
+
   Ed3d.grid1H.show();
   Ed3d.grid1K.show();
   Ed3d.grid1XL.hide();
