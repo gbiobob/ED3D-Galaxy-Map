@@ -139,7 +139,7 @@ var Action = {
     this.objHover = indexPoint;
 
     var sel = System.particleGeo.vertices[indexPoint];
-    this.addCusorOnHover(sel.x, sel.y, sel.z);
+    this.addCursorOnHover(sel.x, sel.y, sel.z);
 
   },
 
@@ -398,7 +398,7 @@ var Action = {
 
     obj.material = Ed3d.material.selected;
 
-    this.addCusorOnSelect(goX, goY, goZ);
+    this.addCursorOnSelect(goX, goY, goZ);
 
     //-- Add text
     var textAdd = obj.name;
@@ -421,7 +421,7 @@ var Action = {
    * @param {number} z
    */
 
-  'addCusorOnSelect' : function (x, y, z) {
+  'addCursorOnSelect' : function (x, y, z) {
 
     if(this.cursor.selection == null) {
       this.cursor.selection = new THREE.Object3D();
@@ -468,7 +468,7 @@ var Action = {
    * @param {number} z
    */
 
-  'addCusorOnHover' : function (x, y, z) {
+  'addCursorOnHover' : function (x, y, z) {
 
     if(this.cursor.hover == null) {
       this.cursor.hover = new THREE.Object3D();
