@@ -20,7 +20,7 @@ var HUD = {
   'create' : function(container) {
 
     this.container = container;
-    
+
     if(!$('#'+this.container+' #controls').length && Ed3d.withOptionsPanel == true) {
 
       $('#'+this.container).append(
@@ -251,6 +251,8 @@ var HUD = {
         nbPoint++;
 
       });
+
+      if(nbPoint==0) return;
 
       //-- Calc center of all selected points
       center.set(

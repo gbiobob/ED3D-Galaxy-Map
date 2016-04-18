@@ -74,19 +74,20 @@ var Galaxy = {
     if(!Ed3d.showGalaxyInfos) return;
 
     this.infos = new THREE.Object3D();
+    var obj = this;
 
     $.getJSON(Ed3d.basePath + "data/milkyway.json", function(data) {
 
       $.each(data.quadrants, function(key, val) {
 
-        this.addText(key,val.x,-100,val.z,val.rotate);
+        obj.addText(key,val.x,-100,val.z,val.rotate);
 
       });
 
       $.each(data.arms, function(key, val) {
 
         $.each(val, function(keyCh, valCh) {
-          this.addText(key,valCh.x,0,valCh.z,valCh.rotate,300,true);
+          obj.addText(key,valCh.x,0,valCh.z,valCh.rotate,300,true);
         });
 
       });
@@ -94,7 +95,7 @@ var Galaxy = {
       $.each(data.gaps, function(key, val) {
 
         $.each(val, function(keyCh, valCh) {
-          this.addText(key,valCh.x,0,valCh.z,valCh.rotate,160,true);
+          obj.addText(key,valCh.x,0,valCh.z,valCh.rotate,160,true);
         });
 
       });
@@ -102,7 +103,7 @@ var Galaxy = {
       $.each(data.others, function(key, val) {
 
         $.each(val, function(keyCh, valCh) {
-          this.addText(key,valCh.x,0,valCh.z,valCh.rotate,160,true);
+          obj.addText(key,valCh.x,0,valCh.z,valCh.rotate,160,true);
         });
 
       });
@@ -110,7 +111,7 @@ var Galaxy = {
 
     }).done(function() {
 
-      scene.add(this.infos);
+      scene.add(obj.infos);
 
     });
 

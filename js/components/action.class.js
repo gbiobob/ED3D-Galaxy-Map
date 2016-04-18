@@ -114,9 +114,12 @@ var Action = {
         if(intersection.object.clickable) {
 
           var indexPoint = intersection.index;
+          var selPoint = intersection.object.geometry.vertices[indexPoint];
 
-          Action.hoverOnObj(indexPoint);
-          return;
+          if(selPoint.visible) {
+            Action.hoverOnObj(indexPoint);
+            return;
+          }
         }
       }
 
@@ -226,6 +229,8 @@ var Action = {
       }
 
     }
+
+    obj.disableSelection();
 
   },
 
