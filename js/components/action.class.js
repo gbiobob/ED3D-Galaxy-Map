@@ -95,6 +95,8 @@ var Action = {
     e.preventDefault();
 
     var position = $('#ed3dmap').offset();
+    var scrollPos = $(window).scrollTop();
+    position.top -= scrollPos;
 
     obj.mouseVector = new THREE.Vector3(
       ( ( e.clientX - position.left ) / renderer.domElement.width ) * 2 - 1,
@@ -184,6 +186,8 @@ var Action = {
     //-- Raycast object
 
     var position = $('#ed3dmap').offset();
+    var scrollPos = $(window).scrollTop();
+    position.top -= scrollPos;
 
     obj.mouseVector = new THREE.Vector3(
       ( ( e.clientX - position.left ) / renderer.domElement.width ) * 2 - 1,

@@ -248,6 +248,10 @@ var Ed3d = {
     {
        Ed3d.loadDatasFromContainer();
     }
+    else if($('.ed3d-item').length > 0)
+    {
+       Ed3d.loadDatasFromAttributes();
+    }
     else if(this.json != null)
     {
        Ed3d.loadDatas(this.json);
@@ -406,6 +410,27 @@ var Ed3d = {
     Ed3d.showScene();
 
   },
+
+
+  'loadDatasFromAttributes' : function() {
+
+    var content = $('#'+this.jsonContainer).html();
+    var json = [];
+    $('.ed3d-item').each(function(e) {
+      var objName = $(this).html();
+      var coords = $(this).data('coords').split(",");
+      if(coords.length == 3)
+        json.push({name:objName,coords:{x:coords[0],y:coords[1],z:coords[2]}});
+    });
+
+    if(json != null) Ed3d.loadDatas(json);
+
+    Ed3d.loadDatasComplete();
+
+    Ed3d.showScene();
+
+  },
+
 
   'loadDatas' : function(data) {
 
