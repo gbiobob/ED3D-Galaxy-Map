@@ -16,6 +16,7 @@ var Action = {
   'oldSel' : null,
   'objHover' : null,
   'mouseUpDownTimer' : null,
+  'mouseHoverTimer' : null,
   'animPosition' : null,
 
   'prevScale' : null,
@@ -141,7 +142,7 @@ var Action = {
     this.objHover = indexPoint;
 
     var sel = System.particleGeo.vertices[indexPoint];
-    this.addCursorOnHover(sel.x, sel.y, sel.z);
+    this.addCursorOnHover(sel);
 
   },
 
@@ -472,7 +473,7 @@ var Action = {
    * @param {number} z
    */
 
-  'addCursorOnHover' : function (x, y, z) {
+  'addCursorOnHover' : function (obj) {
 
     if(this.cursor.hover == null) {
       this.cursor.hover = new THREE.Object3D();
@@ -481,33 +482,21 @@ var Action = {
       var geometryL = new THREE.TorusGeometry( 6, 0.4, 3, 20 );
 
       var selection = new THREE.Mesh(geometryL, Ed3d.material.grey);
-      //selection.position.set(x, y, z);
       selection.rotation.x = Math.PI / 2;
 
       this.cursor.hover.add(selection);
 
-      //-- Create a cone on the selection
-     /* var geometryCone = new THREE.CylinderGeometry(0, 5, 16, 4, 1, false);
-      var cone = new THREE.Mesh(geometryCone, Ed3d.material.grey);
-      cone.position.set(0, 18, 0);
-      cone.rotation.x = Math.PI;
-      this.cursor.hover.add(cone);
-
-      //-- Inner cone
-      var geometryConeInner = new THREE.CylinderGeometry(0, 3.6, 16, 4, 1, false);
-      var coneInner = new THREE.Mesh(geometryConeInner, Ed3d.material.black);
-      coneInner.position.set(0, 18.2, 0);
-      coneInner.rotation.x = Math.PI;
-      this.cursor.hover.add(coneInner);*/
-
-
-
       scene.add(this.cursor.hover);
     }
 
-    this.cursor.hover.position.set(x, y, z);
+    this.cursor.hover.position.set(obj.x, obj.y, obj.z);
     this.cursor.hover.visible = true;
     this.cursor.hover.scale.set(this.cursorScale, this.cursorScale, this.cursorScale);
+
+    //-- Add text
+
+    var textAdd = obj.name;
+    HUD.addText('system_hover',  textAdd, 0, 4, 0, 3, this.cursor.hover);
 
   },
 

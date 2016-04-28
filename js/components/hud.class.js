@@ -454,6 +454,24 @@ var HUD = {
     addToObj.add(textMesh);
 
 
-  }
+  },
 
+  /**
+   * Add Shape text
+   */
+
+  'rotateText' : function(id) {
+
+    //y = -Math.abs(y);
+
+    if(Ed3d.textSel[id] != undefined)
+      if(Ed3d.isTopView) {
+        Ed3d.textSel[id].rotation.set(-Math.PI/2,0,0);
+      } else {
+        Ed3d.textSel[id].lookAt( camera.position );
+        Ed3d.textSel[id].rotation.x = 0;
+        Ed3d.textSel[id].rotation.z = 0;
+      }
+
+  }
 }

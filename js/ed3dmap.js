@@ -596,12 +596,9 @@ function animate(time) {
 
   this.Action.updateCursorSize(scale);
 
-  if(Ed3d.textSel['system'] != undefined)
-  if(Ed3d.isTopView) {
-    Ed3d.textSel['system'].rotation.set(-Math.PI/2,0,0);
-  } else {
-    Ed3d.textSel['system'].rotation.set(0,0,0);
-  }
+  HUD.rotateText('system');
+  HUD.rotateText('coords');
+  HUD.rotateText('system_hover');
 
 
   //-- Zoom on on galaxy effect
