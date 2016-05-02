@@ -23,6 +23,8 @@ var Action = {
 
   'pointCastRadius' : 2,
 
+  'pointsHighlight' : [],
+
   /**
    * Init Raycaster for events on Systems
    */
@@ -41,6 +43,13 @@ var Action = {
     container.addEventListener('mousewheel', this.stopWinScroll, false );
     container.addEventListener('DOMMouseScroll', this.stopWinScroll, false ); // FF
 
+
+    if(Ed3d.showNameNear) {
+      console.log('Launch EXPERIMENTAL func');
+      window.setInterval(function(){
+        obj.highlightAroundCamera(obj);
+      }, 1000);
+    }
   },
 
   /**
@@ -86,6 +95,71 @@ var Action = {
     System.scaleSize = newScale;
 
   },
+
+  /**
+   * Highlight selection around camera target (EXPERIMENTAL)
+   */
+
+  'highlightAroundCamera' : function (obj) {
+
+    if(isFarView == true) return;
+
+    var newSel = [];
+    var limit = 50;
+    var count = 0;
+
+    var raycaster = new THREE.Raycaster(camera.position, camera.position);
+    raycaster.params.Points.threshold = 100;
+
+    var intersects = raycaster.intersectObjects(scene.children);
+    if (intersects.length > 0) {
+
+      //-- Highlight new selection
+
+      for( var i = 0; i < intersects.length; i++ ) {
+
+        if(count>limit) return;
+
+        var intersection = intersects[ i ];
+        if(intersection.object.clickable) {
+
+          var indexPoint = intersection.index;
+          var selPoint = intersection.object.geometry.vertices[indexPoint];
+
+          if(selPoint.visible) {
+            var textAdd = selPoint.name;
+            var textId = 'highlight_'+indexPoint
+            if(obj.pointsHighlight.indexOf(textId) == -1) {
+
+              HUD.addText(textId,  textAdd, 0, 4, 0, 1, selPoint, true);
+
+              obj.pointsHighlight.push(textId);
+            }
+            newSel[textId] = textId;
+          }
+
+          count++;
+
+        }
+      }
+
+    }
+
+    //-- Remove old selection
+
+    $.each(obj.pointsHighlight, function(key, item) {
+      if(newSel[item] == undefined) {
+        var object = Ed3d.textSel[item];
+        if(object != undefined) {
+          scene.remove(object);
+          Ed3d.textSel.splice(item, 1);
+          obj.pointsHighlight.splice(key, 1);
+        }
+      }
+    });
+
+  },
+
 
   /**
    * Mouse Hover

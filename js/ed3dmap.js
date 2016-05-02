@@ -119,6 +119,9 @@ var Ed3d = {
   //-- Show galaxy infos
   'showGalaxyInfos'     : false,
 
+  //-- Show names near camera
+  'showNameNear'     : false,
+
   //-- Objects
   'Action' : null,
   'Galaxy' : null,

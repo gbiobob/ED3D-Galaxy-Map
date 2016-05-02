@@ -423,9 +423,10 @@ var HUD = {
    * Add Shape text
    */
 
-  'addText' : function(id, textShow, x, y, z, size, addToObj) {
+  'addText' : function(id, textShow, x, y, z, size, addToObj, isPoint) {
 
     if(addToObj == undefined) addToObj = scene;
+    if(isPoint == undefined) isPoint = false;
 
     var textShapes = THREE.FontUtils.generateShapes(textShow, {
       'font': 'helvetiker',
@@ -448,11 +449,16 @@ var HUD = {
     textMesh.geometry = textGeo;
     textMesh.geometry.needsUpdate = true;
 
-    textMesh.position.set(x, y, z);
+    if(isPoint) {
+      textMesh.position.set(addToObj.x, addToObj.y, addToObj.z);
+      textMesh.name = id;
+      scene.add(textMesh);
+    } else {
+      textMesh.position.set(x, y, z);
+      addToObj.add(textMesh);
+    }
 
     Ed3d.textSel[id] = textMesh;
-    addToObj.add(textMesh);
-
 
   },
 
