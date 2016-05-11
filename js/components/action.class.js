@@ -362,7 +362,7 @@ var Action = {
    */
   'moveInitalPositionNoAnim' : function (timer) {
 
-    var cam = [Ed3d.playerPos[0], Ed3d.playerPos[1]+500, Ed3d.playerPos[2]+500]
+    var cam = [Ed3d.playerPos[0], Ed3d.playerPos[1]+500, -Ed3d.playerPos[2]+500];
     if(Ed3d.cameraPos != null) {
       cam = [Ed3d.cameraPos[0], Ed3d.cameraPos[1], -Ed3d.cameraPos[2]];
     }
@@ -393,7 +393,7 @@ var Action = {
     };
 
     //-- Move to player position if defined, else move to Sol
-    var cam = [Ed3d.playerPos[0], Ed3d.playerPos[1]+500, Ed3d.playerPos[2]+500]
+    var cam = [Ed3d.playerPos[0], Ed3d.playerPos[1]+500, -Ed3d.playerPos[2]+500]
     if(Ed3d.cameraPos != null) {
       cam = [Ed3d.cameraPos[0], Ed3d.cameraPos[1], -Ed3d.cameraPos[2]];
     }
