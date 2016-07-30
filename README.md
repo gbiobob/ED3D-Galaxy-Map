@@ -48,7 +48,7 @@ Require Three.js (r75) & JQuery
 
 **cameraPos: [x,y,z]** Initial camera position, ex.:```[0,45000,-45000]``` (used for initial camera position)
 
-**showNameNear:** Show all label close to the camera target (Default: false)
+**showNameNear:** Show labels close from the camera target (Default: false)
 
 ## Methods
 **Ed3d.init({options}):** Initialize the scene
