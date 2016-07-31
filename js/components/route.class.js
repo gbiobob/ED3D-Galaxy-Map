@@ -58,12 +58,8 @@ var Route = {
         geometryL.vertices.push(
           new THREE.Vector3(c[0], c[1], c[2])
         );
-        Route.addPoint(c[0], c[1], c[2]);
+        //Route.addPoint(c[0], c[1], c[2]);
 
-        /*var geometry = new THREE.SphereGeometry(3, 10, 10);
-        var sphere = new THREE.Mesh(geometry, Ed3d.material.white);
-        sphere.position.set(x, y, z);
-        scene.add(sphere);*/
 
       } else {
 
@@ -84,10 +80,11 @@ var Route = {
   },
 
   'addCircle' : function(point) {
+
     var cursor = new THREE.Object3D;
 
     //-- Ring around the system
-    var geometryL = new THREE.TorusGeometry( 12, 0.4, 3, 30 );
+    var geometryL = new THREE.TorusGeometry( 4, 0.4, 3, 15 );
 
     var selection = new THREE.Mesh(geometryL, Ed3d.material.orange);
     selection.rotation.x = Math.PI / 2;
@@ -99,13 +96,17 @@ var Route = {
     cursor.scale.set(15,15,15);
 
     scene.add(cursor);
+
+    //-- Add to cursor list for scale effets
+    Action.cursor[cursor.id] = cursor;
+
   },
 
-  'addPoint' : function(x, y, z) {
+  'addPoint' : function(x, y, z, name) {
 
     /*console.log('Add point route');*/
 
-    /*var cursor = new THREE.Object3D;
+    var cursor = new THREE.Object3D;
 
     //-- Ring around the system
     var geometryL = new THREE.TorusGeometry( 12, 0.4, 3, 30 );
@@ -130,12 +131,68 @@ var Route = {
     cursor.add(coneInner);
 
 
-    cursor.position.set(x, y, -z);
+    cursor.position.set(x, y, z);
 
     cursor.scale.set(30,30,30);
 
-    scene.add(cursor);*/
-  }
+    scene.add(cursor);
+
+  },
+
+  'newRoute' : function(name) {
+    var routes = localStorage.getItem("routes");
+    if(routes == undefined) {
+      var routes = [];
+    }
+
+    var myRoute = {
+      title: "Test route",
+      points: []
+    }
+
+    routes.push(myRoute);
+    routes.push(myRoute);
+    routes.push(myRoute);
+
+    localStorage.setItem("routes",JSON.stringify(routes));
+  },
+
+  'addPointToRoute' : function(x,y,z,system,label) {
+
+    idRoute = 1;
+
+    console.log('add point');
+
+    var routes = JSON.parse(localStorage.getItem("routes"));
+    if(routes[idRoute] == undefined) return false;
+
+    var point = {
+      "coords": {"x":x, "y":y, "z":z }
+    }
+    if(system==undefined) system = Math.floor(Date.now() / 1000);
+
+    if(system != undefined) point.s = system;
+    if(label != undefined) point.label = label;
+
+    routes[idRoute].points.push(point);
+
+    localStorage.setItem("routes",JSON.stringify(routes));
+
+
+
+    this.drawRoute(1);
+  },
+
+  'drawRoute': function(idRoute) {
+
+    var route = JSON.parse(localStorage.getItem("routes"))[idRoute];
+    if(route == undefined) return false;
+
+    this.initRoute(0,route);
+    this.createRoute(0,route);
+
+  },
+
 
 
 }

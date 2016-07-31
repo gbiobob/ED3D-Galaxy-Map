@@ -1,14 +1,6 @@
 {
   "systems": [
     {
-      "name": "Wolf 906",
-      "coords": {
-          "x": "-27",
-          "y": "-25",
-          "z": "29"
-      }
-    },
-    {
       "name": "Checkpoint 1",
       "coords": {
           "x": "-6644",

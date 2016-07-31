@@ -27,6 +27,7 @@ var HUD = {
         '  <div id="controls">'+
         '    <a data-view="3d" class="view selected">3D</a>'+
         '    <a data-view="top" class="view">2D</a>'+
+        //'    <a data-view="top" class="view">RED</a>'+  // TMP route edit button
         '    <a data-view="infos" class="'+(Ed3d.showGalaxyInfos ? 'selected' : '')+'">i</a>'+
         '    <a data-view="options">'+Ico.cog+'</a>'+
         '    <div id="options" style="display:none;"></div>'+

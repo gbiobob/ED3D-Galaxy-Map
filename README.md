@@ -1,6 +1,6 @@
 # ED3D-Galaxy-Map
 ED3D-Galaxy-Map is a 3D galactic map (web app) for the game Elite: Dangerous.
-Work with JSon file to embed stelar systems data.
+Work with JSon file to embed stellar systems data.
 
 ## Demo
 * [Elite: Dangerous Milky Way](http://en.ed-board.net/3Dgalaxy/)
@@ -30,23 +30,29 @@ Require Three.js (r75) & JQuery
 
 **basePath:** Custom base path
 
+### Sprites
+**starSprite:** Add a custom sprite image for stars, exemple for round stars: ```"textures/lensflare/star_round.png"``` (default: ```"textures/lensflare/star_grey2.png"```)
+
+**systemColor:** Set custom color(Hex) for system's sprite *Default: #eeeeee*
+
+**effectScaleSystem:** Set an array with min & max value for system scale effect (sprite size) on zoom in/out *Default: [10,800]*
+
+### Camera
+**startAnim:** Use initial animation (Zoom into the galaxy) *Default: true*
+
+**playerPos: [x,y,z]** Player position, ex.:```[150,269,28]``` (used for initial camera target position)  *Default: [0,0,0]*
+
+**cameraPos: [x,y,z]** Initial camera position, ex.:```[0,45000,-45000]``` (used for initial camera position)
+
+### Hud
 **withHudPanel:** Enable the HUD (panel to filter and navigate throughout systems). *Default: false*
 
 **withOptionsPanel:** Enable the HUD (panel to filter and navigate throughout systems). *Default: false*
 
 **hudMultipleSelect:** Enable showing multiple filters at same time *Default: true*
 
+### Labels
 **showGalaxyInfos:** Show Milky Way info on start *Default: false*
-
-**systemColor:** Set custom color(Hex) for system's sprite *Default: #eeeeee*
-
-**effectScaleSystem:** Set an array with min & max value for system scale effect (sprite size) on zoom in/out *Default: [10,800]*
-
-**startAnim:** Use initial animation (Zoom into the galaxy) *Default: true*
-
-**playerPos: [x,y,z]** Player position, ex.:```[150,269,28]``` (used for initial camera target position)  *Default: [0,0,0]*
-
-**cameraPos: [x,y,z]** Initial camera position, ex.:```[0,45000,-45000]``` (used for initial camera position)
 
 **showNameNear:** Show labels close from the camera target (Default: false)
 

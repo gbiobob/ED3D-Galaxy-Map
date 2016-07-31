@@ -302,7 +302,7 @@ var Action = {
 
           $('#debug').html(Math.round(intersection.point.x)+' , '+Math.round(-intersection.point.z));
 
-          Route.addPoint(Math.round(intersection.point.x),0,Math.round(-intersection.point.z));
+          //Route.addPointToRoute(Math.round(intersection.point.x),0,Math.round(-intersection.point.z));
 
         }
       }

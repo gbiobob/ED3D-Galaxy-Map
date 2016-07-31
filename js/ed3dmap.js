@@ -77,10 +77,10 @@ var Ed3d = {
     }),
     'glow_1'            : null,
     'custom'            : []
-
-
-
   },
+
+  'starSprite' : 'textures/lensflare/star_grey2.png',
+
   'colors'              : [],
   'textures'            : {},
 
@@ -287,7 +287,7 @@ var Ed3d = {
 
     //-- Load textures
     this.textures.flare_white = texloader.load(Ed3d.basePath + "textures/lensflare/flare2.png");
-    this.textures.flare_yellow = texloader.load(Ed3d.basePath + "textures/lensflare/star_grey2.png");
+    this.textures.flare_yellow = texloader.load(Ed3d.basePath + Ed3d.starSprite);
     this.textures.flare_center = texloader.load(Ed3d.basePath + "textures/lensflare/flare3.png");
 
     //-- Load sprites
@@ -475,6 +475,7 @@ var Ed3d = {
         $.each(data.routes, function(key, route) {
           Route.createRoute(key, route);
         });
+
       }
 
   },
