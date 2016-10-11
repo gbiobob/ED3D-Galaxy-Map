@@ -35,6 +35,20 @@ var HUD = {
       );
       this.createSubOptions();
 
+      //-- Optionnal button to go fuulscreen
+
+      if(Ed3d.withFullscreenToggle) {
+        $( "<a></a>" )
+          .attr("id", "tog-fullscreen" )
+          .html('Fullscreen')
+          .click(function() {
+            $('#'+container).toggleClass('map-fullscreen');
+            refresh3dMapSize();
+          })
+          .prependTo( "#controls" );
+      }
+
+
     }
 
     if(!Ed3d.withHudPanel) return;

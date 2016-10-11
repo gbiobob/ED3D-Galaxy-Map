@@ -51,6 +51,8 @@ Require Three.js (r75) & JQuery
 
 **hudMultipleSelect:** Enable showing multiple filters at same time *Default: true*
 
+**withFullscreenToggle:** Enable button to toggle fullscreen mode *Default: false*
+
 ### Labels
 **showGalaxyInfos:** Show Milky Way info on start *Default: false*
 

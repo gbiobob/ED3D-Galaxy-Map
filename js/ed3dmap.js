@@ -47,7 +47,7 @@ var Ed3d = {
       color: 0xffffff
     }),
     'line' : new THREE.LineBasicMaterial({
-      color: 0xffffff
+      color: 0xcccccc
     }),
     'white' : new THREE.MeshBasicMaterial({
       color: 0xffffff
@@ -125,6 +125,9 @@ var Ed3d = {
   //-- Objects
   'Action' : null,
   'Galaxy' : null,
+
+  //-- With button to toggle fullscreen
+  'withFullscreenToggle' : false,
 
   /**
    * Init Ed3d map
@@ -728,8 +731,7 @@ function render() {
   renderer.render(scene, camera);
 }
 
-
-window.addEventListener('resize', function () {
+function refresh3dMapSize () {
   if(renderer != undefined) {
     var width = container.offsetWidth;
     var height = container.offsetHeight;
@@ -739,11 +741,12 @@ window.addEventListener('resize', function () {
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
   }
+}
+
+
+window.addEventListener('resize', function () {
+  refresh3dMapSize();
 });
-
-
-
-
 
 
 
