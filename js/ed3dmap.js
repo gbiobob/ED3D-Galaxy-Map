@@ -481,6 +481,14 @@ var Ed3d = {
 
       }
 
+
+      //-- Check start position
+
+      if(Ed3d.startAnim && data.position != undefined) {
+        Ed3d.playerPos = [data.position.x,data.position.y,data.position.z];
+        Ed3d.cameraPos = [data.position.x-500,data.position.y+5500,data.position.z-5500];
+      }
+
   },
 
   'loadDatasComplete' : function() {
