@@ -482,11 +482,17 @@ var Ed3d = {
       }
 
 
-      //-- Check start position
+      //-- Check start position in JSon
 
       if(Ed3d.startAnim && data.position != undefined) {
         Ed3d.playerPos = [data.position.x,data.position.y,data.position.z];
-        Ed3d.cameraPos = [data.position.x-500,data.position.y+5500,data.position.z-5500];
+
+        var camX = (parseInt(data.position.x)-500);
+        var camY = (parseInt(data.position.y)+8500);
+        var camZ = (parseInt(data.position.z)-8500);
+        Ed3d.cameraPos = [camX,camY,camZ];
+
+        Action.moveInitalPosition(4000);
       }
 
   },
