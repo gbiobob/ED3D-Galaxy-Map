@@ -44,6 +44,23 @@ var Route = {
     var nameR = '';
     var first = null;
     var last = null;
+    var color = Ed3d.material.orange;
+    var colorLine = Ed3d.material.line;
+
+    var hideLast = (route.hideLast !== undefined && route.hideLast);
+
+    //console.log(route);
+
+    if(route.cat !== undefined && route.cat[0] != undefined && Ed3d.colors[route.cat[0]] != undefined) {
+      color = new THREE.MeshBasicMaterial({
+        color: Ed3d.colors[route.cat[0]]
+      });
+      colorLine = new THREE.MeshBasicMaterial({
+        color: Ed3d.colors[route.cat[0]]
+      });
+    } else {
+      color = Ed3d.material.orange;
+    }
 
     $.each(route.points, function(key2, val) {
 
@@ -69,24 +86,35 @@ var Route = {
     });
 
     //-- Add lines to scene
-    routes[idRoute] = new THREE.Line(geometryL, Ed3d.material.line);
+    routes[idRoute] = new THREE.Line(geometryL, colorLine);
 
     //-- Add object for start & end
-    if(first!==null) routes[idRoute].add(this.addCircle(first));
-    if(last!==null)  routes[idRoute].add(this.addCircle(last));
+    if(first!==null) this.addCircle('route-'+idRoute+'-first', first, color, 7);
+    if(!hideLast && last!==null)  this.addCircle('route-'+idRoute+'-last', last, color, 3);
+
+    routes[idRoute].name = 'route-'+idRoute;
 
     scene.add(routes[idRoute]);
 
+
+   if(route.cat !== undefined) {
+     $.each(route.cat, function(keyArr, idCat) {
+       if(Ed3d.catObjsRoutes[idCat] == undefined)
+         Ed3d.catObjsRoutes[idCat] = [];
+       Ed3d.catObjsRoutes[idCat].push(routes[idRoute].name);
+     });
+   }
+
   },
 
-  'addCircle' : function(point) {
+  'addCircle' : function(id, point, material, size) {
 
     var cursor = new THREE.Object3D;
 
     //-- Ring around the system
-    var geometryL = new THREE.TorusGeometry( 4, 0.4, 3, 15 );
+    var geometryL = new THREE.TorusGeometry( size, 0.4, 3, 15 );
 
-    var selection = new THREE.Mesh(geometryL, Ed3d.material.orange);
+    var selection = new THREE.Mesh(geometryL, material);
     selection.rotation.x = Math.PI / 2;
 
     cursor.add(selection);
@@ -95,6 +123,7 @@ var Route = {
 
     cursor.scale.set(15,15,15);
 
+    cursor.name = id;
     scene.add(cursor);
 
     //-- Add to cursor list for scale effets

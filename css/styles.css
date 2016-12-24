@@ -46,6 +46,14 @@ body {
   -webkit-box-sizing: border-box;
 }
 
+#systemDetails.popup-detail {
+  top: 10%;
+  left: 10%;
+  height: 80%;
+  width: 80%;
+  border: solid 5px rgba(60,60,60,0.9);
+}
+
 #hud > div {
   margin-bottom: 20px;
   clear: both;

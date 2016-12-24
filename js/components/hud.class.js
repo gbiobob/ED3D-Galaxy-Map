@@ -70,7 +70,9 @@ var HUD = {
       '  </div>'+
       '</div>'
     );
-    $('#'+this.container).append('<div id="systemDetails" style="display:none;"></div>');
+
+    var addClass = (Ed3d.popupDetail ? 'class="popup-detail"' : '');
+    $('#'+this.container).append('<div id="systemDetails" style="display:none;"'+addClass+'></div>');
 
   },
 
@@ -215,10 +217,14 @@ var HUD = {
       var active = $(this).data('active');
       active = (Math.abs(active-1));
 
+      //------------------------------------------------------------------------
+      //-- Single item by once
+
       if(!Ed3d.hudMultipleSelect) {
 
         $('.map_filter').addClass('disabled');
 
+        //-- Toggle systems particles
         $(System.particleGeo.vertices).each(function(index, point) {
           point.visible  = 0;
           point.filtered = 0;
@@ -226,12 +232,45 @@ var HUD = {
           active = 1;
         });
 
+
+        //-- Toggle routes
+        if(Ed3d.catObjsRoutes.length>0)
+        $(Ed3d.catObjsRoutes).each(function(indexCat, listGrpRoutes) {
+          if(listGrpRoutes != undefined)
+            $(listGrpRoutes).each(function(key, indexRoute) {
+              scene.getObjectByName( indexRoute ).visible  = false;
+              if(scene.getObjectByName( indexRoute+'-first' ) != undefined)
+                scene.getObjectByName( indexRoute+'-first' ).visible  = false;
+              if(scene.getObjectByName( indexRoute+'-last' ) != undefined)
+                scene.getObjectByName( indexRoute+'-last' ).visible  = false;
+            });
+        });
+
       }
 
+      //------------------------------------------------------------------------
+      //-- multiple select
 
       var center = null;
       var nbPoint = 0;
       var pointFar = null;
+
+      //-- Toggle routes
+
+      if(Ed3d.catObjsRoutes.length>0)
+      $(Ed3d.catObjsRoutes[idCat]).each(function(key, indexRoute) {
+        var isVisible = scene.getObjectByName( indexRoute ).visible;
+        if(isVisible == undefined) isVisible = true;
+        isVisible = (isVisible ? false : true);
+        scene.getObjectByName( indexRoute ).visible  = isVisible;
+        if(scene.getObjectByName( indexRoute+'-first' ) != undefined)
+          scene.getObjectByName( indexRoute+'-first' ).visible  = isVisible;
+        if(scene.getObjectByName( indexRoute+'-last' ) != undefined)
+          scene.getObjectByName( indexRoute+'-last' ).visible  = isVisible;
+      });
+
+      //-- Toggle systems particles
+
       $(Ed3d.catObjs[idCat]).each(function(key, indexPoint) {
 
         obj = System.particleGeo.vertices[indexPoint];
@@ -269,7 +308,9 @@ var HUD = {
 
       if(nbPoint==0) return;
 
+      //------------------------------------------------------------------------
       //-- Calc center of all selected points
+
       center.set(
         Math.round(center.x/nbPoint),
         Math.round(center.y/nbPoint),

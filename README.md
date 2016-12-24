@@ -53,6 +53,9 @@ Require Three.js (r75) & JQuery
 
 **withFullscreenToggle:** Enable button to toggle fullscreen mode *Default: false*
 
+**popupDetail:** Popup mode for onclick details *Default: false*
+
+
 ### Labels
 **showGalaxyInfos:** Show Milky Way info on start *Default: false*
 

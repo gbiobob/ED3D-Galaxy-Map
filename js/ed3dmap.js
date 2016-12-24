@@ -40,6 +40,7 @@ var Ed3d = {
 
   //-- Object list by categories
   'catObjs'             : [],
+  'catObjsRoutes'       : [],
 
   //-- Materials
   'material'            : {
@@ -121,6 +122,9 @@ var Ed3d = {
 
   //-- Show names near camera
   'showNameNear'     : false,
+
+  //-- Popup mode for click on detal
+  'popupDetail'      : false,
 
   //-- Objects
   'Action' : null,
@@ -512,7 +516,8 @@ var Ed3d = {
   'addObjToCategories' : function(index, catList) {
 
     $.each(catList, function(keyArr, idCat) {
-      Ed3d.catObjs[idCat].push(index);
+      if(Ed3d.catObjs[idCat] != undefined)
+        Ed3d.catObjs[idCat].push(index);
     });
 
   },
