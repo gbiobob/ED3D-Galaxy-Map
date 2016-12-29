@@ -446,7 +446,9 @@ var Action = {
     controls.enabled = false;
 
     HUD.setInfoPanel(index, obj);
-    HUD.openHudDetails();
+
+    if(obj.infos != undefined) HUD.openHudDetails();
+
 
     this.oldSel = index;
     var goX = obj.x;
