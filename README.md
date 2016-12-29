@@ -66,6 +66,20 @@ Require Three.js (r75) & JQuery
 
 **Ed3d.rebuild():** Destroy & rebuild the scene (Hard way to refresh the scene to load new JSon data)
 
+
+## System properties
+
+* name
+* coords
+* infos
+* url
+
+## Event on click
+
+$( document ).on( "systemClick", function( event, name, infos, url ) {
+
+});
+
 ## Exemple
 ```
 <!-- My container -->

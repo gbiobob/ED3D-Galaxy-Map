@@ -66,6 +66,9 @@ var System = {
         particle.infos = val.infos;
         this.particleInfos[idSys] = this.count;
       }
+      if(val.url != undefined) {
+        particle.url = val.url;
+      }
 
       this.particleGeo.vertices.push(particle);
 

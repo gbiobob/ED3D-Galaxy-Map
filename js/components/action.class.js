@@ -293,6 +293,13 @@ var Action = {
 
             var isMove = obj.moveToObj(indexPoint, selPoint);
 
+            var opt = [ selPoint.name ];
+
+            var optInfos = (selPoint.infos != undefined) ? selPoint.infos : null;
+            var optUrl   = (selPoint.url != undefined) ? selPoint.url : null;
+
+            $(document).trigger( "systemClick", [ selPoint.name, optInfos, optUrl ] );
+
             if(isMove) return;
           }
 
