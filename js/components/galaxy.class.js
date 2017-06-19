@@ -16,6 +16,18 @@ var Galaxy = {
   //-- Objects
   'Action' : null,
 
+  /**
+   * Remove galaxy
+   */
+
+  'remove' : function() {
+
+    //scene.remove(this.milkyway[0]);
+    //scene.remove(this.milkyway[1]);
+    scene.remove(this.milkyway2D);
+
+  },
+
   'addGalaxyCenter' : function () {
 
     var objVal = new Object;
@@ -32,7 +44,6 @@ var Galaxy = {
 
     this.createParticles();
     this.add2DPlane();
-
 
   },
 
@@ -76,7 +87,7 @@ var Galaxy = {
     this.infos = new THREE.Object3D();
     var obj = this;
 
-    $.getJSON(Ed3d.basePath + "data/milkyway.json", function(data) {
+    $.getJSON(Ed3d.basePath + "data/milkyway-ed.json", function(data) {
 
       $.each(data.quadrants, function(key, val) {
 

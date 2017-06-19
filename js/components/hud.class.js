@@ -356,6 +356,11 @@ var HUD = {
 
   },
 
+
+  /**
+   * Init filter list
+   */
+
   'initFilters' : function(categories) {
 
     Loader.update('HUD Filter...');
@@ -364,19 +369,66 @@ var HUD = {
     $.each(categories, function(typeFilter, values) {
 
       if(typeof values === "object" ) {
+
         var groupId = 'group_'+grpNb;
+        var nbFilters = values.length;
+        var count = 0;
+        var visible = true;
 
         $('#filters').append('<h2>'+typeFilter+'</h2>');
         $('#filters').append('<div id="'+groupId+'"></div>');
 
         $.each(values, function(key, val) {
-          HUD.addFilter(groupId, key, val);
-          Ed3d.catObjs[key] = []
+
+          visible = true;
+
+          //-- Manage view limit if activated
+
+          if(Ed3d.categoryAutoCollapseSize !== false) {
+            count++;
+            if(count>Ed3d.categoryAutoCollapseSize) visible = false;
+          }
+
+          //-- Add filter
+
+          HUD.addFilter(groupId, key, val, visible);
+          Ed3d.catObjs[key] = [];
+
         });
+
         grpNb++;
+
+        //-- If more childs than 'categoryAutoCollapseSize' value
+        //-- add the button to toggle items
+
+        if(visible==false) {
+
+          $('#'+groupId).append(
+            '<a class="show_childs">'+
+            '+ See more' +
+            '</a>'
+          ).click(function(){
+            HUD.expandFilters(groupId);
+          });
+
+        }
       }
 
     });
+
+
+  },
+
+  /**
+   * Expand filter
+   */
+
+  'expandFilters' : function(groupId) {
+
+    $('#'+groupId)
+      .addClass('open');
+
+    $('#hud').addClass('enlarge');
 
 
   },
@@ -395,19 +447,26 @@ var HUD = {
   /**
    *
    */
-  'addFilter' : function(groupId, idCat, val) {
+  'addFilter' : function(groupId, idCat, val, visible) {
 
     //-- Add material, if custom color defined, use it
     var back = '#fff';
+    var addClass = '';
+
     if(val.color != undefined) {
       Ed3d.addCustomMaterial(idCat, val.color);
       back = '#'+val.color;
     }
 
+    if(!visible) {
+      addClass += ' hidden';
+    }
+
     //-- Add html link
     $('#'+groupId).append(
-      '<a class="map_filter" data-active="1" data-filter="' + idCat + '">'+
-      '<span class="check" style="background:'+back+'"> </span>' + val.name + '</a>'
+      '<a class="map_filter'+addClass+'" data-active="1" data-filter="' + idCat + '">'+
+      '<span class="check" style="background:'+back+'"> </span>' + val.name +
+      '</a>'
     );
   },
 

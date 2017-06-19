@@ -133,6 +133,9 @@ var Ed3d = {
   //-- With button to toggle fullscreen
   'withFullscreenToggle' : false,
 
+  //-- Collapse subcategories (false: don't collapse)
+  'categoryAutoCollapseSize' : false,
+
   /**
    * Init Ed3d map
    *
@@ -167,6 +170,7 @@ var Ed3d = {
         $.getScript(Ed3d.basePath + "js/components/route.class.js"),
         $.getScript(Ed3d.basePath + "js/components/system.class.js"),
         $.getScript(Ed3d.basePath + "js/components/galaxy.class.js"),
+        $.getScript(Ed3d.basePath + "js/components/heat.class.js"),
 
         $.getScript(Ed3d.basePath + "vendor/tween-js/Tween.js"),
 
@@ -204,14 +208,31 @@ var Ed3d = {
     Loader.start();
 
     // Remove System & HUD filters
-    System.remove();
-    HUD.removeFilters();
+    this.destroy();
 
     // Reload from JSon
     if(this.jsonPath != null) Ed3d.loadDatasFromFile();
     else if(this.jsonContainer != null) Ed3d.loadDatasFromContainer();
 
     this.Action.moveInitalPosition();
+
+    Loader.stop();
+
+  },
+
+  /**
+   * Destroy the 3dmap
+   */
+
+  'destroy' : function() {
+
+    Loader.start();
+
+    // Remove System & HUD filters
+    System.remove();
+    HUD.removeFilters();
+    Route.remove();
+    Galaxy.remove();
 
     Loader.stop();
 
@@ -343,6 +364,7 @@ var Ed3d = {
 
     //HemisphereLight
     light = new THREE.HemisphereLight(0xffffff, 0xcccccc);
+    light.position.set(-0.2, 0.5, 0.8).normalize();
     scene.add(light);
 
     //WebGL Renderer
@@ -485,6 +507,11 @@ var Ed3d = {
 
       }
 
+      //-- Heatmap
+
+      if(data.heatmap != undefined) {
+        Heatmap.create(data.heatmap);
+      }
 
       //-- Check start position in JSon
 

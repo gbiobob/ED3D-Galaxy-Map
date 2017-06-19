@@ -109,12 +109,6 @@
     "The Orio-Persean gap" : [
       {"x":-673 , "z":-2609, "rotate":-15}
     ],
-    "The Formidine rift" : [
-      {"x":-11342 , "z":-6189, "rotate":-35}
-    ],
-    "Tenebris" : [
-      {"x":31522 , "z":11890, "rotate":50}
-    ],
     "The Carina-Scutum gap" : [
       {"x":14535 , "z":54942, "rotate":-35},
       {"x":22140 , "z":45532, "rotate":-60}

@@ -32,6 +32,27 @@ var Route = {
   },
 
   /**
+   * Remove routes
+   */
+
+  'remove' : function() {
+
+    $(Ed3d.catObjsRoutes).each(function(indexCat, listGrpRoutes) {
+      if(listGrpRoutes != undefined)
+
+      $(listGrpRoutes).each(function(key, indexRoute) {
+        scene.remove(scene.getObjectByName( indexRoute ));
+        if(scene.getObjectByName( indexRoute+'-first' ) != undefined)
+          scene.remove(scene.getObjectByName( indexRoute+'-first' ));
+        if(scene.getObjectByName( indexRoute+'-last' ) != undefined)
+          scene.remove(scene.getObjectByName( indexRoute+'-last' ));
+      });
+    });
+
+
+  },
+
+  /**
    * Create a Line route
    *
    * @param {Int} Unique ID for the route
