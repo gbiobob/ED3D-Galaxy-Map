@@ -80,7 +80,7 @@ $( document ).on( "systemClick", function( event, name, infos, url ) {
 
 });
 
-## Exemple
+## Example
 ```
 <!-- My container -->
 <div id="edmap"></div>
